@@ -1,9 +1,39 @@
-import React from "react";
+import React, {useState} from 'react';
+import {checkId, checkPassword, checkBirth} from '../utils/utilCommon';
+import {firestore} from '../firebase/Firebase';
+
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
-import {firestore} from "../firebase/Firebase"
 const { Panel } = Collapse;
 
 const Join = () => {
+    const user = firestore.collection("user");
+
+    // id 중복 & 유효성 검사
+    const validateId = (idInput, value) => {
+        console.log(idInput, value);
+        if (checkId(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(idInput.message));
+        }
+    }
+
+    const validatePassword = (passwordInput, value) => {
+        if (checkPassword(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(passwordInput.message));
+        }
+    }
+
+    const validateBirth = (birthInput, value) => {
+        if (checkBirth(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(birthInput.message));
+        }
+    }
+
     const text = `
       A dog is a type of domesticated animal.
       Known for its loyalty and faithfulness,
@@ -11,8 +41,6 @@ const Join = () => {
     `;
 
     const genExtra = (key) => {
-        console.log(typeof key)
-        console.log(key)
         return (
             <Checkbox value={key} onClick={(event) => event.stopPropagation()}/>
         );
@@ -22,9 +50,16 @@ const Join = () => {
         console.log('Received values of form: ', values);
         console.log(values.user)
         console.log(firestore);
-        const user = firestore.collection("user");
-        user.doc(values.user.id).set(values.user);
-
+        user.get().then((docs) => {
+            docs.forEach((doc) => {
+                console.log(doc.id)
+                if (values.user.id === doc.id) {
+                    alert("중복된 아이디입니다.");
+                } else {
+                    user.doc(values.user.id).set(values.user);
+                }
+            })
+        })
     };
     return (
         <div >
@@ -40,10 +75,13 @@ const Join = () => {
                 <Form.Item
                     name={["user", "id"]}
                     label="아이디"
-                    rules={[{
-                        required: true,
-                        message: '4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.!'
-                    }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: '4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.!',
+                            validator: validateId
+                        }
+                    ]}
                 >
                     <Input placeholder="4~20자의 영문, 숫자와 특수문자 '_'만 사용해주세요." />
                 </Form.Item>
@@ -52,12 +90,13 @@ const Join = () => {
                     label="비밀번호"
                     rules={[{
                         required: true,
-                        message: '8~16자리 영문 대소문자, 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'
+                        message: '8~16자리 영문 대소문자, 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.',
+                        validator: validatePassword
                     }]}
                 >
                     <Input
                         type="password"
-                        placeholder="8~16자리 영문 대소문자, 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요."
+                        placeholder="최소 10자리 이상 영문 대소문자, 숫자, 특수문자 중 3가지 조합으로 만들어주세요."
                     />
                 </Form.Item>
                 <Form.Item
@@ -86,7 +125,8 @@ const Join = () => {
                     label="생년월일"
                     rules={[{
                         required: true,
-                        message: '생년월일은 필수 입력 정보입니다.'
+                        message: '생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.',
+                        validator: validateBirth
                     }]}
                 >
                     <Input placeholder="YYYYMMDD" />
@@ -96,7 +136,8 @@ const Join = () => {
                     label="휴대폰"
                     rules={[{
                         required: true,
-                        message: '휴대폰은 필수 입력 정보입니다.'
+                        message: '\'-\'빼고 숫자만 입력해주세요.',
+                        max: 11
                     }]}
                 >
                     <Input placeholder="'-'빼고 숫자만 입력해주세요." />
@@ -154,7 +195,7 @@ const Join = () => {
                 </Form.Item>*/}
                 <Form.Item style={{textAlign: 'center'}}>
                     <Button type="primary" htmlType="submit" className="login-form-button">
-                        Log in
+                        Submit
                     </Button>
                 </Form.Item>
             </Form>
