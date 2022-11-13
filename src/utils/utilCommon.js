@@ -15,6 +15,5 @@ export const checkPhoneNumber = number => {
 
 export const checkBirth = birth => {
     const regBirth = /^(19\d\d|20\d{2})(0\d|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
-    // const regBirth = /([0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[1,2][0-9]|3[0,1]))/g;
     return regBirth.test(birth);
 };
