@@ -9,7 +9,6 @@ export const checkPassword = password => {
 }
 
 export const checkPhoneNumber = number => {
-    console.log(number)
     const regPhone = /^01([0|1|6|7|9])-?([0-9]{4})-?([0-9]{4})$/;
     console.log(regPhone.test(number));
     return regPhone.test(number);
