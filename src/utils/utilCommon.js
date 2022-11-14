@@ -4,12 +4,17 @@ export const checkId = id => {
 }
 
 export const checkPassword = password => {
-    const regPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$/;
+    const regPassword = /^(?=.*[A-Z|a-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,16}$/;
     return regPassword.test(password);
 }
 
+export const checkName = name => {
+    const regId = /^[ㄱ-ㅎ|가-힣|a-z|A-Z]+$/;
+    return regId.test(name);
+}
+
 export const checkPhoneNumber = number => {
-    const regPhone = /^01([0|1|6|7|9])-?([0-9]{4})-?([0-9]{4})$/;
+    const regPhone = /^01([0|1|6|7|9])([0-9]{4})([0-9]{4})$/;
     return regPhone.test(number);
 };
 

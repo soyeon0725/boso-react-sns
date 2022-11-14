@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {checkId, checkPassword, checkBirth} from '../utils/utilCommon';
+import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
 import {firestore} from '../firebase/Firebase';
 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
@@ -10,7 +10,6 @@ const Join = () => {
 
     // id 중복 & 유효성 검사
     const validateId = (idInput, value) => {
-        console.log(idInput, value);
         if (checkId(value)) {
             return Promise.resolve();
         } else {
@@ -26,11 +25,27 @@ const Join = () => {
         }
     }
 
+    const validateName = (nameInput, value) => {
+        if (checkName(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(nameInput.message));
+        }
+    }
+
     const validateBirth = (birthInput, value) => {
         if (checkBirth(value)) {
             return Promise.resolve();
         } else {
             return Promise.reject(new Error(birthInput.message));
+        }
+    }
+
+    const validatePhone = (phoneInput, value) => {
+        if (checkPhoneNumber(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(phoneInput.message));
         }
     }
 
@@ -88,11 +103,16 @@ const Join = () => {
                 <Form.Item
                     name={["user", "password"]}
                     label="비밀번호"
-                    rules={[{
-                        required: true,
-                        message: '8~16자리 영문 대소문자, 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.',
-                        validator: validatePassword
-                    }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: '비밀번호는 필수 입력 값입니다.'
+                        },
+                        {
+                            message: '8~16자리 영문 대소문자, 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.',
+                            validator: validatePassword
+                        }
+                    ]}
                 >
                     <Input
                         type="password"
@@ -102,21 +122,32 @@ const Join = () => {
                 <Form.Item
                     name={["user", "name"]}
                     label="이름"
-                    rules={[{
-                        required: true,
-                        message: '이름은 필수 입력 정보입니다.'
-                    }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: '이름은 필수 입력 정보입니다.',
+                        },
+                        {
+                            message: '숫자, 특수문자는 사용할 수 없습니다.',
+                            validator: validateName
+                        }
+                    ]}
                 >
                     <Input placeholder="이름을 입력해주세요. (숫자, 특수문자 입력 불가)" />
                 </Form.Item>
                 <Form.Item
                     name={['user', 'email']}
                     label="이메일"
-                    rules={[{
-                        required: true,
-                        message: '이메일은 필수 입력 정보입니다.',
-                        type: 'email'
-                    }]}
+                    rules={[
+                        {
+                            required: true,
+                            message: '이메일은 필수 입력 정보입니다.'
+                        },
+                        {
+                            type: 'email',
+                            message: '이메일 형식에 맞게 작성해주세요.'
+                        }
+                    ]}
                 >
                     <Input placeholder="email@gmail.com" />
                 </Form.Item>
@@ -137,7 +168,7 @@ const Join = () => {
                     rules={[{
                         required: true,
                         message: '\'-\'빼고 숫자만 입력해주세요.',
-                        max: 11
+                        validator: validatePhone
                     }]}
                 >
                     <Input placeholder="'-'빼고 숫자만 입력해주세요." />
