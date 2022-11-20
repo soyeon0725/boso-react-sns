@@ -1,0 +1,9 @@
+.join-wrap {
+    padding: 40px 80px;
+}
+.join-wrap h2 {
+    text-align: center;
+}
+input::placeholder {
+    font-size: 12px;
+}
