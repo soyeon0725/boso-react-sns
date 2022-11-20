@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
 import {firestore} from '../firebase/Firebase';
 import './join.css'
@@ -24,12 +24,14 @@ const Join = () => {
         },
     };
 
-    // id 중복 & 유효성 검사
     const validateId = (_, value) => {
         if (!value || checkId(value)) {
-            console.log("아이디 !!!!!")
+            console.log('아이디 입력 성공')
+            console.log(value)
             return Promise.resolve();
         } else {
+            console.log('아이디 입력 실패')
+            console.log(value)
             return Promise.reject(new Error(_.message));
         }
     }
@@ -43,30 +45,28 @@ const Join = () => {
     }
 
     const validateName = (_, value) => {
-        if (checkName(value)) {
+        if (!value || checkName(value)) {
             return Promise.resolve();
         } else {
             return Promise.reject(new Error(_.message));
         }
     }
 
-    const validateBirth = (birthInput, value) => {
-        if (checkBirth(value)) {
+    const validateBirth = (_, value) => {
+        if (!value || checkBirth(value)) {
             return Promise.resolve();
         } else {
-            return Promise.reject(new Error(birthInput.message));
+            return Promise.reject(new Error(_.message));
         }
     }
 
-    const validatePhone = (phoneInput, value) => {
-        if (checkPhoneNumber(value)) {
+    const validatePhone = (_, value) => {
+        if (!value || checkPhoneNumber(value)) {
             return Promise.resolve();
         } else {
-            return Promise.reject(new Error(phoneInput.message));
+            return Promise.reject(new Error(_.message));
         }
     }
-
-    const text = `개인회원 약관에 동의 (상세)`;
 
     const genExtra = (key) => {
         return (
@@ -77,18 +77,23 @@ const Join = () => {
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
         const user = firestore.collection("user");
-
+        let existing = [];
         user.get().then((docs) => {
             docs.forEach((doc) => {
-                console.log(doc.id)
-                if (values.user.id === doc.id) {
-                    alert("중복된 아이디입니다.");
-                } else {
-                    user.doc(values.user.id).set(values.user);
-                }
+                existing.push(doc.id);
             })
-        })
+            let isExisting = false;
+            for (let i = 0; i < existing.length; i++) {
+                if (values.user.id === existing[i]) {
+                    console.log(`신규: ${values.user.id}, 기존: ${existing[i]}`)
+                    isExisting = true;
+                }
+            }
+            if (isExisting) alert('중복된 아이디입니다.');
+            else user.doc(values.user.id).set(values.user);
+        });
     };
+
     return (
         <div className="join-wrap">
             <h2>Join</h2>
@@ -200,7 +205,7 @@ const Join = () => {
                     <Checkbox.Group>
                         <Collapse style={{width: '25em'}}>
                             <Panel showArrow={false} header="(필수) 개인회원 약관에 동의" key="1" extra={genExtra("A")}>
-                                <p>{text}</p>
+                                <p>개인회원 약관에 동의 (상세)</p>
                             </Panel>
                         </Collapse>
                     </Checkbox.Group>
