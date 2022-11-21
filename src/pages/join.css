@@ -1,9 +1,13 @@
 .join-wrap {
-    padding: 40px 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
 }
-.join-wrap h2 {
-    text-align: center;
+.join-wrap input, .join-wrap span > input {
+    width: 24em;
 }
-input::placeholder {
+.join-wrap input, input::placeholder {
     font-size: 12px;
 }

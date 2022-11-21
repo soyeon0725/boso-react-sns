@@ -1,15 +1,19 @@
-import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
 import {firestore} from '../firebase/Firebase';
 import './join.css'
 
-import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
+import {Button, Checkbox, Form, Input, Radio, Collapse, Row, Col} from 'antd';
 const { Panel } = Collapse;
 
 const Join = () => {
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const [userId, setUserId] = useState('');
 
     const layout = {
-        labelCol: { span: 6 },
+        labelCol: { span: 8 },
         wrapperCol: { span: 14 },
     };
 
@@ -28,6 +32,7 @@ const Join = () => {
         if (!value || checkId(value)) {
             console.log('아이디 입력 성공')
             console.log(value)
+            setUserId(value);
             return Promise.resolve();
         } else {
             console.log('아이디 입력 실패')
@@ -89,34 +94,71 @@ const Join = () => {
                     isExisting = true;
                 }
             }
-            if (isExisting) alert('중복된 아이디입니다.');
-            else user.doc(values.user.id).set(values.user);
+            if (isExisting) {
+                alert("중복된 아이디입니다.")
+            }
+            else {
+                user.doc(values.user.id).set(values.user);
+                navigate('/login');
+            }
         });
     };
 
+    const onDuplicationCheck = () => {
+        const user = firestore.collection("user");
+        let existing = [];
+        user.get().then((docs) => {
+            docs.forEach((doc) => {
+                console.log(doc.id);
+                existing.push(doc.id);
+            })
+            let isExisting = false;
+            for (let i = 0; i < existing.length; i++) {
+                if (userId === existing[i]) {
+                    console.log(`신규: ${userId}, 기존: ${existing[i]}`)
+                    isExisting = true;
+                }
+            }
+            if (isExisting) {
+                alert("중복된 아이디입니다.");
+                setUserId("");
+            }
+        });
+    };
+    const onReset = () => form.resetFields();
+
     return (
         <div className="join-wrap">
-            <h2>Join</h2>
             <Form
                 {...layout}
                 name="nest-messages"
+                form={form}
                 validateMessages={validateMessages}
                 onFinish={onFinish}
             >
-                <Form.Item
-                    name={["user", "id"]}
-                    label="id"
-                    rules={[
-                        {
-                            required: true
-                        },
-                        {
-                            message: '4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.',
-                            validator: validateId
-                        }
-                    ]}
-                >
-                    <Input placeholder="아이디를 입력해주세요." />
+                <Form.Item noStyle>
+                    <Row gutter={8}>
+                        <Col span={16}>
+                            <Form.Item
+                                name={["user", "id"]}
+                                label="id"
+                                rules={[
+                                    {
+                                        required: true
+                                    },
+                                    {
+                                        message: '4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.',
+                                        validator: validateId
+                                    }
+                                ]}
+                            >
+                                <Input placeholder="아이디를 입력해주세요." />
+                            </Form.Item>
+                        </Col>
+                        <Col span={8}>
+                            <Button htmlType="button" onClick={onDuplicationCheck}>Duplication Check</Button>
+                        </Col>
+                    </Row>
                 </Form.Item>
                 <Form.Item
                     name={["user", "password"]}
@@ -131,7 +173,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input.Password placeholder="비밀번호를 입력해주세요." />
+                    <Input placeholder="비밀번호를 입력해주세요." />
                 </Form.Item>
                 <Form.Item
                     name={["user", "name"]}
@@ -203,7 +245,7 @@ const Join = () => {
                     ]}
                 >
                     <Checkbox.Group>
-                        <Collapse style={{width: '25em'}}>
+                        <Collapse style={{width: '20em'}}>
                             <Panel showArrow={false} header="(필수) 개인회원 약관에 동의" key="1" extra={genExtra("A")}>
                                 <p>개인회원 약관에 동의 (상세)</p>
                             </Panel>
@@ -225,9 +267,12 @@ const Join = () => {
                         <Radio value="5">5년</Radio>
                     </Radio.Group>
                 </Form.Item>
-                <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 6 }}>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                <Form.Item wrapperCol={{ span: 24 }} style={{textAlign: 'center'}}>
+                    <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>
                         Submit
+                    </Button>
+                    <Button htmlType="button" onClick={onReset}>
+                        Reset
                     </Button>
                 </Form.Item>
             </Form>
