@@ -1,22 +1,23 @@
 import { useState } from 'react';
-import {firestore} from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
+import { firestore } from '../firebase/Firebase';
+
 import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
 
-import './join.css'
-
-import {Button, Checkbox, Form, Input, Radio, Collapse, Row, Col} from 'antd';
+import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
+import Default from "../modal/Default";
 const { Panel } = Collapse;
 
 const Join = () => {
     const [form] = Form.useForm();
     const [userId, setUserId] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
     const user = firestore.collection("user");
 
     const layout = {
         labelCol: { span: 8 },
-        wrapperCol: { span: 14 },
+        wrapperCol: { span: 11 },
     };
 
     const validateMessages = {
@@ -31,23 +32,22 @@ const Join = () => {
     };
 
     const onDuplicationCheck = () => {
-        if (userId === "") alert("아이디를 입력해주세요.");
+        setIsModalOpen(true);
+        if (userId === "") console.log("아이디를 입력해주세요.");
         else {
-            console.log("ddd")
             let existing = [];
             user.get().then((docs) => {
                 docs.forEach((doc) => {
-                    existing.push(doc.id);
+                    existing.push(doc.data().id);
                 })
                 let isExisting = false;
                 for (let i = 0; i < existing.length; i++) {
                     if (userId === existing[i]) {
-                        console.log(`신규: ${userId}, 기존: ${existing[i]}`)
                         isExisting = true;
                     }
                 }
-                if (isExisting) alert("중복된 아이디입니다.");
-                else alert("사용 가능한 아이디입니다.");
+                if (isExisting) console.log("중복된 아이디입니다.");
+                else console.log("사용 가능한 아이디입니다.");
             });
         }
     };
@@ -97,7 +97,7 @@ const Join = () => {
     const onReset = () => form.resetFields();
 
     return (
-        <div className="join-wrap">
+        <div style={{ paddingTop: '50px' }}>
             <Form
                 {...layout}
                 name="nest-messages"
@@ -124,8 +124,11 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="아이디를 입력해주세요." />
-                    <Button htmlType="button" onClick={onDuplicationCheck}>중복체크</Button>
+                    <div style={{display: 'flex'}}>
+                        <Input placeholder="아이디를 입력해주세요." />
+                        <Button htmlType="button" onClick={onDuplicationCheck}>중복체크</Button>
+                        <Default type="id-not-available" message="아이디 사용 불가능" isModalOpen={isModalOpen} isModalClose={setIsModalOpen} />
+                    </div>
                 </Form.Item>
                 <Form.Item
                     name={["user", "password"]}
@@ -211,7 +214,7 @@ const Join = () => {
                     ]}
                 >
                     <Checkbox.Group>
-                        <Collapse style={{width: '20em'}}>
+                        <Collapse style={{width: '26em'}}>
                             <Panel showArrow={false} header="(필수) 개인회원 약관에 동의" key="1" extra={genExtra("A")}>
                                 <p>개인회원 약관에 동의 (상세)</p>
                             </Panel>
@@ -233,7 +236,7 @@ const Join = () => {
                         <Radio value="5">5년</Radio>
                     </Radio.Group>
                 </Form.Item>
-                <Form.Item wrapperCol={{ span: 24 }} style={{textAlign: 'center'}}>
+                <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                     <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>
                         Submit
                     </Button>

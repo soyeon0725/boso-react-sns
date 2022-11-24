@@ -5,8 +5,8 @@ export const checkId = id => {
 
 export const checkPassword = password => {
     // const regPassword = /^(?=.*[A-Z|a-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/;
-
     let char_type = 0;
+
     if(/[a-z]/.test(password)) char_type = char_type+1;
     if(/[A-Z]/.test(password)) char_type = char_type+1;
     if(/\d/.test(password)) char_type = char_type+1;
