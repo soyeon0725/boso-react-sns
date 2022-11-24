@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import {firestore} from '../firebase/Firebase';
 import { useNavigate } from 'react-router-dom';
 import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
-import {firestore} from '../firebase/Firebase';
+
 import './join.css'
 
 import {Button, Checkbox, Form, Input, Radio, Collapse, Row, Col} from 'antd';
@@ -9,8 +10,9 @@ const { Panel } = Collapse;
 
 const Join = () => {
     const [form] = Form.useForm();
+    const [userId, setUserId] = useState("");
     const navigate = useNavigate();
-    const [userId, setUserId] = useState('');
+    const user = firestore.collection("user");
 
     const layout = {
         labelCol: { span: 8 },
@@ -28,24 +30,33 @@ const Join = () => {
         },
     };
 
-    const validateId = (_, value) => {
-        if (!value || checkId(value)) {
-            console.log('아이디 입력 성공')
-            console.log(value)
-            setUserId(value);
-            return Promise.resolve();
-        } else {
-            console.log('아이디 입력 실패')
-            console.log(value)
-            return Promise.reject(new Error(_.message));
+    const onDuplicationCheck = () => {
+        if (userId === "") alert("아이디를 입력해주세요.");
+        else {
+            console.log("ddd")
+            let existing = [];
+            user.get().then((docs) => {
+                docs.forEach((doc) => {
+                    existing.push(doc.id);
+                })
+                let isExisting = false;
+                for (let i = 0; i < existing.length; i++) {
+                    if (userId === existing[i]) {
+                        console.log(`신규: ${userId}, 기존: ${existing[i]}`)
+                        isExisting = true;
+                    }
+                }
+                if (isExisting) alert("중복된 아이디입니다.");
+                else alert("사용 가능한 아이디입니다.");
+            });
         }
-    }
+    };
 
     const validatePassword = (_, value) => {
         if (!value || checkPassword(value)) {
             return Promise.resolve();
         } else {
-            return Promise.reject(new Error(_.message));
+            return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
         }
     }
 
@@ -73,58 +84,16 @@ const Join = () => {
         }
     }
 
-    const genExtra = (key) => {
-        return (
-            <Checkbox value={key} onClick={(event) => event.stopPropagation()}/>
-        );
+    const genExtra = key => {
+        return <Checkbox value={key} onClick={(event) => event.stopPropagation()}/>;
     };
 
-    const onFinish = (values) => {
+    const onFinish = values => {
         console.log('Received values of form: ', values);
-        const user = firestore.collection("user");
-        let existing = [];
-        user.get().then((docs) => {
-            docs.forEach((doc) => {
-                existing.push(doc.id);
-            })
-            let isExisting = false;
-            for (let i = 0; i < existing.length; i++) {
-                if (values.user.id === existing[i]) {
-                    console.log(`신규: ${values.user.id}, 기존: ${existing[i]}`)
-                    isExisting = true;
-                }
-            }
-            if (isExisting) {
-                alert("중복된 아이디입니다.")
-            }
-            else {
-                user.doc(values.user.id).set(values.user);
-                navigate('/login');
-            }
-        });
+        user.doc(values.user.id).set(values.user);
+        navigate('/login');
     };
 
-    const onDuplicationCheck = () => {
-        const user = firestore.collection("user");
-        let existing = [];
-        user.get().then((docs) => {
-            docs.forEach((doc) => {
-                console.log(doc.id);
-                existing.push(doc.id);
-            })
-            let isExisting = false;
-            for (let i = 0; i < existing.length; i++) {
-                if (userId === existing[i]) {
-                    console.log(`신규: ${userId}, 기존: ${existing[i]}`)
-                    isExisting = true;
-                }
-            }
-            if (isExisting) {
-                alert("중복된 아이디입니다.");
-                setUserId("");
-            }
-        });
-    };
     const onReset = () => form.resetFields();
 
     return (
@@ -136,29 +105,27 @@ const Join = () => {
                 validateMessages={validateMessages}
                 onFinish={onFinish}
             >
-                <Form.Item noStyle>
-                    <Row gutter={8}>
-                        <Col span={16}>
-                            <Form.Item
-                                name={["user", "id"]}
-                                label="id"
-                                rules={[
-                                    {
-                                        required: true
-                                    },
-                                    {
-                                        message: '4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.',
-                                        validator: validateId
-                                    }
-                                ]}
-                            >
-                                <Input placeholder="아이디를 입력해주세요." />
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Button htmlType="button" onClick={onDuplicationCheck}>Duplication Check</Button>
-                        </Col>
-                    </Row>
+                <Form.Item
+                    name={["user", "id"]}
+                    label="id"
+                    rules={[
+                        {
+                            required: true
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (!value || checkId(value)) {
+                                    console.log(value + " : '' 일 때 성공 처리 맞음?");
+                                    setUserId(value);
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.'));
+                            }
+                        }
+                    ]}
+                >
+                    <Input placeholder="아이디를 입력해주세요." />
+                    <Button htmlType="button" onClick={onDuplicationCheck}>중복체크</Button>
                 </Form.Item>
                 <Form.Item
                     name={["user", "password"]}
@@ -168,7 +135,6 @@ const Join = () => {
                             required: true
                         },
                         {
-                            message: '최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.',
                             validator: validatePassword
                         }
                     ]}

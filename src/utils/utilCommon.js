@@ -4,9 +4,15 @@ export const checkId = id => {
 }
 
 export const checkPassword = password => {
-    const regPassword = /^(?=.*[A-Z|a-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Z|a-z|\d|$@$!%*#?&]{10,}$/;
-    // const regPassword = /^.*(?=^.{10,}$)(?=.*\d)(?=.*[a-z|A-Z])(?=.*[!@#$%^&+=]).*$/;
-    return regPassword.test(password);
+    // const regPassword = /^(?=.*[A-Z|a-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/;
+
+    let char_type = 0;
+    if(/[a-z]/.test(password)) char_type = char_type+1;
+    if(/[A-Z]/.test(password)) char_type = char_type+1;
+    if(/\d/.test(password)) char_type = char_type+1;
+    if (/[~!@#$%\^&*()_+`\-={}|[\]\\:";'<>?,./]/gi.test(password)) char_type = char_type + 1;
+
+    return !(char_type < 3 || char_type > 3 || (char_type === 3 && password.length < 10));
 }
 
 export const checkName = name => {
