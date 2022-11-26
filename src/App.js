@@ -11,11 +11,13 @@ import RouteList from "./app/router";
 const {Content} = Layout;
 
 const App = () => {
+    // Todo router V6 hook 을 이용하는 방법으로 수정해보기
+    const currentPath = window.location.pathname === '/' || window.location.pathname === '/join';
     return (
         <>
             <Layout style={{minHeight: '100vh'}}>
                 <Layout className="site-layout">
-                    <HeaderC/>
+                    {!currentPath && <HeaderC/>}
                     <Content>
                         <Routes>
                             {
@@ -25,7 +27,7 @@ const App = () => {
                             }
                         </Routes>
                     </Content>
-                    <FooterC/>
+                    {!currentPath && <FooterC/>}
                 </Layout>
             </Layout>
         </>
