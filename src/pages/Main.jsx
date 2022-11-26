@@ -1,14 +1,7 @@
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-
 const Main = () => {
 
     return (
-        <>
-            <Header/>
-            <div style={{height: '500px'}}>Main</div>
-            <Footer/>
-        </>
+        <div style={{height: '500px'}}>Main</div>
     )
 }
 export default Main;

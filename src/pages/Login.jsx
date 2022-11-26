@@ -34,7 +34,7 @@ const Login = () => {
         console.log('Failed:', errorInfo);
     };
 
-    const onJoin = () => navigate('/join');
+    const goToJoin = () => navigate('/join');
     return (
         <div style={{ paddingTop: '50px' }}>
             <Form
@@ -78,16 +78,13 @@ const Login = () => {
                     <Input.Password />
                 </Form.Item>
                 <Form.Item
-                    name="remember"
-                    valuePropName="checked"
                     wrapperCol={{
                         offset: 8,
                         span: 16,
                     }}
                 >
-                    <Checkbox>Remember me</Checkbox>
-                    <Button type="link" htmlType="button" onClick={onJoin}>
-                        회원가입
+                    <Button type="link" htmlType="button" onClick={goToJoin}>
+                        register now!
                     </Button>
                 </Form.Item>
                 <Form.Item
@@ -99,7 +96,6 @@ const Login = () => {
                     <Button type="primary" htmlType="submit">
                         Submit
                     </Button>
-
                 </Form.Item>
             </Form>
         </div>

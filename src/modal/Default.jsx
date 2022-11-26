@@ -1,17 +1,22 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import { Button, Modal } from 'antd';
 
 const Default = (props) => {
+    const { isDefaultOpen } = props;
+    const navigate = useNavigate();
+    /*const [isDefaultOpen, setIsDefaultOpen] = useState(open);*/
     console.log(props);
 
     const handleCancel = () => {
-        props.isModalClose(false);
+        console.log("x")
+        // setIsDefaultOpen(false);
     };
     return (
         <>
             <Modal
                 title="알림"
-                open={props.isModalOpen}
+                open={isDefaultOpen}
                 onCancel={handleCancel}
                 footer={null}
             >

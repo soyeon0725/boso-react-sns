@@ -1,6 +1,6 @@
 import React from 'react';
-// import FooterC from "./components/Footer";
-// import HeaderC from "./components/Header";
+import FooterC from "./components/Footer";
+import HeaderC from "./components/Header";
 import 'antd/dist/antd.css';
 import './index.css';
 import { Layout} from 'antd';
@@ -15,7 +15,7 @@ const App = () => {
         <>
             <Layout style={{minHeight: '100vh'}}>
                 <Layout className="site-layout">
-                    {/*<HeaderC/>*/}
+                    <HeaderC/>
                     <Content>
                         <Routes>
                             {
@@ -25,7 +25,7 @@ const App = () => {
                             }
                         </Routes>
                     </Content>
-                    {/*<FooterC/>*/}
+                    <FooterC/>
                 </Layout>
             </Layout>
         </>

@@ -10,10 +10,13 @@ const { Panel } = Collapse;
 
 const Join = () => {
     const [form] = Form.useForm();
-    const [userId, setUserId] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
-    const user = firestore.collection("user");
+    const [inputId, setInputId] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalValues, setModalValues] = useState({
+        type: '',
+        message: ''
+    })
 
     const layout = {
         labelCol: { span: 8 },
@@ -29,27 +32,6 @@ const Join = () => {
         number: {
             range: '${label} must be between ${min} and ${max}',
         },
-    };
-
-    const onDuplicationCheck = () => {
-        setIsModalOpen(true);
-        if (userId === "") console.log("아이디를 입력해주세요.");
-        else {
-            let existing = [];
-            user.get().then((docs) => {
-                docs.forEach((doc) => {
-                    existing.push(doc.data().id);
-                })
-                let isExisting = false;
-                for (let i = 0; i < existing.length; i++) {
-                    if (userId === existing[i]) {
-                        isExisting = true;
-                    }
-                }
-                if (isExisting) console.log("중복된 아이디입니다.");
-                else console.log("사용 가능한 아이디입니다.");
-            });
-        }
     };
 
     const validatePassword = (_, value) => {
@@ -88,10 +70,74 @@ const Join = () => {
         return <Checkbox value={key} onClick={(event) => event.stopPropagation()}/>;
     };
 
+    const idCheck = async id => {
+        console.log(id);
+        const user = firestore.collection("user");
+        let userIdList = [];
+        const result = await user.get().then((docs) => {
+            docs.forEach((doc) => {
+                userIdList.push(doc.data().id);
+            })
+            let isDuplicationId = false;
+            for (let i = 0; i < userIdList.length; i++) {
+                if (id === userIdList[i]) {
+                    isDuplicationId = true;
+                }
+            }
+            if (isDuplicationId) {
+                console.log("아이디 사용 불가능");
+                return true;
+            }
+            else {
+                console.log("아이디 사용 가능");
+                return false;
+            }
+        });
+        return result;
+    }
+
+    const duplicationCheck = e => {
+        e.preventDefault();
+        // Todo 아이디 중복 체크 여부 판단 값 생성하기
+        idCheck(inputId).then(duplication => {
+            console.log(duplication);
+            // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
+            // Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)
+            if (duplication) {
+                console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
+                setModalOpen(true);
+                setModalValues({
+                    type: 'id-not-available',
+                    message: '중복된 아이디입니다.'
+                });
+            }
+            else {
+                console.log("Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)")
+                setModalOpen(true);
+                setModalValues({
+                    type: 'id-available',
+                    message: '사용 가능한 아이디입니다.'
+                });
+            }
+        });
+    };
+
     const onFinish = values => {
         console.log('Received values of form: ', values);
-        user.doc(values.user.id).set(values.user);
-        navigate('/login');
+        // Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)
+
+        idCheck(values.user.id).then(duplication => {
+            console.log(duplication)
+            // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
+            // Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)
+            if (duplication) {
+                console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
+                setModalOpen(true);
+            }
+            else {
+                console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)")
+            }
+        });
     };
 
     const onReset = () => form.resetFields();
@@ -116,7 +162,7 @@ const Join = () => {
                             validator: (_, value) => {
                                 if (!value || checkId(value)) {
                                     console.log(value + " : '' 일 때 성공 처리 맞음?");
-                                    setUserId(value);
+                                    setInputId(value);
                                     return Promise.resolve();
                                 }
                                 return Promise.reject(new Error('4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.'));
@@ -126,8 +172,13 @@ const Join = () => {
                 >
                     <div style={{display: 'flex'}}>
                         <Input placeholder="아이디를 입력해주세요." />
-                        <Button htmlType="button" onClick={onDuplicationCheck}>중복체크</Button>
-                        <Default type="id-not-available" message="아이디 사용 불가능" isModalOpen={isModalOpen} isModalClose={setIsModalOpen} />
+                        <Button htmlType="button" onClick={duplicationCheck} disabled={!inputId && true}>중복체크</Button>
+                        {modalOpen ? (
+                            <Default
+                                values={modalValues}
+                                isDefaultOpen={modalOpen}
+                            />
+                        ) : null}
                     </div>
                 </Form.Item>
                 <Form.Item
