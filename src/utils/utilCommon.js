@@ -12,7 +12,8 @@ export const checkPassword = password => {
     if(/\d/.test(password)) char_type = char_type+1;
     if (/[~!@#$%\^&*()_+`\-={}|[\]\\:";'<>?,./]/gi.test(password)) char_type = char_type + 1;
 
-    return !(char_type < 3 || char_type > 3 || (char_type === 3 && password.length < 10));
+    // return !(char_type < 3 || char_type > 3 || (char_type === 3 && password.length < 10));
+    return !(char_type < 3 || ((char_type === 3 || char_type === 4) && password.length < 10));
 }
 
 export const checkName = name => {

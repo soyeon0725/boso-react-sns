@@ -3,26 +3,27 @@ import {useNavigate} from "react-router-dom";
 import { Button, Modal } from 'antd';
 
 const Default = (props) => {
-    const { isDefaultOpen } = props;
+    const { values } = props;
     const navigate = useNavigate();
-    /*const [isDefaultOpen, setIsDefaultOpen] = useState(open);*/
+    const [isModalOpen, setIsModalOpen] = useState(false);
     console.log(props);
 
+    useEffect(() => {
+        if (values.modal === 'default') setIsModalOpen(true);
+    }, []);
+
     const handleCancel = () => {
-        console.log("x")
-        // setIsDefaultOpen(false);
+        setIsModalOpen(false);
     };
     return (
-        <>
-            <Modal
-                title="알림"
-                open={isDefaultOpen}
-                onCancel={handleCancel}
-                footer={null}
-            >
-                <p>{props.message}</p>
-            </Modal>
-        </>
+        <Modal
+            title="알림"
+            open={isModalOpen}
+            onCancel={handleCancel}
+            footer={null}
+        >
+            <p>{values.message}</p>
+        </Modal>
     );
 }
 export default Default;

@@ -4,7 +4,7 @@ import HeaderC from "./components/Header";
 import 'antd/dist/antd.css';
 import './index.css';
 import { Layout} from 'antd';
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useLocation} from "react-router-dom";
 import RouteList from "./app/router";
 
 
@@ -12,12 +12,15 @@ const {Content} = Layout;
 
 const App = () => {
     // Todo router V6 hook 을 이용하는 방법으로 수정해보기
-    const currentPath = window.location.pathname === '/' || window.location.pathname === '/join';
+    const { pathname } = useLocation();
+    console.log(pathname);
+    const commonLayout = pathname === '/' || pathname === '/join';
+
     return (
         <>
             <Layout style={{minHeight: '100vh'}}>
                 <Layout className="site-layout">
-                    {!currentPath && <HeaderC/>}
+                    {!commonLayout && <HeaderC/>}
                     <Content>
                         <Routes>
                             {
@@ -27,7 +30,7 @@ const App = () => {
                             }
                         </Routes>
                     </Content>
-                    {!currentPath && <FooterC/>}
+                    {!commonLayout && <FooterC/>}
                 </Layout>
             </Layout>
         </>

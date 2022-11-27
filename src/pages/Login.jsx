@@ -1,10 +1,17 @@
+import {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import { firestore } from "../firebase/Firebase";
 
-import { Button, Checkbox, Form, Input } from 'antd';
+import { firestore } from "../firebase/Firebase";
+import { Button, Form, Input } from 'antd';
+import Default from "../modal/Default";
 
 const Login = () => {
     const navigate = useNavigate();
+    const [modalValues, setModalValues] = useState({
+        modal: '',
+        type: '',
+        message: ''
+    });
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -27,7 +34,19 @@ const Login = () => {
                 }
             }
             if (isUser) navigate("/main");
-            else alert("로그인 실패");
+            else {
+                console.log("로그인 실패");
+                setModalValues({
+                    modal: 'default',
+                    type: 'login-fail',
+                    message: '아이디 또는 비밀번호를 확인해주세요.'
+                });
+            };
+        });
+        setModalValues({
+            modal: '',
+            type: '',
+            message: ''
         });
     };
     const onFinishFailed = (errorInfo) => {
@@ -97,6 +116,8 @@ const Login = () => {
                         Submit
                     </Button>
                 </Form.Item>
+                {modalValues.modal === 'default'
+                    ? <Default values={modalValues} /> : null}
             </Form>
         </div>
     );

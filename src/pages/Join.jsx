@@ -1,22 +1,22 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { firestore } from '../firebase/Firebase';
 
-import {checkId, checkPassword, checkBirth, checkName, checkPhoneNumber} from '../utils/utilCommon';
+import { checkId, checkPassword, checkBirth, checkName, checkPhoneNumber } from '../utils/utilCommon';
 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
 import Default from "../modal/Default";
+import Confirm from "../modal/Confirm";
 const { Panel } = Collapse;
 
 const Join = () => {
     const [form] = Form.useForm();
-    const navigate = useNavigate();
     const [inputId, setInputId] = useState('');
-    const [modalOpen, setModalOpen] = useState(false);
+    const [duplicationCheckBtn, setDuplicationCheckBtn] = useState(false);
     const [modalValues, setModalValues] = useState({
+        modal: '',
         type: '',
         message: ''
-    })
+    });
 
     const layout = {
         labelCol: { span: 8 },
@@ -34,44 +34,11 @@ const Join = () => {
         },
     };
 
-    const validatePassword = (_, value) => {
-        if (!value || checkPassword(value)) {
-            return Promise.resolve();
-        } else {
-            return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
-        }
-    }
-
-    const validateName = (_, value) => {
-        if (!value || checkName(value)) {
-            return Promise.resolve();
-        } else {
-            return Promise.reject(new Error(_.message));
-        }
-    }
-
-    const validateBirth = (_, value) => {
-        if (!value || checkBirth(value)) {
-            return Promise.resolve();
-        } else {
-            return Promise.reject(new Error(_.message));
-        }
-    }
-
-    const validatePhone = (_, value) => {
-        if (!value || checkPhoneNumber(value)) {
-            return Promise.resolve();
-        } else {
-            return Promise.reject(new Error(_.message));
-        }
-    }
-
     const genExtra = key => {
-        return <Checkbox value={key} onClick={(event) => event.stopPropagation()}/>;
+        return <Checkbox value={key} />;
     };
 
     const idCheck = async id => {
-        console.log(id);
         const user = firestore.collection("user");
         let userIdList = [];
         const result = await user.get().then((docs) => {
@@ -99,44 +66,72 @@ const Join = () => {
     const duplicationCheck = e => {
         e.preventDefault();
         // Todo 아이디 중복 체크 여부 판단 값 생성하기
+        setDuplicationCheckBtn(true);
         idCheck(inputId).then(duplication => {
             console.log(duplication);
             // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
             // Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)
             if (duplication) {
                 console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
-                setModalOpen(true);
                 setModalValues({
+                    modal: 'default',
                     type: 'id-not-available',
                     message: '중복된 아이디입니다.'
                 });
             }
             else {
                 console.log("Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)")
-                setModalOpen(true);
                 setModalValues({
+                    modal: 'default',
                     type: 'id-available',
                     message: '사용 가능한 아이디입니다.'
                 });
             }
         });
+        setModalValues({
+            modal: '',
+            type: '',
+            message: ''
+        });
     };
 
     const onFinish = values => {
         console.log('Received values of form: ', values);
+        const user = firestore.collection("user");
         // Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)
+        // if (!duplicationCheckBtn) {
+        //     console.log("Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)")
+        //     setModalValues({
+        //         modal: 'default',
+        //         type: 'join-fail',
+        //         message: '아이디 중복 체크가 필요합니다.'
+        //     });
+        // }
 
         idCheck(values.user.id).then(duplication => {
-            console.log(duplication)
             // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
             // Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)
             if (duplication) {
                 console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
-                setModalOpen(true);
+                setModalValues({
+                    modal: 'default',
+                    type: 'id-not-available',
+                    message: '중복된 아이디입니다.'
+                });
+            } else {
+                console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)");
+                user.doc(values.user.id).set(values.user);
+                setModalValues({
+                    modal: 'confirm',
+                    type: 'join-success',
+                    message: '회원가입이 완료되었습니다.'
+                });
             }
-            else {
-                console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)")
-            }
+        });
+        setModalValues({
+            modal: '',
+            type: '',
+            message: ''
         });
     };
 
@@ -160,9 +155,9 @@ const Join = () => {
                         },
                         {
                             validator: (_, value) => {
+                                setInputId(value);
                                 if (!value || checkId(value)) {
                                     console.log(value + " : '' 일 때 성공 처리 맞음?");
-                                    setInputId(value);
                                     return Promise.resolve();
                                 }
                                 return Promise.reject(new Error('4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.'));
@@ -172,13 +167,7 @@ const Join = () => {
                 >
                     <div style={{display: 'flex'}}>
                         <Input placeholder="아이디를 입력해주세요." />
-                        <Button htmlType="button" onClick={duplicationCheck} disabled={!inputId && true}>중복체크</Button>
-                        {modalOpen ? (
-                            <Default
-                                values={modalValues}
-                                isDefaultOpen={modalOpen}
-                            />
-                        ) : null}
+                        <Button htmlType="button" onClick={duplicationCheck} disabled={!inputId || inputId.length < 4 ? true : false}>중복체크</Button>
                     </div>
                 </Form.Item>
                 <Form.Item
@@ -189,7 +178,12 @@ const Join = () => {
                             required: true
                         },
                         {
-                            validator: validatePassword
+                            validator: (_, value) => {
+                                if (!value || checkPassword(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
+                            }
                         }
                     ]}
                 >
@@ -203,8 +197,12 @@ const Join = () => {
                             required: true
                         },
                         {
-                            message: '이름에 숫자, 특수문자는 사용할 수 없습니다.',
-                            validator: validateName
+                            validator: (_, value) => {
+                                if (!value || checkName(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('이름에 숫자, 특수문자는 사용할 수 없습니다.'));
+                            }
                         }
                     ]}
                 >
@@ -233,8 +231,12 @@ const Join = () => {
                             required: true
                         },
                         {
-                            message: '생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.',
-                            validator: validateBirth
+                            validator: (_, value) => {
+                                if (!value || checkBirth(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.'));
+                            }
                         }
                     ]}
                 >
@@ -248,8 +250,12 @@ const Join = () => {
                             required: true
                         },
                         {
-                            message: '\'-\'빼고 숫자만 입력해주세요.',
-                            validator: validatePhone
+                            validator: (_, value) => {
+                                if (!value || checkPhoneNumber(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('\'-\'빼고 숫자만 입력해주세요.'));
+                            }
                         }
                     ]}
                 >
@@ -295,6 +301,11 @@ const Join = () => {
                         Reset
                     </Button>
                 </Form.Item>
+                {modalValues.modal === 'default'
+                    ? <Default values={modalValues} />
+                    : modalValues.modal === 'confirm'
+                        ? <Confirm values={modalValues} />
+                        : null}
             </Form>
         </div>
     )
