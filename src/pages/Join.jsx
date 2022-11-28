@@ -6,12 +6,14 @@ import { checkId, checkPassword, checkBirth, checkName, checkPhoneNumber } from 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
 import Default from "../modal/Default";
 import Confirm from "../modal/Confirm";
-const { Panel } = Collapse;
+
 
 const Join = () => {
+    const user = firestore.collection("user");
     const [form] = Form.useForm();
+    const { Panel } = Collapse;
     const [inputId, setInputId] = useState('');
-    const [duplicationCheckBtn, setDuplicationCheckBtn] = useState(false);
+    const [isBtn, setIsBtn] = useState(false);
     const [modalValues, setModalValues] = useState({
         modal: '',
         type: '',
@@ -34,12 +36,9 @@ const Join = () => {
         },
     };
 
-    const genExtra = key => {
-        return <Checkbox value={key} />;
-    };
+    const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
 
     const idCheck = async id => {
-        const user = firestore.collection("user");
         let userIdList = [];
         const result = await user.get().then((docs) => {
             docs.forEach((doc) => {
@@ -63,31 +62,48 @@ const Join = () => {
         return result;
     }
 
+    const showModal = type => {
+        if (type === 'id-not-available') {
+            console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
+            setModalValues({
+                modal: 'default',
+                type,
+                message: '중복된 아이디입니다.'
+            });
+        } else if (type === 'id-available') {
+            console.log("Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)")
+            setModalValues({
+                modal: 'default',
+                type,
+                message: '사용 가능한 아이디입니다.'
+            });
+        } else if (type === 'join-fail') {
+            console.log("Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)")
+            setModalValues({
+                modal: 'default',
+                type,
+                message: '아이디 중복 체크가 필요합니다.'
+            });
+        } else if (type === 'join-success') {
+            console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)");
+            setModalValues({
+                modal: 'confirm',
+                type,
+                message: '회원가입이 완료되었습니다.'
+            });
+        }
+    };
+
     const duplicationCheck = e => {
         e.preventDefault();
         // Todo 아이디 중복 체크 여부 판단 값 생성하기
-        setDuplicationCheckBtn(true);
+        setIsBtn(true);
         idCheck(inputId).then(duplication => {
             console.log(duplication);
-            // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
-            // Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)
-            if (duplication) {
-                console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
-                setModalValues({
-                    modal: 'default',
-                    type: 'id-not-available',
-                    message: '중복된 아이디입니다.'
-                });
-            }
-            else {
-                console.log("Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)")
-                setModalValues({
-                    modal: 'default',
-                    type: 'id-available',
-                    message: '사용 가능한 아이디입니다.'
-                });
-            }
+            if (duplication) showModal('id-not-available');
+            else showModal('id-available');
         });
+        console.log('modalValues 초기화 시점이 여기가 맞는지?');
         setModalValues({
             modal: '',
             type: '',
@@ -97,42 +113,22 @@ const Join = () => {
 
     const onFinish = values => {
         console.log('Received values of form: ', values);
-        const user = firestore.collection("user");
-        // Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)
-        // if (!duplicationCheckBtn) {
-        //     console.log("Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)")
-        //     setModalValues({
-        //         modal: 'default',
-        //         type: 'join-fail',
-        //         message: '아이디 중복 체크가 필요합니다.'
-        //     });
-        // }
+        if (!isBtn) showModal('join-fail');
 
-        idCheck(values.user.id).then(duplication => {
-            // Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)
-            // Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)
-            if (duplication) {
-                console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
-                setModalValues({
-                    modal: 'default',
-                    type: 'id-not-available',
-                    message: '중복된 아이디입니다.'
-                });
-            } else {
-                console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)");
-                user.doc(values.user.id).set(values.user);
-                setModalValues({
-                    modal: 'confirm',
-                    type: 'join-success',
-                    message: '회원가입이 완료되었습니다.'
-                });
+        isBtn && idCheck(values.user.id).then(duplication => {
+            if (duplication) showModal('id-not-available');
+            else {
+                user.doc(values.user.id).set(values.user).then(r => console.log(r));
+                showModal('join-success');
             }
         });
-        setModalValues({
+        console.log('modalValues 초기화 시점이 여기가 맞는지?');
+        isBtn && setModalValues({
             modal: '',
             type: '',
             message: ''
         });
+        isBtn && setIsBtn(false);
     };
 
     const onReset = () => form.resetFields();
