@@ -103,7 +103,7 @@ const Login = () => {
                         Submit
                     </Button>
                 </Form.Item>
-                {defaultModal && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
+                {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
             </Form>
         </div>
     );
