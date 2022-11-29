@@ -13,7 +13,6 @@ const Join = () => {
     const [form] = Form.useForm();
     const { Panel } = Collapse;
     const [inputId, setInputId] = useState('');
-    const [isBtn, setIsBtn] = useState(false);
     const [modalValues, setModalValues] = useState({
         modal: '',
         type: '',
@@ -97,7 +96,6 @@ const Join = () => {
     const duplicationCheck = e => {
         e.preventDefault();
         // Todo 아이디 중복 체크 여부 판단 값 생성하기
-        setIsBtn(true);
         idCheck(inputId).then(duplication => {
             console.log(duplication);
             if (duplication) showModal('id-not-available');
@@ -113,22 +111,20 @@ const Join = () => {
 
     const onFinish = values => {
         console.log('Received values of form: ', values);
-        if (!isBtn) showModal('join-fail');
 
-        isBtn && idCheck(values.user.id).then(duplication => {
-            if (duplication) showModal('id-not-available');
+        idCheck(values.user.id).then(duplication => {
+            if (duplication) showModal('join-fail');
             else {
                 user.doc(values.user.id).set(values.user).then(r => console.log(r));
                 showModal('join-success');
             }
         });
         console.log('modalValues 초기화 시점이 여기가 맞는지?');
-        isBtn && setModalValues({
+        setModalValues({
             modal: '',
             type: '',
             message: ''
         });
-        isBtn && setIsBtn(false);
     };
 
     const onReset = () => form.resetFields();
