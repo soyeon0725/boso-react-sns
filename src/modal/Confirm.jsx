@@ -5,14 +5,20 @@ const Confirm = (props) => {
     const { confirmModal, setConfirmModal } = props;
     const navigate = useNavigate();
 
+    const reset = () => setConfirmModal({show: false, type: ''});
+
     const modal = {
-        'join-success' : '회원가입이 완료되었습니다.',
+        'join-success' : {
+            message: '회원가입이 완료되었습니다.',
+            onEvent: () => {
+                reset();
+                navigate('/');
+            }
+        }
     }
 
     const handleOk = () => {
-        setConfirmModal({show: false, type: ''});
-        if (confirmModal.type === 'join-success') navigate('/');
-
+        modal[confirmModal.type].onEvent();
     };
 
     return (
@@ -23,7 +29,7 @@ const Confirm = (props) => {
             closable={false}
             cancelButtonProps={{ style: { display: 'none' } }}
         >
-            <p>{modal[confirmModal.type]}</p>
+            <p>{modal[confirmModal.type].message}</p>
         </Modal>
     );
 }

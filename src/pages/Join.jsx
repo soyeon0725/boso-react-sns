@@ -14,7 +14,7 @@ const Join = () => {
     const { Panel } = Collapse;
     const [inputId, setInputId] = useState('');
     const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
-    const [confirmModal, setConfirmModal] = useState({show: true, type: ''});
+    const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
 
     const layout = {
         labelCol: { span: 8 },
