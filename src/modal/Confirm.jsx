@@ -1,33 +1,29 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
 
 const Confirm = (props) => {
-    const { values, setValues } = props;
+    const { confirmModal, setConfirmModal } = props;
     const navigate = useNavigate();
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        if (values.modal === 'confirm') setIsModalOpen(true);
-    }, []);
+    const modal = {
+        'join-success' : '회원가입이 완료되었습니다.',
+    }
 
     const handleOk = () => {
-        setValues({
-            modal: '',
-            type: '',
-            message: ''
-        });
-        setIsModalOpen(false);
-        navigate('/');
+        setConfirmModal({show: false, type: ''});
+        if (confirmModal.type === 'join-success') navigate('/');
 
     };
+
     return (
         <Modal
             title="알림"
-            open={isModalOpen}
+            open={confirmModal.show}
             onOk={handleOk}
+            closable={false}
+            cancelButtonProps={{ style: { display: 'none' } }}
         >
-            <p>{values.message}</p>
+            <p>{modal[confirmModal.type]}</p>
         </Modal>
     );
 }

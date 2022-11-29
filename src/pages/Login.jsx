@@ -7,11 +7,7 @@ import Default from "../modal/Default";
 
 const Login = () => {
     const navigate = useNavigate();
-    const [modalValues, setModalValues] = useState({
-        modal: '',
-        type: '',
-        message: ''
-    });
+    const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -36,17 +32,8 @@ const Login = () => {
             if (isUser) navigate("/main");
             else {
                 console.log("로그인 실패");
-                setModalValues({
-                    modal: 'default',
-                    type: 'login-fail',
-                    message: '아이디 또는 비밀번호를 확인해주세요.'
-                });
+                setDefaultModal({show: true, type: 'login-fail'});
             };
-        });
-        setModalValues({
-            modal: '',
-            type: '',
-            message: ''
         });
     };
     const onFinishFailed = (errorInfo) => {
@@ -116,8 +103,7 @@ const Login = () => {
                         Submit
                     </Button>
                 </Form.Item>
-                {modalValues.modal === 'default'
-                    ? <Default values={modalValues} /> : null}
+                {defaultModal && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
             </Form>
         </div>
     );

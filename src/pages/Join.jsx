@@ -13,11 +13,8 @@ const Join = () => {
     const [form] = Form.useForm();
     const { Panel } = Collapse;
     const [inputId, setInputId] = useState('');
-    const [modalValues, setModalValues] = useState({
-        modal: '',
-        type: '',
-        message: ''
-    });
+    const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
+    const [confirmModal, setConfirmModal] = useState({show: true, type: ''});
 
     const layout = {
         labelCol: { span: 8 },
@@ -59,38 +56,6 @@ const Join = () => {
             }
         });
         return result;
-    }
-
-    const showModal = type => {
-        if (type === 'id-not-available') {
-            console.log("Todo Default 팝업 연동 (타입 : id-not-available 중복된 아이디입니다.)");
-            setModalValues({
-                modal: 'default',
-                type,
-                message: '중복된 아이디입니다.'
-            });
-        } else if (type === 'id-available') {
-            console.log("Todo Default 팝업 연동 (타입 : id-available 사용 가능한 아이디입니다.)")
-            setModalValues({
-                modal: 'default',
-                type,
-                message: '사용 가능한 아이디입니다.'
-            });
-        } else if (type === 'join-fail') {
-            console.log("Todo Default 팝업 연동 (타입 : join-fail 아이디 중복 체크가 필요합니다.)")
-            setModalValues({
-                modal: 'default',
-                type,
-                message: '아이디 중복 체크가 필요합니다.'
-            });
-        } else if (type === 'join-success') {
-            console.log("Todo Confirm 팝업 연동 (타입 : join-success 회원가입이 완료되었습니다.)");
-            setModalValues({
-                modal: 'confirm',
-                type,
-                message: '회원가입이 완료되었습니다.'
-            });
-        }
     };
 
     const duplicationCheck = e => {
@@ -98,8 +63,8 @@ const Join = () => {
         // Todo 아이디 중복 체크 여부 판단 값 생성하기
         idCheck(inputId).then(duplication => {
             console.log(duplication);
-            if (duplication) showModal('id-not-available');
-            else showModal('id-available');
+            if (duplication) setDefaultModal({show: true, type: 'id-not-available'});
+            else setDefaultModal({show: true, type: 'id-available'});
         });
     };
 
@@ -107,10 +72,10 @@ const Join = () => {
         console.log('Received values of form: ', values);
 
         idCheck(values.user.id).then(duplication => {
-            if (duplication) showModal('join-fail');
+            if (duplication) setDefaultModal({show: true, type: 'join-fail'});
             else {
                 user.doc(values.user.id).set(values.user).then(r => console.log(r));
-                showModal('join-success');
+                setConfirmModal({show: true, type: 'join-success'});
             }
         });
     };
@@ -281,11 +246,8 @@ const Join = () => {
                         Reset
                     </Button>
                 </Form.Item>
-                {modalValues.modal === 'default'
-                    ? <Default values={modalValues} setValues={setModalValues} />
-                    : modalValues.modal === 'confirm'
-                        ? <Confirm values={modalValues} setValues={setModalValues} />
-                        : null}
+                {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
+                {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
             </Form>
         </div>
     )
