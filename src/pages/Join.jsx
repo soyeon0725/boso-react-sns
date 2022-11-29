@@ -101,12 +101,6 @@ const Join = () => {
             if (duplication) showModal('id-not-available');
             else showModal('id-available');
         });
-        console.log('modalValues 초기화 시점이 여기가 맞는지?');
-        setModalValues({
-            modal: '',
-            type: '',
-            message: ''
-        });
     };
 
     const onFinish = values => {
@@ -118,12 +112,6 @@ const Join = () => {
                 user.doc(values.user.id).set(values.user).then(r => console.log(r));
                 showModal('join-success');
             }
-        });
-        console.log('modalValues 초기화 시점이 여기가 맞는지?');
-        setModalValues({
-            modal: '',
-            type: '',
-            message: ''
         });
     };
 
@@ -294,9 +282,9 @@ const Join = () => {
                     </Button>
                 </Form.Item>
                 {modalValues.modal === 'default'
-                    ? <Default values={modalValues} />
+                    ? <Default values={modalValues} setValues={setModalValues} />
                     : modalValues.modal === 'confirm'
-                        ? <Confirm values={modalValues} />
+                        ? <Confirm values={modalValues} setValues={setModalValues} />
                         : null}
             </Form>
         </div>
