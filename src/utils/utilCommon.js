@@ -12,8 +12,13 @@ export const checkPassword = password => {
     if(/\d/.test(password)) char_type = char_type+1;
     if (/[~!@#$%\^&*()_+`\-={}|[\]\\:";'<>?,./]/gi.test(password)) char_type = char_type + 1;
 
+    // 3개 조합인 경우에만 참
     // return !(char_type < 3 || char_type > 3 || (char_type === 3 && password.length < 10));
-    return !(char_type < 3 || ((char_type === 3 || char_type === 4) && password.length < 10));
+    // 3개 이상 조합 참 (거짓 조건들로 구현)
+    // return !(char_type < 3 || ((char_type === 3 || char_type === 4) && password.length < 10));
+    // 3개 이상 조합 참 (참 조건들로 구현)
+    return char_type > 2 && password.length > 9;
+
 }
 
 export const checkName = name => {

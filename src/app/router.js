@@ -1,6 +1,7 @@
 import Join from "../pages/Join";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
+import MyPage from "../pages/MyPage";
 
 const RouteList = [
     {
@@ -14,6 +15,10 @@ const RouteList = [
     {
         path : '/main',
         element :  <Main/>
+    },
+    {
+        path : '/my-page',
+        element :  <MyPage/>
     },
 
 ]
