@@ -11,7 +11,7 @@ function HeaderC(props) {
     return (
         <Header
             style={{
-                backgroundColor : "#314152",
+                backgroundColor : "#001529",
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "0 20px"

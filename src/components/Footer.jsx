@@ -1,5 +1,6 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import { Layout, Carousel, Image } from 'antd';
+import {firestore} from "../firebase/Firebase";
 
 const { Footer } = Layout;
 
@@ -11,7 +12,21 @@ function FooterC(props) {
         textAlign: 'center',
         background: '#364d79',
     };
-
+    const [banner, setBanner] = useState([]);
+    useEffect(() => {
+        getBannerList().then(r => console.log(r));
+    }, []);
+    const getBannerList = async () => {
+        const banner = firestore.collection("banner");
+        let bannerList = [];
+        await banner.get().then((docs) => {
+            console.log(docs)
+            docs.forEach((doc) => {
+                bannerList.push(doc.data().url);
+            });
+            setBanner(bannerList);
+        });
+    }
     return (
         <Footer
             style={{
@@ -21,34 +36,15 @@ function FooterC(props) {
             {/*Ant Design ©2018 Created by Ant UED*/}
             {/* Todo : 배너 > 배너 아이디 > 이미지 url 데이터 구조로 firebase 생성 후 가져와서 뿌리기*/}
             <Carousel autoplay autoplaySpeed={10000}>
-                <div>
-                    <Image
-                        width={913}
-                        height={160}
-                        src="https://cdn.pixabay.com/photo/2016/07/14/13/35/mountains-1516733_1280.jpg"
-                    />
-                </div>
-                <div>
-                    <Image
-                        width={913}
-                        height={160}
-                        src="https://cdn.pixabay.com/photo/2012/10/25/23/18/train-62849_1280.jpg"
-                    />
-                </div>
-                <div>
-                    <Image
-                        width={913}
-                        height={160}
-                        src="https://cdn.pixabay.com/photo/2022/04/12/18/00/europe-7128531_1280.jpg"
-                    />
-                </div>
-                <div>
-                    <Image
-                        width={913}
-                        height={160}
-                        src="https://cdn.pixabay.com/photo/2019/11/19/07/50/bridge-4636745_1280.jpg"
-                    />
-                </div>
+                {banner.map((image, index) => (
+                    <div key={index}>
+                        <Image
+                            width={913}
+                            height={160}
+                            src={image}
+                        />
+                    </div>
+                ))}
             </Carousel>
         </Footer>
     );
