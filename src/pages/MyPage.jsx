@@ -7,6 +7,8 @@ const MyPage = () => {
     };
     return (
         <Tabs
+            size='large'
+            tabBarGutter={200}
             centered={true}
             defaultActiveKey="1"
             onChange={onChange}

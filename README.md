@@ -1,3 +1,5 @@
+# B♥️S♥️ React SNS Project
+
 ### Project setup
 
 ```
@@ -12,16 +14,3 @@ $ npm install
 # server with hot reload at localhost:3000 (Develop Server)
 $ npm start
 ```
-# Boso React SNS
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns
-# boso-react-sns

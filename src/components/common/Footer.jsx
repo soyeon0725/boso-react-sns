@@ -11,6 +11,7 @@ function FooterC(props) {
         lineHeight: '160px',
         textAlign: 'center',
         background: '#364d79',
+        overflow: 'hidden',
     };
     const [banner, setBanner] = useState([]);
     useEffect(() => {
@@ -38,6 +39,7 @@ function FooterC(props) {
                     <div key={index}>
                         <h3 style={contentStyle}>
                             <Image
+                                style={{objectFit: 'cover'}}
                                 width={'100%'}
                                 height={'100%'}
                                 src={image}
