@@ -70,11 +70,13 @@ const Join = () => {
 
     const onFinish = values => {
         console.log('Received values of form: ', values);
-
-        idCheck(values.user.id).then(duplication => {
+        let userInfo = values.user;
+        idCheck(userInfo.id).then(duplication => {
             if (duplication) setDefaultModal({show: true, type: 'join-fail'});
             else {
-                user.doc(values.user.id).set(values.user).then(r => console.log(r));
+                userInfo = {...userInfo, photo: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814050_960_720.png'};
+                console.log(userInfo);
+                user.doc(userInfo.id).set(userInfo).then(r => console.log(r));
                 setConfirmModal({show: true, type: 'join-success'});
             }
         });

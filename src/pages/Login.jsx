@@ -96,19 +96,22 @@ const Login = () => {
     };
 
     // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            // User is signed in, see docs for a list of available properties
-            // https://firebase.google.com/docs/reference/js/firebase.User
-            const uid = user.uid;
-            console.log("로그인 상태");
-            setLogin(user.email);
-        } else {
-            // User is signed out
-            console.log("로그아웃 상태");
-            setLogin('');
-        }
-    });
+    // 임시로 useEffect 처리
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                const uid = user.uid;
+                console.log("로그인 상태");
+                setLogin(user.email);
+            } else {
+                // User is signed out
+                console.log("로그아웃 상태");
+                setLogin('');
+            }
+        });
+    }, []);
 
     const logOut = e => {
         e.preventDefault();
