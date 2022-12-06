@@ -53,8 +53,8 @@ const TextList = ({isImg}) => {
             key: 'image',
             render: (_, {image}) => (
                 <Image
-                    width={100}
-                    height={100}
+                    width={50}
+                    height={50}
                     src={image}
                 />
             ),

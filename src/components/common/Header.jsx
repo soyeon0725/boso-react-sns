@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import { UserOutlined, ShoppingCartOutlined, SettingOutlined } from '@ant-design/icons';
 import { Layout, Space, Button } from "antd";
 
@@ -17,9 +17,9 @@ function HeaderC(props) {
             }}
         >
             <div className="header-logo">
-                <a href="/main" style={{letterSpacing: '5px', color: '#fff', fontSize: '24px'}}>
+                <Link to='/main' style={{letterSpacing: '5px', color: '#fff', fontSize: '24px'}}>
                     B<span style={{fontSize: '16px'}}>🤍</span>S<span style={{fontSize: '16px'}}>🤍</span>
-                </a>
+                </Link>
             </div>
             <div className="header-icon">
                 <Space>

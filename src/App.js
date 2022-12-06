@@ -1,6 +1,6 @@
 import React from 'react';
-import FooterC from "./components/Footer";
-import HeaderC from "./components/Header";
+import FooterC from "./components/common/Footer";
+import HeaderC from "./components/common/Header";
 import 'antd/dist/antd.css';
 import './index.css';
 import { Layout} from 'antd';

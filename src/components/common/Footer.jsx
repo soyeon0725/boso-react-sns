@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import { Layout, Carousel, Image } from 'antd';
-import {firestore} from "../firebase/Firebase";
+import {firestore} from "../../firebase/Firebase";
 
 const { Footer } = Layout;
 
