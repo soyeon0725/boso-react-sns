@@ -1,7 +1,7 @@
 const Main = () => {
 
     return (
-        <div style={{height: '500px'}}>Main</div>
+        <div>Main</div>
     )
 }
 export default Main;

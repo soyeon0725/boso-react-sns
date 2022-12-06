@@ -7,7 +7,6 @@ const MyPage = () => {
     };
     return (
         <Tabs
-            style={{ alignItems: 'center' }}
             defaultActiveKey="1"
             onChange={onChange}
             items={[
