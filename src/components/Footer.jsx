@@ -20,7 +20,6 @@ function FooterC(props) {
         const banner = firestore.collection("banner");
         let bannerList = [];
         await banner.get().then((docs) => {
-            console.log(docs)
             docs.forEach((doc) => {
                 bannerList.push(doc.data().url);
             });
@@ -34,15 +33,16 @@ function FooterC(props) {
             }}
         >
             {/*Ant Design ©2018 Created by Ant UED*/}
-            {/* Todo : 배너 > 배너 아이디 > 이미지 url 데이터 구조로 firebase 생성 후 가져와서 뿌리기*/}
             <Carousel autoplay autoplaySpeed={10000}>
                 {banner.map((image, index) => (
                     <div key={index}>
-                        <Image
-                            width={913}
-                            height={160}
-                            src={image}
-                        />
+                        <h3 style={contentStyle}>
+                            <Image
+                                width={'100%'}
+                                height={'100%'}
+                                src={image}
+                            />
+                        </h3>
                     </div>
                 ))}
             </Carousel>

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import { UserOutlined, ShoppingCartOutlined, SettingOutlined } from '@ant-design/icons';
 import { Layout, Space, Button } from "antd";

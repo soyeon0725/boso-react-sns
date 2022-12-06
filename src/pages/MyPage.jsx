@@ -7,6 +7,7 @@ const MyPage = () => {
     };
     return (
         <Tabs
+            centered={true}
             defaultActiveKey="1"
             onChange={onChange}
             items={[
@@ -23,7 +24,7 @@ const MyPage = () => {
                 {
                     label: `구매내역`,
                     key: '3',
-                    children: <TextList isImage={true} />,
+                    children: <TextList isImg={true} />,
                 },
                 {
                     label: `대시보드`,
