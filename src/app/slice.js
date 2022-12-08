@@ -4,7 +4,7 @@ const exampleSlice = createSlice({
     name: "exampleInfo",
     initialState: {
         list : [],
-        동: {}
+        personalInfo: {}
     },
     reducers: {
         setList: (state, action) => {
