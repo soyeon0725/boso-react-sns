@@ -25,7 +25,8 @@ const Login = () => {
                 userList.push({
                     id: doc.data().id,
                     password: doc.data().password,
-                    photo: doc.data().photo
+                    email: doc.data().email,
+                    photoUrl: doc.data().photoUrl
                 });
             })
             let isUser = false;
@@ -33,7 +34,8 @@ const Login = () => {
                 if (values.username === userList[i].id && values.password === userList[i].password) {
                     dispatch(setPersonalInfo({
                         id: userList[i].id,
-                        photo: userList[i].photo
+                        email: userList[i].email,
+                        photoUrl: userList[i].photoUrl
                     }));
                     isUser = true;
                 }

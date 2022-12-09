@@ -15,6 +15,13 @@ const Confirm = (props) => {
                 reset();
                 navigate('/');
             }
+        },
+        'edit-profile' : {
+            message: '프로필 편집',
+            closable: true,
+            onEvent: () => {
+                reset();
+            }
         }
     }
 

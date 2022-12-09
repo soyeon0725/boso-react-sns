@@ -74,7 +74,7 @@ const Join = () => {
         idCheck(userInfo.id).then(duplication => {
             if (duplication) setDefaultModal({show: true, type: 'join-fail'});
             else {
-                userInfo = {...userInfo, photo: 'https://cdn.pixabay.com/photo/2018/11/13/21/43/instagram-3814050_960_720.png'};
+                userInfo = {...userInfo, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
                 console.log(userInfo);
                 user.doc(userInfo.id).set(userInfo).then(r => console.log(r));
                 setConfirmModal({show: true, type: 'join-success'});

@@ -1,22 +1,38 @@
-import {Image, Tabs} from 'antd';
+import {useState} from "react";
+import {useSelector} from "react-redux";
+import {selectPersonalInfo} from "../app/slice";
+
+import {Button, Image, Tabs, List, Avatar, Space} from 'antd';
+
 import TextList from "../components/list/TextList";
+import Confirm from "../modal/Confirm";
 
 const MyPage = () => {
+    const personalInfo = useSelector(selectPersonalInfo);
+    const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
+
+    const editProfile = () => setConfirmModal({show: true, type: 'edit-profile'});
+
     const onChange = (key) => {
         console.log(key);
     };
 
-    // ToDo 리덕스 연동 후, 로그인한 유저 아이디 받아오기
-
     return (
         <>
-            <div>
-                <h2>개인 정보 영역</h2>
-                <Image
-                    width={50}
-                    height={50}
-                    src={''}
+            <div style={{display: 'flex', marginTop: 20, marginLeft: 20}}>
+                <Avatar
+                    style={{verticalAlign: 'middle'}}
+                    size={100}
+                    gap={4}
+                    src={personalInfo.photoUrl}
                 />
+                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 20}}>
+                    <span>{`아이디 : ${personalInfo.id}`}</span>
+                    <span>{`이메일 : ${personalInfo.email}`}</span>
+                    <Button onClick={editProfile}>
+                        프로필 편집
+                    </Button>
+                </div>
             </div>
             <Tabs
                 size='large'
@@ -47,6 +63,7 @@ const MyPage = () => {
                     },
                 ]}
             />
+            {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
         </>
     );
 }
