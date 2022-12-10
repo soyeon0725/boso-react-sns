@@ -7,10 +7,8 @@ import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
 import Default from "../modal/Default";
 import Confirm from "../modal/Confirm";
 
-
 const Join = () => {
     const user = firestore.collection("user");
-    const [form] = Form.useForm();
     const { Panel } = Collapse;
     const [inputId, setInputId] = useState('');
     const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
@@ -82,14 +80,11 @@ const Join = () => {
         });
     };
 
-    const onReset = () => form.resetFields();
-
     return (
         <div style={{ paddingTop: '50px' }}>
             <Form
                 {...layout}
                 name="nest-messages"
-                form={form}
                 validateMessages={validateMessages}
                 onFinish={onFinish}
             >
@@ -243,9 +238,6 @@ const Join = () => {
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                     <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>
                         Submit
-                    </Button>
-                    <Button htmlType="button" onClick={onReset}>
-                        Reset
                     </Button>
                 </Form.Item>
                 {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
