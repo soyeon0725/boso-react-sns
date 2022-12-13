@@ -1,20 +1,25 @@
-import {useEffect, useState} from "react";
-import {useSelector} from "react-redux";
-import {selectPersonalInfo} from "../app/slice";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectPersonalInfo } from '../app/slice';
 
-import {Button, Image, Tabs, List, Avatar, Space} from 'antd';
+import { Button, Tabs, Avatar } from 'antd';
 
-import TextList from "../components/list/TextList";
-import Confirm from "../modal/Confirm";
+import TextList from '../components/list/TextList';
+import Confirm from '../modal/Confirm';
 
 const MyPage = () => {
     const personalInfo = useSelector(selectPersonalInfo);
-    const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
+    const [confirmModal, setConfirmModal] = useState({
+        show: false,
+        type: ''
+    });
 
+    // 마이페이지 진입
     useEffect(()=> {
         console.log("MyPage PAGE");
     },[]);
 
+    // Todo EditProfile Modal 생성 후 연동하기
     const editProfile = () => setConfirmModal({show: true, type: 'edit-profile'});
 
     const onChange = (key) => {
@@ -23,14 +28,27 @@ const MyPage = () => {
 
     return (
         <>
-            <div style={{display: 'flex', marginTop: 20, marginLeft: 20}}>
+            <div
+                style={{
+                    display: 'flex',
+                    marginTop: 20,
+                    marginLeft: 20
+                }}
+            >
                 <Avatar
-                    style={{verticalAlign: 'middle'}}
+                    style={{ verticalAlign: 'middle' }}
                     size={100}
                     gap={4}
                     src={personalInfo.photoUrl}
                 />
-                <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 20}}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        marginLeft: 20
+                    }}
+                >
                     <span>{`Name : ${personalInfo.name}`}</span>
                     <span>{`Email : ${personalInfo.email}`}</span>
                     <Button onClick={editProfile}>

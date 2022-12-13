@@ -1,28 +1,38 @@
 import { useEffect, useState } from 'react';
 import { firestore } from '../firebase/Firebase';
 
-import { checkId, checkPassword, checkBirth, checkName, checkPhoneNumber } from '../utils/utilCommon';
+import {
+    checkId,
+    checkPassword,
+    checkBirth,
+    checkName,
+    checkPhoneNumber
+} from '../utils/utilCommon';
 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
-import Default from "../modal/Default";
-import Confirm from "../modal/Confirm";
+import Default from '../modal/Default';
+import Confirm from '../modal/Confirm';
 
 const Join = () => {
-    const user = firestore.collection("user");
     const { Panel } = Collapse;
+    const user = firestore.collection("user");
     const [inputId, setInputId] = useState('');
-    const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
-    const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
+    const [defaultModal, setDefaultModal] = useState({
+        show: false,
+        type: ''
+    });
+    const [confirmModal, setConfirmModal] = useState({
+        show: false,
+        type: ''
+    });
 
-    useEffect(()=> {
-        console.log("Join PAGE");
-    },[]);
-
+    // antd layout
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 11 },
     };
 
+    // antd validateMessages object
     const validateMessages = {
         required: '${label} is required!',
         types: {
@@ -34,9 +44,12 @@ const Join = () => {
         },
     };
 
-    const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
+    // 회원가입 화면 진입
+    useEffect(()=> {
+        console.log("Join PAGE");
+    },[]);
 
-    const idCheck = async id => {
+    const idCheck = async (id) => {
         let userIdList = [];
         const result = await user.get().then((docs) => {
             docs.forEach((doc) => {
@@ -59,7 +72,6 @@ const Join = () => {
         });
         return result;
     };
-
     const duplicationCheck = e => {
         e.preventDefault();
         // Todo 아이디 중복 체크 여부 판단 값 생성하기
@@ -83,6 +95,7 @@ const Join = () => {
             }
         });
     };
+    const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
 
     return (
         <div style={{ paddingTop: '50px' }}>

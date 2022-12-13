@@ -1,27 +1,47 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {setPersonalInfo, setIsLoggedIn} from "../app/slice";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setPersonalInfo } from '../app/slice';
 
-import { firestore } from "../firebase/Firebase";
 import { Button, Form, Input } from 'antd';
-import Default from "../modal/Default";
+import Default from '../modal/Default';
 
+import { firestore } from '../firebase/Firebase';
 // firebase 이메일 & 비밀번호 로그인 연동
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
+import {
+    getAuth, // 사용자 인증 정보
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    updateProfile
+} from "firebase/auth";
 
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
+    const [defaultModal, setDefaultModal] = useState({
+        show: false,
+        type: ''
+    });
 
+    // antd validateMessages object
+    const validateMessages = {
+        required: '${label} is required!',
+        types: {
+            email: '${label} is not a valid email!',
+            number: '${label} is not a valid number!',
+        }
+    };
+
+    // 로그인 화면 진입
     useEffect(()=> {
         console.log("Login PAGE");
     },[]);
 
+    // firestore Login
     const onFinish = (values) => {
         console.log('Success:', values);
+
         const user = firestore.collection("user");
         let userList = [];
         user.get().then((docs) => {
@@ -46,27 +66,17 @@ const Login = () => {
             }
             if (isUser) navigate("/main");
             else {
-                console.log("로그인 실패");
+                console.log("아이디와 비번 불일치");
                 setDefaultModal({show: true, type: 'login-fail'});
             };
         });
     };
+    // Login failed
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
-    const goToJoin = () => navigate('/join');
 
-    // 이메일 & 비밀먼호 회원가입 및 로그인
-    const validateMessages = {
-        required: '${label} is required!',
-        types: {
-            email: '${label} is not a valid email!',
-            number: '${label} is not a valid number!',
-        }
-    };
-
-    // 이메일 & 비밀번호 로그인 테스트 (12/6)
+    // Authentication Join And Login With Email And Password (12/6)
     const auth = getAuth();
-    const [login, setLogin] = useState('');
-
+    // Authentication Join
     const createUser = async (value) => {
         const {email, password} = value;
         // 1. 신규 사용자 가입
@@ -74,60 +84,50 @@ const Login = () => {
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                console.log("createUserWithEmailAndPassword");
-                console.log("신규 사용자 가입 성공");
+                console.log("createUserWithEmailAndPassword success ⭕️");
                 console.log(user);
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log("createUserWithEmailAndPassword error");
+                console.log("createUserWithEmailAndPassword error ❌");
                 console.log(errorCode, errorMessage);
             })
 
         await updateProfile(auth.currentUser, {
             displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then((r) => {
+        }).then(() => {
             // Profile updated!
-            console.log("updateProfile");
-            console.log(r);
+            console.log("updateProfile success ⭕️");
         }).catch((error) => {
             // An error occurred
-            console.log("updateProfile error");
+            console.log("updateProfile error ❌");
             console.log(error);
         });
 
     };
-    const signIn = value => {
-        console.log(value);
+    // Authentication Login
+    const signIn = async (value) => {
         const {email, password} = value;
         // 2. 기존 사용자 로그인
-        signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                console.log("기존 사용자 로그인 성공");
+                console.log("signInWithEmailAndPassword success ⭕");
                 console.log(user);
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log("기존 사용자 로그인 실패");
+                console.log("signInWithEmailAndPassword error ❌");
                 console.log(errorCode, errorMessage);
             });
     };
-    // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기 > App.js
-    const logOut = e => {
-        e.preventDefault();
-        // 4. 사용자를 로그아웃하려면 signOut 을 호출
-        signOut(auth).then(() => {
-            // Sign-out successful.
-            console.log('로그아웃 성공');
-        }).catch((error) => {
-            // An error happened.
-            console.log('로그아웃 실패');
-        });
-    };
+
+    // route
+    const signUp = () => navigate('/join');
+    const simpleSignUp = () => navigate('/join');
 
     return (
         <>
@@ -177,7 +177,7 @@ const Login = () => {
                             span: 16,
                         }}
                     >
-                        <Button type="link" htmlType="button" onClick={goToJoin}>
+                        <Button type="link" htmlType="button" onClick={signUp}>
                             register now!
                         </Button>
                     </Form.Item>
@@ -311,10 +311,6 @@ const Login = () => {
                     </Form.Item>
                 </Form>
             </div>
-            <div>
-                user login : {login}
-            </div>
-            <button onClick={logOut}>Logout</button>
         </>
 
     );

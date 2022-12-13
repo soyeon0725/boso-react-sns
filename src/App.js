@@ -1,31 +1,38 @@
-import {useEffect, useState} from 'react';
-import FooterC from "./components/common/Footer";
-import HeaderC from "./components/common/Header";
+import { useEffect, useState } from 'react';
+import {
+    Route,
+    Routes,
+    useLocation,
+    useNavigate,
+    Navigate,
+    redirect
+} from 'react-router-dom';
+import {RouteList, AuthRouteList} from './app/router';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {selectIsLoggedIn, setIsLoggedIn, setPersonalInfo} from './app/slice';
+import { Layout } from 'antd';
+
+import FooterC from './components/common/Footer';
+import HeaderC from './components/common/Header';
+
 import 'antd/dist/antd.css';
 import './index.css';
-import { Layout} from 'antd';
-import {Route, Routes, useLocation, redirect, useNavigate, Navigate} from "react-router-dom";
-import {RouteList, AuthRouteList} from "./app/router";
-import {useDispatch, useSelector} from "react-redux";
-import {selectIsLoggedIn, setIsLoggedIn, setPersonalInfo} from "./app/slice";
 
 // firebase 이메일 & 비밀번호 로그인 연동
-import {getAuth, onAuthStateChanged} from "firebase/auth";
-
-const {Content} = Layout;
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const App = () => {
-    // Todo router V6 hook 을 이용하는 방법으로 수정해보기
+    const { Content } = Layout;
+    // Todo router V6 hook
     const { pathname } = useLocation();
-    const commonLayout = pathname === '/' || pathname === '/join';
-    const isLoggedIn = useSelector(selectIsLoggedIn);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const isLoggedIn = useSelector(selectIsLoggedIn);
     const [init, setInit] = useState(false);
 
-    const loader = () => {
-        return redirect("/");
-    };
+    const commonLayout = pathname === '/' || pathname === '/join';
+    const navigate = useNavigate();
+    const loader = () => redirect("/");
 
     useEffect(() => {
         const auth = getAuth();
@@ -34,14 +41,14 @@ const App = () => {
             console.log("onAuthStateChanged")
             if (user) {
                 // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
-                console.log("로그인 상태");
+                console.log(uid);
+                console.log("isLoggedIn ⭕");
                 dispatch(setIsLoggedIn(true));
                 // navigate('/main');
             } else {
                 // User is signed out
-                console.log("로그아웃 상태");
+                console.log("isLoggedIn ❌");
                 dispatch(setIsLoggedIn(false));
                 // navigate('/', {replace : true});
             }

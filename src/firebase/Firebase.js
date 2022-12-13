@@ -21,7 +21,7 @@ const app = firebase.initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
 
-// Firebase의 firestore 인스턴스를 변수에 저장
+// firebase 의 firestore 인스턴스를 변수에 저장
 const firestore = firebase.firestore();
 
 // 필요한 곳에서 사용할 수 있도록 내보내기

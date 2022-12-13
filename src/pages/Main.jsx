@@ -2,6 +2,7 @@ import {useEffect} from "react";
 
 const Main = () => {
 
+    // 홈 화면 진입
     useEffect(()=> {
         console.log("Main PAGE");
     },[]);

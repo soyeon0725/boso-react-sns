@@ -31,7 +31,7 @@ function HeaderC(props) {
                     <Space wrap>
                         <Button
                             type="text"
-                            icon={<SettingOutlined style={{ color: '#fff', fontSize: '24px' }} />}
+                            icon={<SettingOutlined style={{ color: '#d95f5f', fontSize: '24px' }} />}
                         />
                         <Button
                             type="text"
@@ -40,12 +40,14 @@ function HeaderC(props) {
                         />
                         <Button
                             type="text"
-                            icon={<ShoppingCartOutlined style={{ color: '#fff', fontSize: '24px' }} />}
+                            icon={<ShoppingCartOutlined style={{ color: '#d95f5f', fontSize: '24px' }} />}
                         />
                         <Button
                             type="text"
                             icon={<LogoutOutlined  style={{ color: '#fff', fontSize: '24px' }} />}
-                            onClick={() => signOut(auth)}
+                            onClick={() => signOut(auth)
+                                .then(() => console.log('signOut ⭕️'))
+                                .catch(() => console.log('signOut ❌'))}
                         />
                     </Space>
                 </Space>
