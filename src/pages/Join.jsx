@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { firestore } from '../firebase/Firebase';
 
 import { checkId, checkPassword, checkBirth, checkName, checkPhoneNumber } from '../utils/utilCommon';
@@ -13,6 +13,10 @@ const Join = () => {
     const [inputId, setInputId] = useState('');
     const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
     const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
+
+    useEffect(()=> {
+        console.log("Join PAGE");
+    },[]);
 
     const layout = {
         labelCol: { span: 8 },

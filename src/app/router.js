@@ -3,7 +3,7 @@ import Login from "../pages/Login";
 import Main from "../pages/Main";
 import MyPage from "../pages/MyPage";
 
-const RouteList = [
+export const RouteList = [
     {
         path : '/',
         element :  <Login/>
@@ -12,6 +12,9 @@ const RouteList = [
         path : '/join',
         element :  <Join/>
     },
+];
+
+export const AuthRouteList = [
     {
         path : '/main',
         element :  <Main/>
@@ -21,6 +24,5 @@ const RouteList = [
         element :  <MyPage/>
     },
 
-]
+];
 
-export default RouteList;

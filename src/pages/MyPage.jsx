@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {selectPersonalInfo} from "../app/slice";
 
@@ -10,6 +10,10 @@ import Confirm from "../modal/Confirm";
 const MyPage = () => {
     const personalInfo = useSelector(selectPersonalInfo);
     const [confirmModal, setConfirmModal] = useState({show: false, type: ''});
+
+    useEffect(()=> {
+        console.log("MyPage PAGE");
+    },[]);
 
     const editProfile = () => setConfirmModal({show: true, type: 'edit-profile'});
 

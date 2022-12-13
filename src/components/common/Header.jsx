@@ -1,7 +1,9 @@
 import {useNavigate, Link} from "react-router-dom";
 
 import { Layout, Space, Button } from "antd";
-import { UserOutlined, ShoppingCartOutlined, SettingOutlined } from '@ant-design/icons';
+import { UserOutlined, ShoppingCartOutlined, SettingOutlined, LogoutOutlined } from '@ant-design/icons';
+import {auth} from "../../firebase/Firebase"
+import {signOut} from "firebase/auth";
 
 const { Header } = Layout;
 
@@ -39,6 +41,11 @@ function HeaderC(props) {
                         <Button
                             type="text"
                             icon={<ShoppingCartOutlined style={{ color: '#fff', fontSize: '24px' }} />}
+                        />
+                        <Button
+                            type="text"
+                            icon={<LogoutOutlined  style={{ color: '#fff', fontSize: '24px' }} />}
+                            onClick={() => signOut(auth)}
                         />
                     </Space>
                 </Space>

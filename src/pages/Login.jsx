@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {setPersonalInfo} from "../app/slice";
+import {setPersonalInfo, setIsLoggedIn} from "../app/slice";
 
 import { firestore } from "../firebase/Firebase";
 import { Button, Form, Input } from 'antd';
@@ -15,6 +15,10 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [defaultModal, setDefaultModal] = useState({show: false, type: ''});
+
+    useEffect(()=> {
+        console.log("Login PAGE");
+    },[]);
 
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -81,6 +85,7 @@ const Login = () => {
             })
     };
     const signIn = value => {
+        console.log(value);
         const {email, password} = value;
         // 2. 기존 사용자 로그인
         signInWithEmailAndPassword(auth, email, password)
@@ -89,6 +94,10 @@ const Login = () => {
                 const user = userCredential.user;
                 console.log("기존 사용자 로그인 성공");
                 console.log(user);
+                dispatch(setPersonalInfo({
+                    email,
+                    password
+                }));
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -97,23 +106,7 @@ const Login = () => {
                 console.log(errorCode, errorMessage);
             });
     };
-    // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
-    // 임시로 useEffect 처리
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             // User is signed in, see docs for a list of available properties
-    //             // https://firebase.google.com/docs/reference/js/firebase.User
-    //             const uid = user.uid;
-    //             console.log("로그인 상태");
-    //             setLogin(user.email);
-    //         } else {
-    //             // User is signed out
-    //             console.log("로그아웃 상태");
-    //             setLogin('');
-    //         }
-    //     });
-    // }, []);
+    // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기 > App.js
     const logOut = e => {
         e.preventDefault();
         // 4. 사용자를 로그아웃하려면 signOut 을 호출

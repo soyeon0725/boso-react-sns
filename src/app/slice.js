@@ -4,7 +4,8 @@ const exampleSlice = createSlice({
     name: "exampleInfo",
     initialState: {
         list : [],
-        personalInfo: {}
+        personalInfo: {},
+        isLoggedIn: false
     },
     reducers: {
         setList: (state, action) => {
@@ -13,12 +14,16 @@ const exampleSlice = createSlice({
         setPersonalInfo: (state, action) => {
             state.personalInfo = action.payload;
         },
+        setIsLoggedIn: (state, action) => {
+            state.isLoggedIn = action.payload;
+        }
     }
 });
 
-export const {setList, setPersonalInfo} = exampleSlice.actions;
+export const {setList, setPersonalInfo, setIsLoggedIn} = exampleSlice.actions;
 
 export const selectList = state => state.exampleInfo.list;
 export const selectPersonalInfo = state => state.exampleInfo.personalInfo;
+export const selectIsLoggedIn = state => state.exampleInfo.isLoggedIn;
 
 export {exampleSlice};
