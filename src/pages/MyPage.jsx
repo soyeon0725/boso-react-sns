@@ -31,8 +31,8 @@ const MyPage = () => {
                     src={personalInfo.photoUrl}
                 />
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', marginLeft: 20}}>
-                    <span>{`아이디 : ${personalInfo.id}`}</span>
-                    <span>{`이메일 : ${personalInfo.email}`}</span>
+                    <span>{`Name : ${personalInfo.name}`}</span>
+                    <span>{`Email : ${personalInfo.email}`}</span>
                     <Button onClick={editProfile}>
                         프로필 편집
                     </Button>

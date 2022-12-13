@@ -8,7 +8,7 @@ import { Button, Form, Input } from 'antd';
 import Default from "../modal/Default";
 
 // firebase 이메일 & 비밀번호 로그인 연동
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "firebase/auth";
 
 
 const Login = () => {
@@ -67,22 +67,36 @@ const Login = () => {
     const auth = getAuth();
     const [login, setLogin] = useState('');
 
-    const createUser = value => {
+    const createUser = async (value) => {
         const {email, password} = value;
         // 1. 신규 사용자 가입
-        createUserWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
+                console.log("createUserWithEmailAndPassword");
                 console.log("신규 사용자 가입 성공");
                 console.log(user);
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.log("신규 사용자 가입 실패");
+                console.log("createUserWithEmailAndPassword error");
                 console.log(errorCode, errorMessage);
             })
+
+        await updateProfile(auth.currentUser, {
+            displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then((r) => {
+            // Profile updated!
+            console.log("updateProfile");
+            console.log(r);
+        }).catch((error) => {
+            // An error occurred
+            console.log("updateProfile error");
+            console.log(error);
+        });
+
     };
     const signIn = value => {
         console.log(value);
@@ -94,10 +108,6 @@ const Login = () => {
                 const user = userCredential.user;
                 console.log("기존 사용자 로그인 성공");
                 console.log(user);
-                dispatch(setPersonalInfo({
-                    email,
-                    password
-                }));
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -197,6 +207,18 @@ const Login = () => {
                     onFinish={createUser}
                     onFinishFailed={onFinishFailed}
                 >
+                    <Form.Item
+                        label="Name"
+                        name="name"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please input your name!',
+                            }
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
                     <Form.Item
                         label="Email"
                         name="email"

@@ -7,7 +7,7 @@ import { Layout} from 'antd';
 import {Route, Routes, useLocation, redirect, useNavigate, Navigate} from "react-router-dom";
 import {RouteList, AuthRouteList} from "./app/router";
 import {useDispatch, useSelector} from "react-redux";
-import {selectIsLoggedIn, setIsLoggedIn} from "./app/slice";
+import {selectIsLoggedIn, setIsLoggedIn, setPersonalInfo} from "./app/slice";
 
 // firebase 이메일 & 비밀번호 로그인 연동
 import {getAuth, onAuthStateChanged} from "firebase/auth";
@@ -45,6 +45,12 @@ const App = () => {
                 dispatch(setIsLoggedIn(false));
                 // navigate('/', {replace : true});
             }
+            console.log(user);
+            dispatch(setPersonalInfo({
+                name: user?.displayName,
+                email: user?.email,
+                photoUrl: user?.photoUrl
+            }))
             setInit(true);
         });
 
