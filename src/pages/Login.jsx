@@ -4,6 +4,14 @@ import { useDispatch } from 'react-redux';
 import { setPersonalInfo } from '../app/slice';
 
 import { Button, Form, Input } from 'antd';
+import {
+    UserAddOutlined,
+    MailOutlined,
+    GithubOutlined,
+    GoogleOutlined,
+    MessageOutlined,
+    ReadOutlined
+} from '@ant-design/icons';
 import Default from '../modal/Default';
 
 import { firestore } from '../firebase/Firebase';
@@ -310,6 +318,43 @@ const Login = () => {
                         </Button>
                     </Form.Item>
                 </Form>
+            </div>
+            <div className='login-icons' style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                    size="large"
+                    shape="circle"
+                    icon={<UserAddOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    size="large"
+                    shape="circle"
+                    icon={<MailOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    size="large"
+                    shape="circle"
+                    icon={<GithubOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    size="large"
+                    shape="circle"
+                    icon={<GoogleOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    size="large"
+                    shape="circle"
+                    icon={<MessageOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
+                <Button
+                    style={{ marginLeft: '10px' }}
+                    size="large"
+                    shape="circle"
+                    icon={<ReadOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                />
             </div>
         </>
 

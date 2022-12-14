@@ -26,7 +26,7 @@ function HeaderC(props) {
                     </h1>
                 </Link>
             </div>
-            <div className="header-icon">
+            <div className="header-icons">
                 <Space>
                     <Space wrap>
                         <Button
