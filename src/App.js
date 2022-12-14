@@ -30,7 +30,7 @@ const App = () => {
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const [init, setInit] = useState(false);
 
-    const commonLayout = pathname === '/' || pathname === '/join';
+    const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/simple-join' ;
     const navigate = useNavigate();
     const loader = () => redirect("/");
 

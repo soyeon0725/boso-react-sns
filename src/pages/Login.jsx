@@ -32,15 +32,6 @@ const Login = () => {
         type: ''
     });
 
-    // antd validateMessages object
-    const validateMessages = {
-        required: '${label} is required!',
-        types: {
-            email: '${label} is not a valid email!',
-            number: '${label} is not a valid number!',
-        }
-    };
-
     // 로그인 화면 진입
     useEffect(()=> {
         console.log("Login PAGE");
@@ -82,38 +73,8 @@ const Login = () => {
     // Login failed
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
 
-    // Authentication Join And Login With Email And Password (12/6)
+    // Authentication Login With Email And Password (12/6)
     const auth = getAuth();
-    // Authentication Join
-    const createUser = async (value) => {
-        const {email, password} = value;
-        // 1. 신규 사용자 가입
-        await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                console.log("createUserWithEmailAndPassword success ⭕️");
-                console.log(user);
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log("createUserWithEmailAndPassword error ❌");
-                console.log(errorCode, errorMessage);
-            })
-
-        await updateProfile(auth.currentUser, {
-            displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(() => {
-            // Profile updated!
-            console.log("updateProfile success ⭕️");
-        }).catch((error) => {
-            // An error occurred
-            console.log("updateProfile error ❌");
-            console.log(error);
-        });
-
-    };
     // Authentication Login
     const signIn = async (value) => {
         const {email, password} = value;
@@ -135,137 +96,11 @@ const Login = () => {
 
     // route
     const signUp = () => navigate('/join');
-    const simpleSignUp = () => navigate('/join');
+    const simpleSignUp = () => navigate('/simple-join');
 
     return (
         <>
-            <div style={{ paddingTop: '50px' }}>
-                <Form
-                    name="basic"
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 10,
-                    }}
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="off"
-                >
-                    <Form.Item
-                        label="Username"
-                        name="username"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your username!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button type="link" htmlType="button" onClick={signUp}>
-                            register now!
-                        </Button>
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                    {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
-                </Form>
-            </div>
-            <div>
-                <Form
-                    name="basic"
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 10,
-                    }}
-                    validateMessages={validateMessages}
-                    onFinish={createUser}
-                    onFinishFailed={onFinishFailed}
-                >
-                    <Form.Item
-                        label="Name"
-                        name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your name!',
-                            }
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                            {
-                                type: 'email',
-                            }
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-            <div>
+            <div style={{ paddingTop: '40px' }}>
                 <Form
                     name="basic"
                     labelCol={{
@@ -279,7 +114,7 @@ const Login = () => {
                     }}
                     onFinish={signIn}
                     onFinishFailed={onFinishFailed}
-                    autoComplete="off"
+                    autoComplete="on"
                 >
                     <Form.Item
                         label="Email"
@@ -287,9 +122,11 @@ const Login = () => {
                         rules={[
                             {
                                 required: true,
+                                message: 'Please input your email!',
                             },
                             {
                                 type: 'email',
+                                message: 'Email is not a valid email!',
                             }
                         ]}
                     >
@@ -324,12 +161,14 @@ const Login = () => {
                     size="large"
                     shape="circle"
                     icon={<UserAddOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    onClick={signUp}
                 />
                 <Button
                     style={{ marginLeft: '10px' }}
                     size="large"
                     shape="circle"
                     icon={<MailOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    onClick={simpleSignUp}
                 />
                 <Button
                     style={{ marginLeft: '10px' }}
@@ -356,8 +195,8 @@ const Login = () => {
                     icon={<ReadOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
                 />
             </div>
+            {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
         </>
-
     );
 };
 export default Login;

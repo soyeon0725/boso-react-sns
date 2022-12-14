@@ -98,7 +98,7 @@ const Join = () => {
     const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
 
     return (
-        <div style={{ paddingTop: '50px' }}>
+        <div style={{ paddingTop: '40px' }}>
             <Form
                 {...layout}
                 name="nest-messages"
@@ -107,7 +107,7 @@ const Join = () => {
             >
                 <Form.Item
                     name={["user", "id"]}
-                    label="id"
+                    label="ID"
                     rules={[
                         {
                             required: true
@@ -131,7 +131,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "password"]}
-                    label="password"
+                    label="Password"
                     rules={[
                         {
                             required: true
@@ -150,7 +150,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "name"]}
-                    label="name"
+                    label="Name"
                     rules={[
                         {
                             required: true
@@ -169,7 +169,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={['user', 'email']}
-                    label="email"
+                    label="Email"
                     rules={[
                         {
                             required: true
@@ -184,7 +184,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "birth"]}
-                    label="birth"
+                    label="Birth"
                     rules={[
                         {
                             required: true
@@ -203,7 +203,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "phone"]}
-                    label="phone"
+                    label="Phone"
                     rules={[
                         {
                             required: true
@@ -222,7 +222,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "agree"]}
-                    label="agree"
+                    label="Agree"
                     rules={[
                         {
                             required: true
@@ -239,7 +239,7 @@ const Join = () => {
                 </Form.Item>
                 <Form.Item
                     name={["user", "expired"]}
-                    label="expired"
+                    label="Expired"
                     rules={[
                         {
                             required: true
