@@ -1,7 +1,7 @@
 import { Button, Form, Input } from "antd";
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
 
-const SimpleSignUp = () => {
+const Simple = () => {
     // antd validateMessages object
     const validateMessages = {
         required: '${label} is required!',
@@ -112,4 +112,4 @@ const SimpleSignUp = () => {
         </div>
     )
 };
-export default SimpleSignUp;
+export default Simple;

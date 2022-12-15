@@ -2,7 +2,6 @@ import Join from "../pages/Join";
 import Login from "../pages/Login";
 import Main from "../pages/Main";
 import MyPage from "../pages/MyPage";
-import SimpleSignUp from "../pages/SimpleSignUp";
 
 export const RouteList = [
     {
@@ -12,10 +11,6 @@ export const RouteList = [
     {
         path : '/join',
         element :  <Join/>
-    },
-    {
-        path : '/simple-join',
-        element :  <SimpleSignUp/>
     },
 ];
 
