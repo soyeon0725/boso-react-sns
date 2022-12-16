@@ -3,14 +3,12 @@ import {
     Route,
     Routes,
     useLocation,
-    useNavigate,
     Navigate,
-    redirect
 } from 'react-router-dom';
 import {RouteList, AuthRouteList} from './app/router';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {selectIsLoggedIn, setIsLoggedIn, setPersonalInfo} from './app/slice';
+import {selectIsLoggedIn, setIsLoggedIn, setUserInfo} from './app/slice';
 import { Layout } from 'antd';
 
 import FooterC from './components/common/Footer';
@@ -20,6 +18,7 @@ import 'antd/dist/antd.css';
 import './index.css';
 
 // firebase 이메일 & 비밀번호 로그인 연동
+import {firestore} from "./firebase/Firebase";
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const App = () => {
@@ -31,8 +30,6 @@ const App = () => {
     const [init, setInit] = useState(false);
 
     const commonLayout = pathname === '/' || pathname === '/join';
-    const navigate = useNavigate();
-    const loader = () => redirect("/");
 
     useEffect(() => {
         const auth = getAuth();
@@ -45,22 +42,25 @@ const App = () => {
                 console.log(uid);
                 console.log("isLoggedIn ⭕");
                 dispatch(setIsLoggedIn(true));
-                // navigate('/main');
             } else {
                 // User is signed out
                 console.log("isLoggedIn ❌");
                 dispatch(setIsLoggedIn(false));
-                // navigate('/', {replace : true});
             }
-            console.log(user);
-            dispatch(setPersonalInfo({
-                name: user?.displayName,
-                email: user?.email,
-                photoUrl: user?.photoUrl
-            }))
+            console.log('uid ============');
+            console.log(user?.uid);
+            // Cloud Firestore userCollection get!
+            const userStore = firestore.collection("user");
+            userStore.doc(user?.uid).get().then((doc) => {
+                console.log(doc.data());
+                dispatch(setUserInfo({
+                    name: doc.data()?.name,
+                    email: doc.data()?.email,
+                    photoUrl: doc.data()?.photoUrl
+                }))
+            });
             setInit(true);
         });
-
     }, []);
 
     return (

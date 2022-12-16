@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectPersonalInfo } from '../app/slice';
+import {selectUserInfo} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 
@@ -8,7 +8,7 @@ import TextList from '../components/list/TextList';
 import Confirm from '../modal/Confirm';
 
 const MyPage = () => {
-    const personalInfo = useSelector(selectPersonalInfo);
+    const userInfo = useSelector(selectUserInfo);
     const [confirmModal, setConfirmModal] = useState({
         show: false,
         type: ''
@@ -39,7 +39,7 @@ const MyPage = () => {
                     style={{ verticalAlign: 'middle' }}
                     size={100}
                     gap={4}
-                    src={personalInfo.photoUrl}
+                    src={userInfo.photoUrl}
                 />
                 <div
                     style={{
@@ -49,8 +49,8 @@ const MyPage = () => {
                         marginLeft: 20
                     }}
                 >
-                    <span>{`Name : ${personalInfo.name}`}</span>
-                    <span>{`Email : ${personalInfo.email}`}</span>
+                    <span>{`Name : ${userInfo.name}`}</span>
+                    <span>{`Email : ${userInfo.email}`}</span>
                     <Button onClick={editProfile}>
                         프로필 편집
                     </Button>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button, Form, Input } from "antd";
 import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
 
@@ -10,6 +11,11 @@ const Simple = () => {
             number: '${label} is not a valid number!',
         }
     };
+
+    // 회원가입 화면 진입
+    useEffect(()=> {
+        console.log("Simple Component");
+    },[]);
 
     // Login failed
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);

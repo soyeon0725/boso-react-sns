@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 import { Button, Form, Input } from 'antd';
 import {
@@ -22,7 +21,6 @@ import {
 
 const Login = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [defaultModal, setDefaultModal] = useState({
         show: false,
         type: ''
@@ -33,39 +31,6 @@ const Login = () => {
         console.log("Login PAGE");
     },[]);
 
-    // firestore Login
-    // const onFinish = (values) => {
-    //     console.log('Success:', values);
-    //
-    //     const user = firestore.collection("user");
-    //     let userList = [];
-    //     user.get().then((docs) => {
-    //         docs.forEach((doc) => {
-    //             userList.push({
-    //                 id: doc.data().id,
-    //                 password: doc.data().password,
-    //                 email: doc.data().email,
-    //                 photoUrl: doc.data().photoUrl
-    //             });
-    //         })
-    //         let isUser = false;
-    //         for (let i = 0; i < userList.length; i++) {
-    //             if (values.username === userList[i].id && values.password === userList[i].password) {
-    //                 dispatch(setPersonalInfo({
-    //                     id: userList[i].id,
-    //                     email: userList[i].email,
-    //                     photoUrl: userList[i].photoUrl
-    //                 }));
-    //                 isUser = true;
-    //             }
-    //         }
-    //         if (isUser) navigate("/main");
-    //         else {
-    //             console.log("아이디와 비번 불일치");
-    //             setDefaultModal({show: true, type: 'login-fail'});
-    //         };
-    //     });
-    // };
     // Login failed
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
 
@@ -88,7 +53,7 @@ const Login = () => {
                 console.log("signInWithEmailAndPassword error ❌");
                 console.log(errorCode);
                 console.log(errorMessage);
-                setDefaultModal({show: true, type: 'login-fail'});
+                // setDefaultModal({show: true, type: 'login-fail'});
             });
     };
 

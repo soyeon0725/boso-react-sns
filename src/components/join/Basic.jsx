@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from "react-router-dom";
 import { firestore } from '../../firebase/Firebase';
 
 import {
-    checkId,
     checkPassword,
     checkBirth,
     checkName,
@@ -13,14 +11,10 @@ import {
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
 import Default from '../../modal/Default';
 import Confirm from '../../modal/Confirm';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 const Join = () => {
     const { Panel } = Collapse;
-    const user = firestore.collection("user");
-    const location = useLocation();
-    const joinType = location.state.join;
-    console.log(joinType);
-    const [inputId, setInputId] = useState('');
     const [defaultModal, setDefaultModal] = useState({
         show: false,
         type: ''
@@ -50,54 +44,34 @@ const Join = () => {
 
     // 회원가입 화면 진입
     useEffect(()=> {
-        console.log("Join PAGE");
+        console.log("Basic Component");
     },[]);
 
-    const idCheck = async (id) => {
-        let userIdList = [];
-        const result = await user.get().then((docs) => {
-            docs.forEach((doc) => {
-                userIdList.push(doc.data().id);
-            })
-            let isDuplicationId = false;
-            for (let i = 0; i < userIdList.length; i++) {
-                if (id === userIdList[i]) {
-                    isDuplicationId = true;
-                }
-            }
-            if (isDuplicationId) {
-                console.log("아이디 사용 불가능");
-                return true;
-            }
-            else {
-                console.log("아이디 사용 가능");
-                return false;
-            }
-        });
-        return result;
-    };
-    const duplicationCheck = e => {
-        e.preventDefault();
-        // Todo 아이디 중복 체크 여부 판단 값 생성하기
-        idCheck(inputId).then(duplication => {
-            console.log(duplication);
-            if (duplication) setDefaultModal({show: true, type: 'id-not-available'});
-            else setDefaultModal({show: true, type: 'id-available'});
-        });
-    };
-
-    const onFinish = values => {
+    const onFinish = async (values) => {
         console.log('Received values of form: ', values);
-        let userInfo = values.user;
-        idCheck(userInfo.id).then(duplication => {
-            if (duplication) setDefaultModal({show: true, type: 'join-fail'});
-            else {
-                userInfo = {...userInfo, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
-                console.log(userInfo);
-                user.doc(userInfo.id).set(userInfo).then(r => console.log(r));
-                setConfirmModal({show: true, type: 'join-success'});
-            }
-        });
+
+        let isUser = values.user;
+        console.log(isUser);
+        const {email, password} = isUser
+        const userStore = firestore.collection("user");
+        const auth = getAuth();
+        // 1. 신규 사용자 가입
+        await createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                console.log("createUserWithEmailAndPassword success ⭕️");
+                isUser = {...isUser, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
+                userStore.doc(user.uid).set(isUser).then(r => console.log(r));
+                // setConfirmModal({show: true, type: 'join-success'});
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log("createUserWithEmailAndPassword error ❌");
+                console.log(errorCode, errorMessage);
+                // setDefaultModal({show: true, type: 'join-fail'});
+            })
     };
     const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
 
@@ -109,49 +83,6 @@ const Join = () => {
                 validateMessages={validateMessages}
                 onFinish={onFinish}
             >
-                <Form.Item
-                    name={["user", "id"]}
-                    label="ID"
-                    rules={[
-                        {
-                            required: true
-                        },
-                        {
-                            validator: (_, value) => {
-                                setInputId(value);
-                                if (!value || checkId(value)) {
-                                    console.log(value + " : '' 일 때 성공 처리 맞음?");
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error('4~20자의 영문, 숫자와 특수문자 \'_\'만 사용해주세요.'));
-                            }
-                        }
-                    ]}
-                >
-                    <div style={{display: 'flex'}}>
-                        <Input placeholder="아이디를 입력해주세요." />
-                        <Button htmlType="button" onClick={duplicationCheck} disabled={!inputId || inputId.length < 4 ? true : false}>중복체크</Button>
-                    </div>
-                </Form.Item>
-                <Form.Item
-                    name={["user", "password"]}
-                    label="Password"
-                    rules={[
-                        {
-                            required: true
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (!value || checkPassword(value)) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
-                            }
-                        }
-                    ]}
-                >
-                    <Input placeholder="비밀번호를 입력해주세요." />
-                </Form.Item>
                 <Form.Item
                     name={["user", "name"]}
                     label="Name"
@@ -185,6 +116,25 @@ const Join = () => {
                     ]}
                 >
                     <Input placeholder="이메일 형식에 맞게 작성해주세요." />
+                </Form.Item>
+                <Form.Item
+                    name={["user", "password"]}
+                    label="Password"
+                    rules={[
+                        {
+                            required: true
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (!value || checkPassword(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
+                            }
+                        }
+                    ]}
+                >
+                    <Input placeholder="비밀번호를 입력해주세요." />
                 </Form.Item>
                 <Form.Item
                     name={["user", "birth"]}
