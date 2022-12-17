@@ -1,8 +1,21 @@
-import { useEffect } from "react";
-import { Button, Form, Input } from "antd";
-import { createUserWithEmailAndPassword, getAuth, updateProfile } from "firebase/auth";
+import { useEffect, useState } from 'react';
+import { Button, Form, Input } from 'antd';
+
+import {firestore} from '../../firebase/Firebase';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import Default from "../../modal/Default";
+import Confirm from "../../modal/Confirm";
 
 const Simple = () => {
+    const [defaultModal, setDefaultModal] = useState({
+        show: false,
+        type: ''
+    });
+    const [confirmModal, setConfirmModal] = useState({
+        show: false,
+        type: ''
+    });
+
     // antd validateMessages object
     const validateMessages = {
         required: '${label} is required!',
@@ -17,43 +30,45 @@ const Simple = () => {
         console.log("Simple Component");
     },[]);
 
-    // Login failed
-    const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
-
-    // Authentication Join With Email And Password (12/6)
-    const auth = getAuth();
     // Authentication Join
-    const createUser = async (value) => {
-        const {email, password} = value;
+    const simpleCreateUser = async (values) => {
+        const {email, password} = values;
+        const userStore = firestore.collection("user");
+        const auth = getAuth();
         // 1. 신규 사용자 가입
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
+                if (user.uid) setConfirmModal({show: true, type: 'join-success'});
                 console.log("createUserWithEmailAndPassword success ⭕️");
-                console.log(user);
+                userStore.doc(user.uid).set(values).then(r => console.log(r));
+                // Todo agree, expired 필드 추가 여부 확인 필요
+                userStore.doc(user.uid).update({phone: '', birth: '', photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'});
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log("createUserWithEmailAndPassword error ❌");
                 console.log(errorCode, errorMessage);
+                if (errorCode === 'auth/email-already-in-use') {
+                    setDefaultModal({show: true, type: 'email-already-in-use'});
+                } else if (errorCode === 'auth/weak-password') {
+                    setDefaultModal({show: true, type: 'weak-password'});
+                }
             })
 
-        await updateProfile(auth.currentUser, {
-            displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(() => {
-            // Profile updated!
-            console.log("updateProfile success ⭕️");
-        }).catch((error) => {
-            // An error occurred
-            console.log("updateProfile error ❌");
-            console.log(error);
-        });
-
     };
+
+    const onFinish = async (values) => {
+        console.log('Received values of form: ', values);
+        simpleCreateUser(values).then((r) => console.log(r, "createUser"));
+    };
+    // Login failed
+    const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
+
     return (
-        <div className='simple-signup'  style={{ paddingTop: '40px' }}>
+        <div className='simple-join'  style={{ paddingTop: '40px' }}>
             <Form
                 name="basic"
                 labelCol={{
@@ -63,7 +78,7 @@ const Simple = () => {
                     span: 10,
                 }}
                 validateMessages={validateMessages}
-                onFinish={createUser}
+                onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
                 <Form.Item
@@ -76,7 +91,7 @@ const Simple = () => {
                         }
                     ]}
                 >
-                    <Input />
+                    <Input placeholder="이름을 입력해주세요." />
                 </Form.Item>
                 <Form.Item
                     label="Email"
@@ -87,10 +102,11 @@ const Simple = () => {
                         },
                         {
                             type: 'email',
+                            message: '이메일 형식에 맞게 작성해주세요.'
                         }
                     ]}
                 >
-                    <Input />
+                    <Input placeholder="이메일을 입력해주세요." />
                 </Form.Item>
                 <Form.Item
                     label="Password"
@@ -102,7 +118,7 @@ const Simple = () => {
                         },
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password placeholder="비밀번호를 입력해주세요." />
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{
@@ -115,6 +131,8 @@ const Simple = () => {
                     </Button>
                 </Form.Item>
             </Form>
+            {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
+            {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
         </div>
     )
 };

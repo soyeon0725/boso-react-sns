@@ -18,8 +18,8 @@ import 'antd/dist/antd.css';
 import './index.css';
 
 // firebase 이메일 & 비밀번호 로그인 연동
-import {firestore} from "./firebase/Firebase";
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import {firestore, auth} from "./firebase/Firebase";
+import { onAuthStateChanged } from 'firebase/auth';
 
 const App = () => {
     const { Content } = Layout;
@@ -32,23 +32,28 @@ const App = () => {
     const commonLayout = pathname === '/' || pathname === '/join';
 
     useEffect(() => {
-        const auth = getAuth();
+        console.log('currentUser');
+        console.log(auth.currentUser);
         // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
         onAuthStateChanged(auth, (user) => {
-            console.log("onAuthStateChanged")
+            console.log(user);
+            console.log("onAuthStateChanged");
             if (user) {
+                console.log(user)
                 // User is signed in, see docs for a list of available properties
                 const uid = user.uid;
                 console.log(uid);
                 console.log("isLoggedIn ⭕");
-                dispatch(setIsLoggedIn(true));
+                setTimeout(function() {
+                   console.log('테스트~~')
+                    dispatch(setIsLoggedIn(true));
+                }, 400)
+                //
             } else {
                 // User is signed out
                 console.log("isLoggedIn ❌");
                 dispatch(setIsLoggedIn(false));
             }
-            console.log('uid ============');
-            console.log(user?.uid);
             // Cloud Firestore userCollection get!
             const userStore = firestore.collection("user");
             userStore.doc(user?.uid).get().then((doc) => {
