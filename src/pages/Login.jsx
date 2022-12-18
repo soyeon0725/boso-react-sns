@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, Form, Input } from 'antd';
 import {
+    UserOutlined,
+    LockOutlined,
     UserAddOutlined,
     MailOutlined,
+    IdcardOutlined,
     GithubOutlined,
     GoogleOutlined,
     MessageOutlined,
@@ -93,7 +96,7 @@ const Login = () => {
                             }
                         ]}
                     >
-                        <Input />
+                        <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                     </Form.Item>
                     <Form.Item
                         label="Password"
@@ -105,7 +108,7 @@ const Login = () => {
                             },
                         ]}
                     >
-                        <Input.Password />
+                        <Input.Password placeholder="비밀번호를 입력해주세요." prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                     </Form.Item>
                     <Form.Item
                         wrapperCol={{
@@ -130,7 +133,7 @@ const Login = () => {
                     style={{ marginLeft: '10px' }}
                     size="large"
                     shape="circle"
-                    icon={<MailOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    icon={<IdcardOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
                     onClick={simpleJoin}
                 />
                 <Button

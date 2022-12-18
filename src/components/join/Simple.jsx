@@ -5,6 +5,7 @@ import {firestore} from '../../firebase/Firebase';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import Default from "../../modal/Default";
 import Confirm from "../../modal/Confirm";
+import {LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
 
 const Simple = () => {
     const [defaultModal, setDefaultModal] = useState({
@@ -91,7 +92,7 @@ const Simple = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="이름을 입력해주세요." />
+                    <Input placeholder="이름을 입력해주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     label="Email"
@@ -106,7 +107,7 @@ const Simple = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="이메일을 입력해주세요." />
+                    <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     label="Password"
@@ -118,7 +119,7 @@ const Simple = () => {
                         },
                     ]}
                 >
-                    <Input.Password placeholder="비밀번호를 입력해주세요." />
+                    <Input.Password placeholder="비밀번호를 입력해주세요." prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{

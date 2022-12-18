@@ -13,6 +13,7 @@ import Confirm from '../../modal/Confirm';
 
 import { firestore } from '../../firebase/Firebase';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {LockOutlined, MailOutlined, UserOutlined, PhoneOutlined, GiftOutlined} from "@ant-design/icons";
 
 const Join = () => {
     const { Panel } = Collapse;
@@ -112,7 +113,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="이름을 입력해주세요." />
+                    <Input placeholder="이름을 입력해주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={['user', 'email']}
@@ -127,7 +128,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="이메일을 입력해주세요." />
+                    <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["user", "password"]}
@@ -146,7 +147,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input.Password placeholder="비밀번호를 입력해주세요." />
+                    <Input.Password placeholder="비밀번호를 입력해주세요." prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["user", "birth"]}
@@ -165,7 +166,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="생년월일을 입력해주세요." />
+                    <Input placeholder="생년월일을 입력해주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["user", "phone"]}
@@ -184,7 +185,7 @@ const Join = () => {
                         }
                     ]}
                 >
-                    <Input placeholder="휴대폰을 입력해주세요." />
+                    <Input placeholder="휴대폰을 입력해주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["user", "agree"]}

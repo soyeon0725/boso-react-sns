@@ -5,11 +5,11 @@ import {selectUserInfo} from '../app/slice';
 import { Button, Tabs, Avatar } from 'antd';
 
 import TextList from '../components/list/TextList';
-import Confirm from '../modal/Confirm';
+import EditProfile from "../modal/EditProfile";
 
 const MyPage = () => {
     const userInfo = useSelector(selectUserInfo);
-    const [confirmModal, setConfirmModal] = useState({
+    const [editProfileModal, setEditProfileModal] = useState({
         show: false,
         type: ''
     });
@@ -20,7 +20,7 @@ const MyPage = () => {
     },[]);
 
     // Todo EditProfile Modal 생성 후 연동하기
-    const editProfile = () => setConfirmModal({show: true, type: 'edit-profile'});
+    const editProfile = () => setEditProfileModal({show: true, type: 'edit-profile'});
 
     const onChange = (key) => {
         console.log(key);
@@ -85,7 +85,7 @@ const MyPage = () => {
                     },
                 ]}
             />
-            {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
+            {editProfileModal.show && <EditProfile editProfile={editProfileModal} setEditProfile={setEditProfileModal} />}
         </>
     );
 }
