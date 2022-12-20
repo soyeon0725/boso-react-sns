@@ -1,23 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Button, Form, Input } from 'antd';
 
-import {firestore} from '../../firebase/Firebase';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import Default from "../../modal/Default";
-import Confirm from "../../modal/Confirm";
 import {LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
-import {createUserWithEmailAndPasswordApi} from "../../api/adaptor";
+import {createUserWithEmailAndPasswordApi} from "../../api/adaptor.api";
 
 const Simple = () => {
-    const [defaultModal, setDefaultModal] = useState({
-        show: false,
-        type: ''
-    });
-    const [confirmModal, setConfirmModal] = useState({
-        show: false,
-        type: ''
-    });
-
     // antd validateMessages object
     const validateMessages = {
         required: '${label} is required!',
@@ -32,14 +19,10 @@ const Simple = () => {
         console.log("Simple Component");
     },[]);
 
-    // Authentication Join
-    const simpleCreateUser = async (values) => {
-        await createUserWithEmailAndPasswordApi(values);
-    };
-
     const onFinish = async (values) => {
         console.log('Received values of form: ', values);
-        simpleCreateUser(values).then((r) => console.log(r, "createUser"));
+        // Authentication Join
+        await createUserWithEmailAndPasswordApi(values);
     };
     // Login failed
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
@@ -108,8 +91,6 @@ const Simple = () => {
                     </Button>
                 </Form.Item>
             </Form>
-            {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
-            {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
         </div>
     )
 };

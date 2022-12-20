@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
 
@@ -8,23 +8,12 @@ import {
     checkName,
     checkPhoneNumber
 } from '../../utils/utilCommon';
-import Default from '../../modal/Default';
-import Confirm from '../../modal/Confirm';
-
 
 import {LockOutlined, MailOutlined, UserOutlined, PhoneOutlined, GiftOutlined} from "@ant-design/icons";
-import {createUserWithEmailAndPasswordApi, JoinAndLoginApi} from "../../api/adaptor";
+import {createUserWithEmailAndPasswordApi} from "../../api/adaptor.api";
 
 const Join = () => {
     const { Panel } = Collapse;
-    const [defaultModal, setDefaultModal] = useState({
-        show: false,
-        type: ''
-    });
-    const [confirmModal, setConfirmModal] = useState({
-        show: false,
-        type: ''
-    });
 
     // antd layout
     const layout = {
@@ -51,17 +40,10 @@ const Join = () => {
 
     const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;
 
-    // Authentication Join
-    const createUser = async (values) => {
-        console.log(values)
-
-        // 1. 신규 사용자 가입
-        await createUserWithEmailAndPasswordApi(values);
-    };
-
     const onFinish = async (values) => {
         console.log('Received values of form: ', values);
-        createUser(values.user).then((r) => console.log(r, "createUser"));
+        // Authentication Join
+        await createUserWithEmailAndPasswordApi(values.user);
     };
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
 
@@ -203,8 +185,6 @@ const Join = () => {
                     </Button>
                 </Form.Item>
             </Form>
-            {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
-            {confirmModal.show && <Confirm confirmModal={confirmModal} setConfirmModal={setConfirmModal} />}
         </div>
     )
 }

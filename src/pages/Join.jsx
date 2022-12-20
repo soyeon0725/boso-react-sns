@@ -6,7 +6,7 @@ import Simple from '../components/join/Simple';
 
 const Join = () => {
     const params = useParams();
-    const joinType = params.type;
+    const type = params.type;
 
     // 회원가입 화면 진입
     useEffect(()=> {
@@ -15,7 +15,7 @@ const Join = () => {
 
     return (
         <>
-            {joinType === 'detail' ? <Detail/> : joinType === 'simple' ? <Simple /> : null}
+            {type === 'detail' ? <Detail/> : type === 'simple' ? <Simple /> : null}
         </>
     )
 }

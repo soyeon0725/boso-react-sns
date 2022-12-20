@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button, Form, Input } from 'antd';
 import {
-    UserOutlined,
     LockOutlined,
     UserAddOutlined,
     MailOutlined,
-    IdcardOutlined,
     GithubOutlined,
     GoogleOutlined,
     MessageOutlined,
@@ -20,14 +18,13 @@ import {
     getAuth, // 사용자 인증 정보
     signInWithEmailAndPassword
 } from "firebase/auth";
+import {useDispatch} from "react-redux";
+import {setDefaultModal} from "../app/slice";
 
 
 const Login = () => {
     const navigate = useNavigate();
-    const [defaultModal, setDefaultModal] = useState({
-        show: false,
-        type: ''
-    });
+    const dispatch = useDispatch();
 
     // 로그인 화면 진입
     useEffect(()=> {
@@ -57,11 +54,11 @@ const Login = () => {
                 console.log(errorCode);
                 console.log(errorMessage);
                 if (errorCode === 'auth/user-not-found') {
-                    setDefaultModal({show: true, type: 'user-not-found'});
+                    dispatch(setDefaultModal({show: true, type: 'user-not-found'}));
                 } else if (errorCode === 'auth/wrong-password') {
-                    setDefaultModal({show: true, type: 'wrong-password'});
+                    dispatch(setDefaultModal({show: true, type: 'wrong-password'}));
                 } else {
-                    setDefaultModal({show: true, type: 'login-fail'});
+                    dispatch(setDefaultModal({show: true, type: 'login-fail'}));
                 }
             });
     };
@@ -163,7 +160,6 @@ const Login = () => {
                     icon={<ReadOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
                 />
             </div>
-            {defaultModal.show && <Default defaultModal={defaultModal} setDefaultModal={setDefaultModal} />}
         </>
     );
 };

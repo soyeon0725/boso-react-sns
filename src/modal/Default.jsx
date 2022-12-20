@@ -1,8 +1,11 @@
+import {useDispatch, useSelector} from "react-redux";
+import {selectDefaultModal, setDefaultModal} from "../app/slice";
 import { Modal } from 'antd';
 
 const Default = (props) => {
+    const dispatch = useDispatch();
+    const defaultModal = useSelector(selectDefaultModal);
     console.log('Default 팝업');
-    const { defaultModal, setDefaultModal } = props;
     const modal = {
         'id-not-available': {
             message: '중복된 아이디입니다.'
@@ -12,7 +15,6 @@ const Default = (props) => {
         },
         'join-fail': {
             message: '회원가입이 실패했습니다.',
-            // message: '아이디 중복 체크가 필요합니다.'
         },
         'email-already-in-use': {
             message: '이미 사용되고 있는 이메일입니다.'
@@ -30,14 +32,13 @@ const Default = (props) => {
             message: '비밀번호를 확인해주세요.'
         }
     };
-    const reset = () => setDefaultModal({show: false, type: ''});
-    const handleCancel = () => reset();
+    const reset = () => dispatch(setDefaultModal({show: false, type: ''}));
 
     return (
         <Modal
             title="알림"
             open={defaultModal.show}
-            onCancel={handleCancel}
+            onCancel={() => reset()}
             footer={null}
         >
             <p>{modal[defaultModal.type].message}</p>

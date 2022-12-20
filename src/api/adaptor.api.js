@@ -1,6 +1,5 @@
 import store from "../app/store";
-import {setList} from "../app/slice"
-import {useState} from 'react';
+import {setDefaultModal} from '../app/slice';
 import { firestore } from '../firebase/Firebase';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -27,9 +26,9 @@ export const createUserWithEmailAndPasswordApi = (values) => {
             console.log("createUserWithEmailAndPassword error ❌");
             console.log(errorCode, errorMessage);
             if (errorCode === 'auth/email-already-in-use') {
-                // setDefaultModal({show: true, type: 'email-already-in-use'});
+                store.dispatch(setDefaultModal({show: true, type: 'email-already-in-use'}));
             } else {
-                // setDefaultModal({show: true, type: 'join-fail'});
+                store.dispatch(setDefaultModal({show: true, type: 'join-fail'}));
             }
         });
 };

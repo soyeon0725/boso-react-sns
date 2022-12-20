@@ -41,3 +41,30 @@ export const {setUserInfo} = joinInfoSlice.actions;
 export const selectUserInfo = state => state.joinInfo.userInfo;
 
 export {joinInfoSlice};
+
+const commonSlice = createSlice({
+    name: "common",
+    initialState: {
+        defaultModal: {
+            show: false,
+            type: ''
+        },
+        confirmModal: {
+            show: false,
+            type: ''
+        }
+    },
+    reducers: {
+        setDefaultModal: (state, action) => {
+            state.defaultModal = action.payload;
+        },
+        setConfirmModal: (state, action) => {
+            state.confirmModal = action.payload;
+        }
+    }
+});
+export const {setDefaultModal, setConfirmModal} = commonSlice.actions;
+export const selectDefaultModal = state => state.common.defaultModal;
+export const selectConfirmModal = state => state.common.confirmModal;
+
+export {commonSlice};

@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+    selectIsLoggedIn,
+    selectDefaultModal,
+    selectConfirmModal,
+    setIsLoggedIn,
+    setUserInfo,
+} from './app/slice';
 import {
     Route,
     Routes,
@@ -7,19 +15,19 @@ import {
 } from 'react-router-dom';
 import {RouteList, AuthRouteList} from './app/router';
 
-import {useDispatch, useSelector} from 'react-redux';
-import {selectIsLoggedIn, setIsLoggedIn, setUserInfo} from './app/slice';
+// firebase
+import {firestore, auth} from "./firebase/Firebase";
+import { onAuthStateChanged } from 'firebase/auth';
+
 import { Layout } from 'antd';
 
 import FooterC from './components/common/Footer';
 import HeaderC from './components/common/Header';
+import Default from "./modal/Default";
+import Confirm from "./modal/Confirm";
 
 import 'antd/dist/antd.css';
 import './index.css';
-
-// firebase 이메일 & 비밀번호 로그인 연동
-import {firestore, auth} from "./firebase/Firebase";
-import { onAuthStateChanged } from 'firebase/auth';
 
 const App = () => {
     const { Content } = Layout;
@@ -27,6 +35,8 @@ const App = () => {
     const { pathname } = useLocation();
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(selectIsLoggedIn);
+    const defaultModal = useSelector(selectDefaultModal);
+    const confirmModal = useSelector(selectConfirmModal);
     const [init, setInit] = useState(false);
 
     const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/join/detail' || pathname === '/join/simple';
@@ -100,6 +110,8 @@ const App = () => {
                     ) : null}
                 </Layout>
             </Layout>
+            {defaultModal.show && <Default />}
+            {confirmModal.show && <Confirm />}
         </>
     );
 };

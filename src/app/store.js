@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import {exampleSlice, joinInfoSlice} from "./slice";
+import {exampleSlice, joinInfoSlice, commonSlice} from "./slice";
 
 const store = configureStore({
     reducer:{
         exampleInfo : exampleSlice.reducer,
-        joinInfo : joinInfoSlice.reducer
+        joinInfo : joinInfoSlice.reducer,
+        common : commonSlice.reducer
     }
 });
 
