@@ -133,7 +133,7 @@ const Login = () => {
                     style={{ marginLeft: '10px' }}
                     size="large"
                     shape="circle"
-                    icon={<IdcardOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    icon={<MailOutlined style={{ color: '#1890ff', fontSize: '24px' }} />}
                     onClick={simpleJoin}
                 />
                 <Button
