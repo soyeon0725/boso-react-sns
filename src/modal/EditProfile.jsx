@@ -1,32 +1,65 @@
-import { useSelector } from 'react-redux';
-import { selectUserInfo } from '../app/slice';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectUserInfo, setUserInfo} from '../app/slice';
 
-import {Avatar, Button, Form, Input, Modal} from 'antd';
-import {LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
+import {Form, Input, Upload, message} from 'antd';
+import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
+import {checkBirth, checkPhoneNumber} from "../utils/utilCommon";
+import {useState} from "react";
+
+
 
 const EditProfile = (props) => {
     console.log('EditProfile 팝업');
+    const dispatch = useDispatch();
     const userInfo = useSelector(selectUserInfo);
-    const { editProfile, setEditProfile } = props;
-    const reset = () => setEditProfile({show: false, type: ''});
-    const handleOk = () => reset();
-    const handleCancel = () => reset();
+    const [imageUrl, setImageUrl] = useState(userInfo.photoUrl);
+
+    const getBase64 = (img, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(img);
+    };
+    const beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('You can only upload JPG/PNG file!');
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Image must smaller than 2MB!');
+        }
+        return isJpgOrPng && isLt2M;
+    };
+
+    const handleChange = (info) => {
+        // Get this url from response in real world.
+        getBase64(info.file.originFileObj, (url) => {
+            // setLoading(false);
+            console.log(url)
+            setImageUrl(url)
+
+        });
+    };
+
     return (
-        <Modal
-            title="프로필 편집"
-            open={editProfile.show}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            cancelButtonProps={{ style: { display: 'none' } }}
-        >
-            <div>
-                <Avatar
-                    style={{ verticalAlign: 'middle' }}
-                    size={100}
-                    gap={4}
-                    src={userInfo.photoUrl}
+        <>
+            <Upload
+                name="avatar"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                beforeUpload={beforeUpload}
+                onChange={handleChange}
+            >
+                <img
+                    src={imageUrl}
+                    alt="avatar"
+                    style={{
+                        width: '100%',
+                    }}
                 />
-            </div>
+            </Upload>
             <Form
                 name="basic"
                 labelCol={{
@@ -35,9 +68,6 @@ const EditProfile = (props) => {
                 wrapperCol={{
                     span: 10,
                 }}
-                // validateMessages={validateMessages}
-                // onFinish={onFinish}
-                // onFinishFailed={onFinishFailed}
             >
                 <Form.Item
                     label="Name"
@@ -67,29 +97,45 @@ const EditProfile = (props) => {
                     <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
-                    label="Password"
-                    name="password"
+                    name={["user", "birth"]}
+                    label="Birth"
                     rules={[
                         {
-                            required: true,
-                            message: 'Please input your password!',
+                            required: true
                         },
+                        {
+                            validator: (_, value) => {
+                                if (!value || checkBirth(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.'));
+                            }
+                        }
                     ]}
                 >
-                    <Input.Password placeholder="비밀번호를 입력해주세요." prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder="생년월일을 입력해주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
-                    wrapperCol={{
-                        offset: 8,
-                        span: 16,
-                    }}
+                    name={["user", "phone"]}
+                    label="Phone"
+                    rules={[
+                        {
+                            required: true
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (!value || checkPhoneNumber(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('\'-\'빼고 숫자만 입력해주세요.'));
+                            }
+                        }
+                    ]}
                 >
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
+                    <Input placeholder="휴대폰을 입력해주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
             </Form>
-        </Modal>
+        </>
     );
 }
 export default EditProfile;

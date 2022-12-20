@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {selectConfirmModal, setConfirmModal} from "../app/slice";
 import { Modal } from 'antd';
+import EditProfile from "./EditProfile";
 
 const Confirm = (props) => {
     console.log('Confirm 팝업');
@@ -15,6 +16,14 @@ const Confirm = (props) => {
             onEvent: () => {
                 reset();
                 navigate('/');
+            }
+        },
+        'edit-profile' : {
+            message: '프로필 편집이 완료되었습니다.',
+            body: <EditProfile />,
+            closable: true,
+            onEvent: () => {
+                reset();
             }
         }
     }
@@ -30,7 +39,7 @@ const Confirm = (props) => {
             closable={modal[confirmModal.type].closable}
             cancelButtonProps={{ style: { display: 'none' } }}
         >
-            <p>{modal[confirmModal.type].message}</p>
+            {modal[confirmModal.type]?.body}
         </Modal>
     );
 }

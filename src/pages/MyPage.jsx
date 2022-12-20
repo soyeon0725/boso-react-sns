@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import {selectUserInfo} from '../app/slice';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectUserInfo, setConfirmModal} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 
@@ -8,19 +8,13 @@ import TextList from '../components/list/TextList';
 import EditProfile from "../modal/EditProfile";
 
 const MyPage = () => {
+    const dispatch = useDispatch();
     const userInfo = useSelector(selectUserInfo);
-    const [editProfileModal, setEditProfileModal] = useState({
-        show: false,
-        type: ''
-    });
 
     // 마이페이지 진입
     useEffect(()=> {
         console.log("MyPage PAGE");
     },[]);
-
-    // Todo EditProfile Modal 생성 후 연동하기
-    const editProfile = () => setEditProfileModal({show: true, type: 'edit-profile'});
 
     const onChange = (key) => {
         console.log(key);
@@ -51,7 +45,7 @@ const MyPage = () => {
                 >
                     <span>{`Name : ${userInfo.name}`}</span>
                     <span>{`Email : ${userInfo.email}`}</span>
-                    <Button onClick={editProfile}>
+                    <Button onClick={() => dispatch(setConfirmModal({show: true, type: 'edit-profile'}))}>
                         프로필 편집
                     </Button>
                 </div>
@@ -85,7 +79,6 @@ const MyPage = () => {
                     },
                 ]}
             />
-            {editProfileModal.show && <EditProfile editProfile={editProfileModal} setEditProfile={setEditProfileModal} />}
         </>
     );
 }
