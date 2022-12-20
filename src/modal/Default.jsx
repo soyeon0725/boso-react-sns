@@ -11,7 +11,8 @@ const Default = (props) => {
             message: '사용 가능한 아이디입니다.'
         },
         'join-fail': {
-            message: '아이디 중복 체크가 필요합니다.'
+            message: '회원가입이 실패했습니다.',
+            // message: '아이디 중복 체크가 필요합니다.'
         },
         'email-already-in-use': {
             message: '이미 사용되고 있는 이메일입니다.'
@@ -21,6 +22,12 @@ const Default = (props) => {
         },
         'login-fail': {
             message: '아이디 또는 비밀번호를 확인해주세요.'
+        },
+        'user-not-found': {
+            message: '이메일을 확인해주세요.'
+        },
+        'wrong-password': {
+            message: '비밀번호를 확인해주세요.'
         }
     };
     const reset = () => setDefaultModal({show: false, type: ''});

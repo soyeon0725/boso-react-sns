@@ -56,7 +56,7 @@ package-lock.json : 프로그래머가 관리할 필요가 없고 npm이나 yarn
 ├── public
 ├── src
 │    ├── api // api 연동 모듈
-│    │   ├── adaptor.api.js
+│    │   ├── adaptor.js
 │    │   └── api.js
 │    ├── app // 라우터 리스트 및 store를 구성하는 모든 slice와 reducer를 정의
 │    │   ├── router.js

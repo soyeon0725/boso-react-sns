@@ -11,9 +11,9 @@ import {
 import Default from '../../modal/Default';
 import Confirm from '../../modal/Confirm';
 
-import { firestore } from '../../firebase/Firebase';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+
 import {LockOutlined, MailOutlined, UserOutlined, PhoneOutlined, GiftOutlined} from "@ant-design/icons";
+import {createUserWithEmailAndPasswordApi, JoinAndLoginApi} from "../../api/adaptor";
 
 const Join = () => {
     const { Panel } = Collapse;
@@ -54,31 +54,9 @@ const Join = () => {
     // Authentication Join
     const createUser = async (values) => {
         console.log(values)
-        const {email, password} = values;
-        const userStore = firestore.collection("user");
-        const auth = getAuth();
+
         // 1. 신규 사용자 가입
-        await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                console.log("createUserWithEmailAndPassword success ⭕️");
-                // isUser = {...isUser, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
-                if (user.uid) setConfirmModal({show: true, type: 'join-success'});
-                userStore.doc(user.uid).set(values).then(r => console.log(r));
-                userStore.doc(user.uid).update({photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'});
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log("createUserWithEmailAndPassword error ❌");
-                console.log(errorCode, errorMessage);
-                if (errorCode === 'auth/email-already-in-use') {
-                    setDefaultModal({show: true, type: 'email-already-in-use'});
-                } else if (errorCode === 'auth/weak-password') {
-                    setDefaultModal({show: true, type: 'weak-password'});
-                }
-            })
+        await createUserWithEmailAndPasswordApi(values);
     };
 
     const onFinish = async (values) => {
@@ -138,12 +116,12 @@ const Join = () => {
                             required: true
                         },
                         {
-                            // validator: (_, value) => {
-                            //     if (!value || checkPassword(value)) {
-                            //         return Promise.resolve();
-                            //     }
-                            //     return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
-                            // }
+                            validator: (_, value) => {
+                                if (!value || checkPassword(value)) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
+                            }
                         }
                     ]}
                 >

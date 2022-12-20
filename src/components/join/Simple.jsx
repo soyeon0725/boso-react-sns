@@ -6,6 +6,7 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import Default from "../../modal/Default";
 import Confirm from "../../modal/Confirm";
 import {LockOutlined, MailOutlined, UserOutlined} from "@ant-design/icons";
+import {createUserWithEmailAndPasswordApi} from "../../api/adaptor";
 
 const Simple = () => {
     const [defaultModal, setDefaultModal] = useState({
@@ -33,32 +34,7 @@ const Simple = () => {
 
     // Authentication Join
     const simpleCreateUser = async (values) => {
-        const {email, password} = values;
-        const userStore = firestore.collection("user");
-        const auth = getAuth();
-        // 1. 신규 사용자 가입
-        await createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                if (user.uid) setConfirmModal({show: true, type: 'join-success'});
-                console.log("createUserWithEmailAndPassword success ⭕️");
-                userStore.doc(user.uid).set(values).then(r => console.log(r));
-                // Todo agree, expired 필드 추가 여부 확인 필요
-                userStore.doc(user.uid).update({phone: '', birth: '', photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'});
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log("createUserWithEmailAndPassword error ❌");
-                console.log(errorCode, errorMessage);
-                if (errorCode === 'auth/email-already-in-use') {
-                    setDefaultModal({show: true, type: 'email-already-in-use'});
-                } else if (errorCode === 'auth/weak-password') {
-                    setDefaultModal({show: true, type: 'weak-password'});
-                }
-            })
-
+        await createUserWithEmailAndPasswordApi(values);
     };
 
     const onFinish = async (values) => {

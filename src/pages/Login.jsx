@@ -56,7 +56,13 @@ const Login = () => {
                 console.log("signInWithEmailAndPassword error ❌");
                 console.log(errorCode);
                 console.log(errorMessage);
-                // setDefaultModal({show: true, type: 'login-fail'});
+                if (errorCode === 'auth/user-not-found') {
+                    setDefaultModal({show: true, type: 'user-not-found'});
+                } else if (errorCode === 'auth/wrong-password') {
+                    setDefaultModal({show: true, type: 'wrong-password'});
+                } else {
+                    setDefaultModal({show: true, type: 'login-fail'});
+                }
             });
     };
 
