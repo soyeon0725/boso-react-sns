@@ -44,10 +44,7 @@ const App = () => {
                 const uid = user.uid;
                 console.log(uid);
                 console.log("isLoggedIn ⭕");
-                setTimeout(function() {
-                   console.log('테스트~~')
-                    dispatch(setIsLoggedIn(true));
-                }, 400)
+                dispatch(setIsLoggedIn(true));
                 //
             } else {
                 // User is signed out
