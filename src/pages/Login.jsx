@@ -66,10 +66,6 @@ const Login = () => {
             });
     };
 
-    // route
-    const basicJoin = () => navigate('/join', {state: { join: 'basic' }});
-    const simpleJoin = () => navigate('/join', {state: { join: 'simple' }});
-
     return (
         <>
             <div style={{ paddingTop: '40px' }}>
@@ -133,14 +129,14 @@ const Login = () => {
                     size="large"
                     shape="circle"
                     icon={<UserAddOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
-                    onClick={basicJoin}
+                    onClick={() => navigate('/join/detail')}
                 />
                 <Button
                     style={{ marginLeft: '10px' }}
                     size="large"
                     shape="circle"
                     icon={<MailOutlined style={{ color: '#1890ff', fontSize: '24px' }} />}
-                    onClick={simpleJoin}
+                    onClick={() => navigate('/join/simple')}
                 />
                 <Button
                     style={{ marginLeft: '10px' }}

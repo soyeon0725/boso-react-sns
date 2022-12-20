@@ -46,7 +46,7 @@ const Join = () => {
 
     // 회원가입 화면 진입
     useEffect(()=> {
-        console.log("Basic Component");
+        console.log("Detail Component");
     },[]);
 
     const genExtra = key => <Checkbox value={key} onClick={(event) => event.stopPropagation()} />;

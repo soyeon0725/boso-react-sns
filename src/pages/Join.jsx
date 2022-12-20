@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
-import { useLocation } from "react-router-dom";
+import {useParams} from "react-router-dom";
 
-import Basic from '../components/join/Basic';
+import Detail from '../components/join/Detail';
 import Simple from '../components/join/Simple';
 
 const Join = () => {
-    const location = useLocation();
-    const joinType = location.state.join;
+    const params = useParams();
+    const joinType = params.type;
 
     // 회원가입 화면 진입
     useEffect(()=> {
@@ -15,7 +15,7 @@ const Join = () => {
 
     return (
         <>
-            {joinType === 'basic' ? <Basic /> : <Simple />}
+            {joinType === 'detail' ? <Detail/> : joinType === 'simple' ? <Simple /> : null}
         </>
     )
 }

@@ -29,7 +29,7 @@ const App = () => {
     const isLoggedIn = useSelector(selectIsLoggedIn);
     const [init, setInit] = useState(false);
 
-    const commonLayout = pathname === '/' || pathname === '/join';
+    const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/join/detail' || pathname === '/join/simple';
 
     useEffect(() => {
         console.log('currentUser');

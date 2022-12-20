@@ -9,7 +9,7 @@ export const RouteList = [
         element :  <Login/>
     },
     {
-        path : '/join',
+        path : '/join/:type',
         element :  <Join/>
     },
 ];
