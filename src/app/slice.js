@@ -29,7 +29,11 @@ export {exampleSlice};
 const joinInfoSlice = createSlice({
     name: "joinInfo",
     initialState: {
-        userInfo : {},
+        userInfo : {
+            name: '',
+            email: '',
+            photoUrl: ''
+        }
     },
     reducers: {
         setUserInfo: (state, action) => {

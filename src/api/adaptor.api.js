@@ -1,13 +1,17 @@
 import store from "../app/store";
-import {setDefaultModal} from '../app/slice';
+import {setConfirmModal, setDefaultModal} from '../app/slice';
 import { firestore } from '../firebase/Firebase';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    updatePassword
+} from "firebase/auth";
 
+// Firebase Authentication - 신규 사용자 등록
 export const createUserWithEmailAndPasswordApi = (values) => {
     const {email, password} = values;
     const userStore = firestore.collection("user");
     const auth = getAuth();
-    console.log(values);
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
@@ -31,4 +35,26 @@ export const createUserWithEmailAndPasswordApi = (values) => {
                 store.dispatch(setDefaultModal({show: true, type: 'join-fail'}));
             }
         });
+};
+
+// Firebase Authentication - 사용자 비밀번호 설정
+export const updatePasswordApi = (password) => {
+    // Authentication - updatePassword
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const newPassword = password;
+
+    // Cloud Firestore - doc update
+    const userStore = firestore.collection("user");
+    const currentUid = user.uid
+
+    updatePassword(user, newPassword).then(() => {
+        // Update successful.
+        userStore.doc(currentUid).update({password}).then(() => {
+            store.dispatch(setConfirmModal({show: true, type: 'change-password'}));
+        })
+    }).catch((error) => {
+        // An error ocurred
+        console.log(error);
+    });
 };

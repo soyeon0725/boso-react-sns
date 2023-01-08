@@ -42,18 +42,14 @@ const App = () => {
     const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/join/detail' || pathname === '/join/simple';
 
     useEffect(() => {
-        console.log('currentUser');
-        console.log(auth.currentUser);
         // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
         onAuthStateChanged(auth, (user) => {
-            console.log(user);
-            console.log("onAuthStateChanged");
+            // console.log("onAuthStateChanged" + user);
             if (user) {
-                console.log(user)
+                // console.log(user)
                 // User is signed in, see docs for a list of available properties
                 const uid = user.uid;
-                console.log(uid);
-                console.log("isLoggedIn ⭕");
+                console.log("isLoggedIn ⭕" + uid);
                 dispatch(setIsLoggedIn(true));
                 //
             } else {
@@ -64,7 +60,7 @@ const App = () => {
             // Cloud Firestore userCollection get!
             const userStore = firestore.collection("user");
             userStore.doc(user?.uid).get().then((doc) => {
-                console.log(doc.data());
+                // console.log(doc.data());
                 dispatch(setUserInfo({
                     name: doc.data()?.name,
                     email: doc.data()?.email,

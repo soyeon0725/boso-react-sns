@@ -31,7 +31,8 @@ function HeaderC(props) {
                     <Space wrap>
                         <Button
                             type="text"
-                            icon={<SettingOutlined style={{ color: '#d95f5f', fontSize: '24px' }} />}
+                            icon={<SettingOutlined style={{ color: '#fff', fontSize: '24px' }} />}
+                            onClick={() => navigate('/setting')}
                         />
                         <Button
                             type="text"

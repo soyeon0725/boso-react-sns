@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { Button, Checkbox, Form, Input, Radio, Collapse } from 'antd';
+import {LockOutlined, MailOutlined, UserOutlined, PhoneOutlined, GiftOutlined} from "@ant-design/icons";
 
 import {
     checkPassword,
@@ -9,7 +10,6 @@ import {
     checkPhoneNumber
 } from '../../utils/utilCommon';
 
-import {LockOutlined, MailOutlined, UserOutlined, PhoneOutlined, GiftOutlined} from "@ant-design/icons";
 import {createUserWithEmailAndPasswordApi} from "../../api/adaptor.api";
 
 const Join = () => {

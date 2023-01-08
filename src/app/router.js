@@ -1,7 +1,8 @@
-import Join from "../pages/Join";
-import Login from "../pages/Login";
-import Main from "../pages/Main";
-import MyPage from "../pages/MyPage";
+import Join from '../pages/Join';
+import Login from '../pages/Login';
+import Main from '../pages/Main';
+import MyPage from '../pages/MyPage';
+import Setting from '../pages/Setting'
 
 export const RouteList = [
     {
@@ -22,6 +23,10 @@ export const AuthRouteList = [
     {
         path : '/my-page',
         element :  <MyPage/>
+    },
+    {
+        path : '/setting',
+        element :  <Setting/>
     },
 
 ];

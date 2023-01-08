@@ -53,8 +53,8 @@ const MyPage = () => {
             <Tabs
                 size='large'
                 tabBarGutter={100}
-                centered={true}
                 defaultActiveKey="1"
+                centered
                 onChange={onChange}
                 items={[
                     {
@@ -70,7 +70,7 @@ const MyPage = () => {
                     {
                         label: `구매내역`,
                         key: '3',
-                        children: <TextList isImg={true} />,
+                        children: <TextList isImg />,
                     },
                     {
                         label: `대시보드`,
