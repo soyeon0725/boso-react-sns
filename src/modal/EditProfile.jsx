@@ -90,11 +90,13 @@ const EditProfile = (props) => {
             </Upload>
             <Form
                 name="basic"
+                initialValues={{ editUser: {name: userInfo.name, email: userInfo.email }}}
                 onFinish={onFinish}
             >
                 <Form.Item
                     name={["editUser", "name"]}
                     label="Name"
+                    defaultValue={userInfo.name}
                     rules={[
                         {
                             required: true,
@@ -107,6 +109,7 @@ const EditProfile = (props) => {
                 <Form.Item
                     name={["editUser", "email"]}
                     label="Email"
+                    defaultValue={userInfo.email}
                     rules={[
                         {
                             required: true,
