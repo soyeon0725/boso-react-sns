@@ -1,10 +1,13 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setUserInfo} from '../app/slice';
+import {selectUserInfo, setConfirmModal, setUserInfo} from '../app/slice';
 
-import {Form, Input, Upload, message} from 'antd';
+import {Form, Input, Upload, message, Button} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
 import {checkBirth, checkPhoneNumber} from "../utils/utilCommon";
 import {useState} from "react";
+import store from "../app/store";
+import {firestore} from "../firebase/Firebase";
+import {getAuth} from "firebase/auth";
 
 
 
@@ -36,13 +39,37 @@ const EditProfile = (props) => {
         getBase64(info.file.originFileObj, (url) => {
             // setLoading(false);
             console.log(url)
-            setImageUrl(url)
-
+            setImageUrl(url);
         });
     };
 
+    const onFinish = (values) => {
+        // Cloud Firestore - doc update
+        const auth = getAuth();
+        const user = auth.currentUser;
+        const userStore = firestore.collection("user");
+        console.log({...values.editUser});
+        if (values.editUser.birth === undefined) values.editUser.birth = '';
+        if (values.editUser.phone === undefined) values.editUser.phone = '';
+        console.log({...values.editUser});
+        userStore.doc(user?.uid).update({...values.editUser}).then(() => {
+            dispatch(setConfirmModal({show: false, type: ''}));
+        });
+    }
+
     return (
         <>
+            {/*<div>
+                <Button shape="circle" icon={<SearchOutlined />} size="large">
+                    <img
+                        src={imageUrl}
+                        alt="avatar"
+                        style={{
+                            width: '100%',
+                        }}
+                    />
+                </Button>
+            </div>*/}
             <Upload
                 name="avatar"
                 listType="picture-card"
@@ -62,16 +89,11 @@ const EditProfile = (props) => {
             </Upload>
             <Form
                 name="basic"
-                labelCol={{
-                    span: 8,
-                }}
-                wrapperCol={{
-                    span: 10,
-                }}
+                onFinish={onFinish}
             >
                 <Form.Item
+                    name={["editUser", "name"]}
                     label="Name"
-                    name="name"
                     rules={[
                         {
                             required: true,
@@ -82,8 +104,8 @@ const EditProfile = (props) => {
                     <Input placeholder="이름을 입력해주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
+                    name={["editUser", "email"]}
                     label="Email"
-                    name="email"
                     rules={[
                         {
                             required: true,
@@ -97,12 +119,9 @@ const EditProfile = (props) => {
                     <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
-                    name={["user", "birth"]}
+                    name={["editUser", "birth"]}
                     label="Birth"
                     rules={[
-                        {
-                            required: true
-                        },
                         {
                             validator: (_, value) => {
                                 if (!value || checkBirth(value)) {
@@ -116,12 +135,9 @@ const EditProfile = (props) => {
                     <Input placeholder="생년월일을 입력해주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
-                    name={["user", "phone"]}
+                    name={["editUser", "phone"]}
                     label="Phone"
                     rules={[
-                        {
-                            required: true
-                        },
                         {
                             validator: (_, value) => {
                                 if (!value || checkPhoneNumber(value)) {
@@ -133,6 +149,11 @@ const EditProfile = (props) => {
                     ]}
                 >
                     <Input placeholder="휴대폰을 입력해주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>
+                        Submit
+                    </Button>
                 </Form.Item>
             </Form>
         </>

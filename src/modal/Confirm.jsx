@@ -22,6 +22,7 @@ const Confirm = (props) => {
             message: '프로필 편집이 완료되었습니다.',
             body: <EditProfile />,
             closable: true,
+            footer: null,
             onEvent: () => {
                 reset();
             }
@@ -47,6 +48,7 @@ const Confirm = (props) => {
             onCancel={() => reset()}
             closable={modal[confirmModal.type].closable}
             cancelButtonProps={{ style: { display: 'none' } }}
+            footer={modal[confirmModal.type].footer}
         >
             {modal[confirmModal.type]?.body}
         </Modal>

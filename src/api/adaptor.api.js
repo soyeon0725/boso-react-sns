@@ -39,9 +39,11 @@ export const createUserWithEmailAndPasswordApi = (values) => {
 
 // Firebase Authentication - 사용자 비밀번호 설정
 export const updatePasswordApi = (password) => {
-    // Authentication - updatePassword
+    // common
     const auth = getAuth();
     const user = auth.currentUser;
+
+    // Authentication - updatePassword
     const newPassword = password;
 
     // Cloud Firestore - doc update

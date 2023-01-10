@@ -69,7 +69,7 @@ const Setting = () => {
             }
         }).catch((error) => {
             // An error ocurred
-            console.log(error)
+            console.log(error);
         });
     }
 
