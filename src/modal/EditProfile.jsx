@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setConfirmModal, setUserInfo} from '../app/slice';
+import {selectUserInfo, setConfirmModal, setDefaultModal, setUserInfo} from '../app/slice';
 
 import {Form, Input, Upload, message, Button} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
@@ -53,6 +53,7 @@ const EditProfile = (props) => {
         if (values.editUser.phone === undefined) values.editUser.phone = '';
         console.log({...values.editUser});
         userStore.doc(user?.uid).update({...values.editUser}).then(() => {
+            dispatch(setDefaultModal({show: true, type: 'edit-profile'}));
             dispatch(setConfirmModal({show: false, type: ''}));
         });
     }

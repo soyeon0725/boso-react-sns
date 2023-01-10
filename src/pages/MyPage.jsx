@@ -18,19 +18,20 @@ const MyPage = () => {
         console.log("MyPage PAGE");
     },[]);
 
-    useEffect(() => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        const userStore = firestore.collection("user");
-        userStore.doc(user?.uid).get().then((doc) => {
-            // console.log(doc.data());
-            dispatch(setUserInfo({
-                name: doc.data()?.name,
-                email: doc.data()?.email,
-                photoUrl: doc.data()?.photoUrl
-            }))
-        });
-    }, [userInfo]);
+    // useEffect(() => {
+    //     const auth = getAuth();
+    //     const user = auth.currentUser;
+    //     const userStore = firestore.collection("user");
+    //     console.log("MyPage PAGE - userInfo");
+    //     userStore.doc(user?.uid).get().then((doc) => {
+    //         // console.log(doc.data());
+    //         dispatch(setUserInfo({
+    //             name: doc.data()?.name,
+    //             email: doc.data()?.email,
+    //             photoUrl: doc.data()?.photoUrl
+    //         }))
+    //     });
+    // }, [userInfo]);
 
     const onChange = (key) => {
         console.log(key);

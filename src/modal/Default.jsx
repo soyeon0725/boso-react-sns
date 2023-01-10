@@ -30,6 +30,9 @@ const Default = (props) => {
         },
         'wrong-password': {
             message: '비밀번호를 확인해주세요.'
+        },
+        'edit-profile': {
+            message: '프로필 변경이 완료되었습니다.'
         }
     };
     const reset = () => dispatch(setDefaultModal({show: false, type: ''}));
