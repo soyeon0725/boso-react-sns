@@ -90,7 +90,7 @@ const EditProfile = (props) => {
             </Upload>
             <Form
                 name="basic"
-                initialValues={{ editUser: {name: userInfo.name, email: userInfo.email }}}
+                initialValues={{ editUser: {name: userInfo.name, email: userInfo.email, birth: userInfo.birth, phone: userInfo.phone }}}
                 onFinish={onFinish}
             >
                 <Form.Item

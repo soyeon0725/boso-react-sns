@@ -64,6 +64,8 @@ const App = () => {
                 dispatch(setUserInfo({
                     name: doc.data()?.name,
                     email: doc.data()?.email,
+                    birth: doc.data()?.birth,
+                    phone: doc.data()?.phone,
                     photoUrl: doc.data()?.photoUrl
                 }))
             });

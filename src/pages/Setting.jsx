@@ -52,13 +52,13 @@ const Setting = () => {
                     console.log(r);
                     userStore.doc(user.uid).delete().then(r => {
                         // Todo 모달 팝업 연동 여부 체크
-                        signOut(auth).then(() => {
-                            // Sign-out successful.
-                            console.log('signOut ⭕️')
-                        }).catch((error) => {
-                            // An error happened.
-                            console.log('signOut ❌️')
-                        });
+                        // signOut(auth).then(() => {
+                        //     // Sign-out successful.
+                        //     console.log('signOut ⭕️')
+                        // }).catch((error) => {
+                        //     // An error happened.
+                        //     console.log('signOut ❌️')
+                        // });
                     });
                 }).catch((error) => {
                     // An error ocurred
