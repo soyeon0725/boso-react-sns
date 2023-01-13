@@ -1,13 +1,11 @@
+import {useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setConfirmModal, setDefaultModal, setUserInfo} from '../app/slice';
 
+import {selectUserInfo} from '../app/slice';
 import {Form, Input, Upload, message, Button} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
 import {checkBirth, checkPhoneNumber} from "../utils/utilCommon";
-import {useState} from "react";
-import store from "../app/store";
-import {firestore} from "../firebase/Firebase";
-import {getAuth} from "firebase/auth";
+import {updateUserApi} from "../api/adaptor.api";
 
 
 
@@ -43,20 +41,7 @@ const EditProfile = (props) => {
         });
     };
 
-    const onFinish = (values) => {
-        // Cloud Firestore - doc update
-        const auth = getAuth();
-        const user = auth.currentUser;
-        const userStore = firestore.collection("user");
-        console.log({...values.editUser});
-        if (values.editUser.birth === undefined) values.editUser.birth = '';
-        if (values.editUser.phone === undefined) values.editUser.phone = '';
-        console.log({...values.editUser});
-        userStore.doc(user?.uid).update({...values.editUser}).then(() => {
-            dispatch(setDefaultModal({show: true, type: 'edit-profile'}));
-            dispatch(setConfirmModal({show: false, type: ''}));
-        });
-    }
+    const onFinish = (values) => updateUserApi(values.editUser);
 
     return (
         <>

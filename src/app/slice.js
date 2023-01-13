@@ -32,17 +32,25 @@ const joinInfoSlice = createSlice({
         userInfo : {
             name: '',
             email: '',
-            photoUrl: ''
-        }
+            password: '',
+            photoUrl: '',
+            birth: '',
+            phone: ''
+        },
+        userId: ''
     },
     reducers: {
         setUserInfo: (state, action) => {
             state.userInfo = action.payload;
+        },
+        setUserId: (state, action) => {
+            state.userId = action.payload;
         }
     }
 });
-export const {setUserInfo} = joinInfoSlice.actions;
+export const {setUserInfo, setUserId} = joinInfoSlice.actions;
 export const selectUserInfo = state => state.joinInfo.userInfo;
+export const selectUserId = state => state.joinInfo.userId;
 
 export {joinInfoSlice};
 

@@ -1,81 +1,22 @@
-import {useEffect, useState} from "react";
-
+import {useSelector} from "react-redux";
+import {selectUserInfo} from "../app/slice";
 import { Tabs, Button, Form, Input } from 'antd';
 import {LockOutlined} from "@ant-design/icons";
-
 import {checkPassword} from "../utils/utilCommon";
-import {updatePasswordApi} from "../api/adaptor.api";
-import {firestore} from "../firebase/Firebase";
-import {getAuth, EmailAuthProvider, reauthenticateWithCredential, deleteUser, signOut} from "firebase/auth";
+import {deleteUserApi, updatePasswordApi} from "../api/adaptor.api";
 
 const Setting = () => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const [currentPassword, setCurrentPassword] = useState('');
+    const userInfo = useSelector(selectUserInfo);
 
     const formItemLayout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 10 },
     };
 
-    useEffect(() => {
-        const userStore = firestore.collection("user");
-        const auth = getAuth();
-        const user = auth.currentUser;
-        const currentUid = user.uid;
-        userStore.doc(currentUid).get().then((doc) => {
-            setCurrentPassword(doc.data()?.password);
-        });
-    }, []);
-
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        const { password } = values;
-        userAuthentication(password);
+        updatePasswordApi(values);
     };
-
-    // Firebase Authentication - 사용자 재인증
-    const userAuthentication = type => {
-        console.log(type)
-        console.log(currentPassword)
-        const credential = EmailAuthProvider.credential(
-            auth.currentUser.email,
-            currentPassword
-        );
-        reauthenticateWithCredential(user, credential).then((r) => {
-            // User re-authenticated.
-            if (type === 'deleteAccount') {
-                console.log('deleteAccount')
-                const userStore = firestore.collection("user");
-                deleteUser(user).then((r) => {
-                    // User deleted.
-                    console.log(r);
-                    userStore.doc(user.uid).delete().then(r => {
-                        // Todo 모달 팝업 연동 여부 체크
-                        // signOut(auth).then(() => {
-                        //     // Sign-out successful.
-                        //     console.log('signOut ⭕️')
-                        // }).catch((error) => {
-                        //     // An error happened.
-                        //     console.log('signOut ❌️')
-                        // });
-                    });
-                }).catch((error) => {
-                    // An error ocurred
-                    console.log(error);
-                });
-            } else {
-                updatePasswordApi(type);
-            }
-        }).catch((error) => {
-            // An error ocurred
-            console.log(error);
-        });
-    }
-
-    // const deleteAccount = () => userAuthentication('deleteAccount');
-
-    const onChange = (key) => console.log(key);
 
     return (
         <Tabs
@@ -83,7 +24,6 @@ const Setting = () => {
             tabBarGutter={100}
             defaultActiveKey="1"
             centered
-            onChange={onChange}
             items={[
                 {
                     label: `비밀번호 변경`,
@@ -109,7 +49,7 @@ const Setting = () => {
                                     },
                                     {
                                         validator: (_, value) => {
-                                            if (!value || (value === currentPassword)) {
+                                            if (!value || value === userInfo.password) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
@@ -131,7 +71,7 @@ const Setting = () => {
                                     },
                                     {
                                         validator: (_, value) => {
-                                            if (!value || (value !== currentPassword && checkPassword(value))) {
+                                            if (!value || (value !== userInfo.password && checkPassword(value))) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
@@ -186,7 +126,7 @@ const Setting = () => {
                                 회원님의 프로필, 사진, 동영상, 댓글, 좋아요 및 팔로워가<br />
                                 영구적으로 삭제됩니다.
                             </p>
-                            <Button type="primary" htmlType="submit" onClick={() => userAuthentication('deleteAccount')}>
+                            <Button type="primary" htmlType="submit" onClick={() => deleteUserApi(userInfo.password)}>
                                 계정 삭제
                             </Button>
                         </div>

@@ -5,7 +5,7 @@ import {
     selectDefaultModal,
     selectConfirmModal,
     setIsLoggedIn,
-    setUserInfo,
+    setUserId, setUserInfo,
 } from './app/slice';
 import {
     Route,
@@ -16,7 +16,7 @@ import {
 import {RouteList, AuthRouteList} from './app/router';
 
 // firebase
-import {firestore, auth} from "./firebase/Firebase";
+import {auth} from "./firebase/Firebase";
 import { onAuthStateChanged } from 'firebase/auth';
 
 import { Layout } from 'antd';
@@ -28,6 +28,7 @@ import Confirm from "./modal/Confirm";
 
 import 'antd/dist/antd.css';
 import './index.css';
+import {getUserApi} from "./api/adaptor.api";
 
 const App = () => {
     const { Content } = Layout;
@@ -47,28 +48,19 @@ const App = () => {
             // console.log("onAuthStateChanged" + user);
             if (user) {
                 // console.log(user)
-                // User is signed in, see docs for a list of available properties
-                const uid = user.uid;
-                console.log("isLoggedIn ⭕" + uid);
+                const uid = user?.uid;
+                console.log('로그인');
+                dispatch(setUserId(uid));
                 dispatch(setIsLoggedIn(true));
                 //
             } else {
-                // User is signed out
-                console.log("isLoggedIn ❌");
+                console.log('로그아웃');
                 dispatch(setIsLoggedIn(false));
             }
-            // Cloud Firestore userCollection get!
-            const userStore = firestore.collection("user");
-            userStore.doc(user?.uid).get().then((doc) => {
-                // console.log(doc.data());
-                dispatch(setUserInfo({
-                    name: doc.data()?.name,
-                    email: doc.data()?.email,
-                    birth: doc.data()?.birth,
-                    phone: doc.data()?.phone,
-                    photoUrl: doc.data()?.photoUrl
-                }))
-            });
+            dispatch(setUserId(user?.uid));
+            console.log(user)
+            // Cloud Firestore - user information get!
+            getUserApi();
             setInit(true);
         });
     }, []);

@@ -1,11 +1,12 @@
 import {useDispatch, useSelector} from "react-redux";
 import {selectDefaultModal, setDefaultModal} from "../app/slice";
 import { Modal } from 'antd';
+import EditProfile from "./EditProfile";
 
-const Default = (props) => {
+const Default = () => {
+    console.log('Default 팝업');
     const dispatch = useDispatch();
     const defaultModal = useSelector(selectDefaultModal);
-    console.log('Default 팝업');
     const modal = {
         'id-not-available': {
             message: '중복된 아이디입니다.'
@@ -31,9 +32,15 @@ const Default = (props) => {
         'wrong-password': {
             message: '비밀번호를 확인해주세요.'
         },
-        'edit-profile': {
+        'change-password': {
+            message: '비밀번호 변경이 완료되었습니다.'
+        },
+        'edit-profile' : {
+            message: <EditProfile />
+        },
+        'change-profile': {
             message: '프로필 변경이 완료되었습니다.'
-        }
+        },
     };
     const reset = () => dispatch(setDefaultModal({show: false, type: ''}));
 
@@ -44,7 +51,7 @@ const Default = (props) => {
             onCancel={() => reset()}
             footer={null}
         >
-            <p>{modal[defaultModal.type].message}</p>
+            <div>{modal[defaultModal.type].message}</div>
         </Modal>
     );
 }

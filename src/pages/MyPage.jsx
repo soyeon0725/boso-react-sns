@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setConfirmModal, setUserInfo} from '../app/slice';
+import {selectUserInfo, setDefaultModal} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
-
 import TextList from '../components/list/TextList';
-import EditProfile from "../modal/EditProfile";
-import {firestore} from "../firebase/Firebase";
-import {getAuth} from "firebase/auth";
 
 const MyPage = () => {
     const dispatch = useDispatch();
@@ -17,25 +13,6 @@ const MyPage = () => {
     useEffect(()=> {
         console.log("MyPage PAGE");
     },[]);
-
-    // useEffect(() => {
-    //     const auth = getAuth();
-    //     const user = auth.currentUser;
-    //     const userStore = firestore.collection("user");
-    //     console.log("MyPage PAGE - userInfo");
-    //     userStore.doc(user?.uid).get().then((doc) => {
-    //         // console.log(doc.data());
-    //         dispatch(setUserInfo({
-    //             name: doc.data()?.name,
-    //             email: doc.data()?.email,
-    //             photoUrl: doc.data()?.photoUrl
-    //         }))
-    //     });
-    // }, [userInfo]);
-
-    const onChange = (key) => {
-        console.log(key);
-    };
 
     return (
         <>
@@ -62,7 +39,7 @@ const MyPage = () => {
                 >
                     <span>{`Name : ${userInfo.name}`}</span>
                     <span>{`Email : ${userInfo.email}`}</span>
-                    <Button onClick={() => dispatch(setConfirmModal({show: true, type: 'edit-profile'}))}>
+                    <Button onClick={() => dispatch(setDefaultModal({show: true, type: 'edit-profile'}))}>
                         프로필 편집
                     </Button>
                 </div>
@@ -72,7 +49,6 @@ const MyPage = () => {
                 tabBarGutter={100}
                 defaultActiveKey="1"
                 centered
-                onChange={onChange}
                 items={[
                     {
                         label: `전체 포스트`,
