@@ -99,59 +99,6 @@ const EditProfile = () => {
                             <img src={require('../assets/image/profile-image-08.png')} />
                         </Radio.Button>
                     </Radio.Group>
-                    {/*<div>*/}
-                    {/*    <div>*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={userInfo.photoUrl} />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-01.png') } />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-02.png') } />}*/}
-                    {/*        />*/}
-                    {/*    </div>*/}
-                    {/*    <div>*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-03.png') } />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-04.png') } />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-05.png') } />}*/}
-                    {/*        />*/}
-                    {/*    </div>*/}
-                    {/*    <div>*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-06.png') } />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-07.png') } />}*/}
-                    {/*        />*/}
-                    {/*        <Button*/}
-                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
-                    {/*            shape="circle"*/}
-                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-08.png') } />}*/}
-                    {/*        />*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
                 </Form.Item>
                 <Form.Item
                     name={["editUser", "birth"]}
