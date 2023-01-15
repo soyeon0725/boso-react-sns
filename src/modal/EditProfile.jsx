@@ -1,87 +1,38 @@
-import {useState} from "react";
 import {useDispatch, useSelector} from 'react-redux';
 
-import {selectUserInfo} from '../app/slice';
-import {Form, Input, Upload, message, Button} from 'antd';
+import {selectUserInfo, setUserInfo} from '../app/slice';
+import {Form, Input, Button, Radio} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
 import {checkBirth, checkPhoneNumber} from "../utils/utilCommon";
-import {updateUserApi} from "../api/adaptor.api";
 
-
-
-const EditProfile = (props) => {
+const EditProfile = () => {
     console.log('EditProfile 팝업');
     const dispatch = useDispatch();
     const userInfo = useSelector(selectUserInfo);
-    const [imageUrl, setImageUrl] = useState(userInfo.photoUrl);
 
-    const getBase64 = (img, callback) => {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => callback(reader.result));
-        reader.readAsDataURL(img);
+    const onFinish = (values) => {
+        console.log(values.editUser);
+        // updateUserApi(values.editUser);
     };
-    const beforeUpload = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG/PNG file!');
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
-        }
-        return isJpgOrPng && isLt2M;
-    };
-
-    const handleChange = (info) => {
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj, (url) => {
-            // setLoading(false);
-            console.log(url)
-            setImageUrl(url);
-        });
-    };
-
-    const onFinish = (values) => updateUserApi(values.editUser);
 
     return (
         <>
-            {/*<div>
-                <Button shape="circle" icon={<SearchOutlined />} size="large">
-                    <img
-                        src={imageUrl}
-                        alt="avatar"
-                        style={{
-                            width: '100%',
-                        }}
-                    />
-                </Button>
-            </div>*/}
-            <Upload
-                name="avatar"
-                listType="picture-card"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                beforeUpload={beforeUpload}
-                onChange={handleChange}
-            >
-                <img
-                    src={imageUrl}
-                    alt="avatar"
-                    style={{
-                        width: '100%',
-                    }}
-                />
-            </Upload>
             <Form
                 name="basic"
-                initialValues={{ editUser: {name: userInfo.name, email: userInfo.email, birth: userInfo.birth, phone: userInfo.phone }}}
+                initialValues={{
+                    editUser: {
+                        name: userInfo.name,
+                        email: userInfo.email,
+                        birth: userInfo.birth,
+                        phone: userInfo.phone,
+                        photo: userInfo.photoUrl
+                    }
+                }}
                 onFinish={onFinish}
             >
                 <Form.Item
                     name={["editUser", "name"]}
                     label="Name"
-                    defaultValue={userInfo.name}
                     rules={[
                         {
                             required: true,
@@ -89,23 +40,118 @@ const EditProfile = (props) => {
                         }
                     ]}
                 >
-                    <Input placeholder="이름을 입력해주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder="이름을 입력해 주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["editUser", "email"]}
                     label="Email"
-                    defaultValue={userInfo.email}
                     rules={[
                         {
                             required: true,
                         },
                         {
                             type: 'email',
-                            message: '이메일 형식에 맞게 작성해주세요.'
+                            message: '이메일 형식에 맞게 작성해 주세요.'
                         }
                     ]}
                 >
-                    <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder="이메일을 입력해 주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                </Form.Item>
+                <Form.Item
+                    name={["editUser", "photo"]}
+                    label="Photo"
+                    rules={[
+                        {
+                            required: true,
+                        },
+                        {
+                            type: 'photo',
+                            message: '프로필 이미지를 선택해 주세요.'
+                        }
+                    ]}
+                >
+                    <Radio.Group>
+                        <Radio.Button value={userInfo.photoUrl}>
+                            <img src={userInfo.photoUrl} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-01.png'>
+                            <img src={require('../assets/image/profile-image-01.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-02.png'>
+                            <img src={require('../assets/image/profile-image-02.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-03.png'>
+                            <img src={require('../assets/image/profile-image-03.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-04.png'>
+                            <img src={require('../assets/image/profile-image-04.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-05.png'>
+                            <img src={require('../assets/image/profile-image-05.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-06.png'>
+                            <img src={require('../assets/image/profile-image-06.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-07.png'>
+                            <img src={require('../assets/image/profile-image-07.png')} />
+                        </Radio.Button>
+                        <Radio.Button value='../assets/image/profile-image-08.png'>
+                            <img src={require('../assets/image/profile-image-08.png')} />
+                        </Radio.Button>
+                    </Radio.Group>
+                    {/*<div>*/}
+                    {/*    <div>*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={userInfo.photoUrl} />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-01.png') } />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-02.png') } />}*/}
+                    {/*        />*/}
+                    {/*    </div>*/}
+                    {/*    <div>*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-03.png') } />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-04.png') } />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-05.png') } />}*/}
+                    {/*        />*/}
+                    {/*    </div>*/}
+                    {/*    <div>*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-06.png') } />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-07.png') } />}*/}
+                    {/*        />*/}
+                    {/*        <Button*/}
+                    {/*            style={{width: '136px', height: '136px', padding: 0}}*/}
+                    {/*            shape="circle"*/}
+                    {/*            icon={<img style={{width: '100%', height: '100%'}} src={require('../assets/image/profile-image-08.png') } />}*/}
+                    {/*        />*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </Form.Item>
                 <Form.Item
                     name={["editUser", "birth"]}
@@ -116,12 +162,12 @@ const EditProfile = (props) => {
                                 if (!value || checkBirth(value)) {
                                     return Promise.resolve();
                                 }
-                                return Promise.reject(new Error('생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.'));
+                                return Promise.reject(new Error('생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해 주세요.'));
                             }
                         }
                     ]}
                 >
-                    <Input placeholder="생년월일을 입력해주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder="생년월일을 입력해 주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item
                     name={["editUser", "phone"]}
@@ -132,12 +178,12 @@ const EditProfile = (props) => {
                                 if (!value || checkPhoneNumber(value)) {
                                     return Promise.resolve();
                                 }
-                                return Promise.reject(new Error('\'-\'빼고 숫자만 입력해주세요.'));
+                                return Promise.reject(new Error('\'-\'빼고 숫자만 입력해 주세요.'));
                             }
                         }
                     ]}
                 >
-                    <Input placeholder="휴대폰을 입력해주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder="휴대폰을 입력해 주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>

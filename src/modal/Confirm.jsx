@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {selectConfirmModal, setConfirmModal} from "../app/slice";
 import { Modal } from 'antd';
-기
+
 const Confirm = () => {
     console.log('Confirm 팝업');
     const dispatch = useDispatch();
