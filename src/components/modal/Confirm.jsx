@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
-import {selectConfirmModal, setConfirmModal} from "../app/slice";
+import {selectConfirmModal, setConfirmModal} from "../../app/slice";
 import { Modal } from 'antd';
 
 const Confirm = () => {

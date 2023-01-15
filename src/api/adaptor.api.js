@@ -82,7 +82,8 @@ export const getUserApi = () => {
             password: doc.data()?.password,
             birth: doc.data()?.birth,
             phone: doc.data()?.phone,
-            photoUrl: doc.data()?.photoUrl
+            photoUrl: doc.data()?.photoUrl,
+            post: doc.data()?.post,
         }))
     });
 }

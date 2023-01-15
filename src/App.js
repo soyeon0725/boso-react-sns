@@ -23,8 +23,8 @@ import { Layout } from 'antd';
 
 import FooterC from './components/common/Footer';
 import HeaderC from './components/common/Header';
-import Default from "./modal/Default";
-import Confirm from "./modal/Confirm";
+import Default from "./components/modal/Default";
+import Confirm from "./components/modal/Confirm";
 
 import 'antd/dist/antd.css';
 import './index.css';

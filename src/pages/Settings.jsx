@@ -1,3 +1,4 @@
+import {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {selectUserInfo} from "../app/slice";
 import { Tabs, Button, Form, Input } from 'antd';
@@ -5,7 +6,11 @@ import {LockOutlined} from "@ant-design/icons";
 import {checkPassword} from "../utils/utilCommon";
 import {deleteUserApi, updatePasswordApi} from "../api/adaptor.api";
 
-const Setting = () => {
+const Settings = () => {
+    useEffect(() => {
+        console.log('Settings PAGE');
+    }, []);
+
     const userInfo = useSelector(selectUserInfo);
 
     const formItemLayout = {
@@ -136,4 +141,4 @@ const Setting = () => {
         />
     )
 }
-export default Setting;
+export default Settings;

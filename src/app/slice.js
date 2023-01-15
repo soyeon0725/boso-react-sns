@@ -35,7 +35,16 @@ const joinInfoSlice = createSlice({
             password: '',
             photoUrl: '',
             birth: '',
-            phone: ''
+            phone: '',
+            post: {
+                imageList: [
+                    {
+                        id: '',
+                        url: '',
+                        category: ''
+                    }
+                ]
+            }
         },
         userId: ''
     },

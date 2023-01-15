@@ -11,7 +11,7 @@ import {
     MessageOutlined,
     ReadOutlined
 } from '@ant-design/icons';
-import Default from '../modal/Default';
+import Default from '../components/modal/Default';
 
 // firebase 이메일 & 비밀번호 로그인 연동
 import {

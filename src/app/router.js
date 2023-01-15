@@ -2,7 +2,9 @@ import Join from '../pages/Join';
 import Login from '../pages/Login';
 import Main from '../pages/Main';
 import MyPage from '../pages/MyPage';
-import Setting from '../pages/Setting'
+import Settings from '../pages/Settings'
+import Cart from "../pages/Cart";
+import ProductDetail from "../pages/ProductDetail";
 
 export const RouteList = [
     {
@@ -25,9 +27,16 @@ export const AuthRouteList = [
         element :  <MyPage/>
     },
     {
-        path : '/setting',
-        element :  <Setting/>
+        path : '/settings',
+        element :  <Settings/>
     },
-
+    {
+        path : '/cart',
+        element :  <Cart/>
+    },
+    {
+        path : '/product-detail',
+        element :  <ProductDetail/>
+    },
 ];
 

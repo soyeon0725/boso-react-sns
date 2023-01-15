@@ -1,6 +1,10 @@
+import {useEffect} from "react";
 import {Image, Space, Table, Tag} from 'antd';
 
 const TextList = ({isImg}) => {
+    useEffect(() => {
+        console.log('TextList 컴포넌트');
+    }, []);
     const columns = [
         {
             title: 'Name',

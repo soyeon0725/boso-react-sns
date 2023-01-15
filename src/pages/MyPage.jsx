@@ -4,6 +4,7 @@ import {selectUserInfo, setDefaultModal} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 import TextList from '../components/list/TextList';
+import ImageList from '../components/list/ImageList';
 
 const MyPage = () => {
     const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const MyPage = () => {
                     {
                         label: `전체 포스트`,
                         key: '1',
-                        children: `전체 포스트 영역`,
+                        children: <ImageList />,
                     },
                     {
                         label: `찜한 포스트`,

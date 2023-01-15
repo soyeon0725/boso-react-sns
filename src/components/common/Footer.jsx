@@ -15,7 +15,7 @@ function FooterC(props) {
     };
     const [banner, setBanner] = useState([]);
     useEffect(() => {
-        getBannerList().then(r => console.log(r));
+        getBannerList().then(() => {});
     }, []);
     const getBannerList = async () => {
         const banner = firestore.collection("banner");

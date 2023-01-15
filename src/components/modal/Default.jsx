@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {selectDefaultModal, setDefaultModal} from "../app/slice";
+import {selectDefaultModal, setDefaultModal} from "../../app/slice";
 import { Modal } from 'antd';
 import EditProfile from "./EditProfile";
 

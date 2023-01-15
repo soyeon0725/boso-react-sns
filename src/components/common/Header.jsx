@@ -32,7 +32,7 @@ function HeaderC(props) {
                         <Button
                             type="text"
                             icon={<SettingOutlined style={{ color: '#fff', fontSize: '24px' }} />}
-                            onClick={() => navigate('/setting')}
+                            onClick={() => navigate('/settings')}
                         />
                         <Button
                             type="text"
@@ -41,14 +41,15 @@ function HeaderC(props) {
                         />
                         <Button
                             type="text"
-                            icon={<ShoppingCartOutlined style={{ color: '#d95f5f', fontSize: '24px' }} />}
+                            icon={<ShoppingCartOutlined style={{ color: '#fff', fontSize: '24px' }} />}
+                            onClick={() => navigate('/cart')}
                         />
                         <Button
                             type="text"
                             icon={<LogoutOutlined  style={{ color: '#fff', fontSize: '24px' }} />}
                             onClick={() => signOut(auth)
-                                .then(() => console.log('signOut ⭕️'))
-                                .catch(() => console.log('signOut ❌'))}
+                                .then(() => console.log('signOut 성공'))
+                                .catch(() => console.log('signOut 에러'))}
                         />
                     </Space>
                 </Space>
