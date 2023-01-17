@@ -75,7 +75,7 @@ const ImageList = () => {
                             </div>
                         </div>
                         {userInfo.list?.post.map((item) => (
-                            <div style={{display: 'inline-block', width: '150px', height: '125px', margin: '2px', overflow: 'hidden'}}>
+                            <div style={{display: 'inline-block', width: '150px', height: '125px', margin: '2px', overflow: 'hidden'}} key={item.id}>
                                <img style={{width: '100%', height: '100px', overflow: 'hidden', objectFit: 'cover'}} key={item.id} src={item.url} alt='마이 포스트 이미지'/>
                             </div>
 
