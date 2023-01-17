@@ -59,12 +59,11 @@ const ImageList = () => {
     };
 
     return (
-        <div style={{textAlign: 'center'}}>
+        <div style={{border: '1px solid red', height: '550px', padding: '0 60px'}}>
             {userInfo.list?.post.length > 0 ? (
                 <>
-
-                    <div>
-                        <div style={{background: 'tomato', display: 'inline-block', width: '150px', height: '125px', margin: '2px', overflow: 'hidden'}}>
+                    <div style={{height: '200px'}}>
+                        <div style={{background: 'tomato', display: 'inline-block', width: '23%', height: '100%', margin: '10px', overflow: 'hidden', textAlign: 'center'}}>
                             <PlusOutlined />
                             <div
                                 style={{
@@ -75,8 +74,8 @@ const ImageList = () => {
                             </div>
                         </div>
                         {userInfo.list?.post.map((item) => (
-                            <div style={{display: 'inline-block', width: '150px', height: '125px', margin: '2px', overflow: 'hidden'}} key={item.id}>
-                               <img style={{width: '100%', height: '100px', overflow: 'hidden', objectFit: 'cover'}} key={item.id} src={item.url} alt='마이 포스트 이미지'/>
+                            <div style={{display: 'inline-block', width: '23%', height: '100%', margin: '10px', overflow: 'hidden'}} key={item.id}>
+                               <img style={{width: '100%', height: '100%', overflow: 'hidden', objectFit: 'cover'}} key={item.id} src={item.url} alt='마이 포스트 이미지'/>
                             </div>
 
                         ))}
