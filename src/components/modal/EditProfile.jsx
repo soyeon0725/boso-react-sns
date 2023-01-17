@@ -4,6 +4,7 @@ import {selectUserInfo, setUserInfo} from '../../app/slice';
 import {Form, Input, Button, Radio} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
 import {checkBirth, checkPhoneNumber} from "../../utils/utilCommon";
+import {updateUserApi} from "../../api/adaptor.api";
 
 const EditProfile = () => {
     console.log('EditProfile 팝업');
@@ -12,7 +13,7 @@ const EditProfile = () => {
 
     const onFinish = (values) => {
         console.log(values.editUser);
-        // updateUserApi(values.editUser);
+        updateUserApi(values.editUser);
     };
 
     return (
@@ -25,7 +26,7 @@ const EditProfile = () => {
                         email: userInfo.email,
                         birth: userInfo.birth,
                         phone: userInfo.phone,
-                        photo: userInfo.photoUrl
+                        photo: userInfo.photoNum
                     }
                 }}
                 onFinish={onFinish}
@@ -71,32 +72,32 @@ const EditProfile = () => {
                     ]}
                 >
                     <Radio.Group>
-                        <Radio.Button value={userInfo.photoUrl}>
-                            <img src={userInfo.photoUrl} />
+                        <Radio.Button value='0'>
+                            <img src={require('../../assets/image/photo-0.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-01.png'>
-                            <img src={require('../../assets/image/profile-image-01.png')} />
+                        <Radio.Button value='1'>
+                            <img src={require('../../assets/image/photo-1.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-02.png'>
-                            <img src={require('../../assets/image/profile-image-02.png')} />
+                        <Radio.Button value='2'>
+                            <img src={require('../../assets/image/photo-2.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-03.png'>
-                            <img src={require('../../assets/image/profile-image-03.png')} />
+                        <Radio.Button value='3'>
+                            <img src={require('../../assets/image/photo-3.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-04.png'>
-                            <img src={require('../../assets/image/profile-image-04.png')} />
+                        <Radio.Button value='4'>
+                            <img src={require('../../assets/image/photo-4.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-05.png'>
-                            <img src={require('../../assets/image/profile-image-05.png')} />
+                        <Radio.Button value='5'>
+                            <img src={require('../../assets/image/photo-5.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-06.png'>
-                            <img src={require('../../assets/image/profile-image-06.png')} />
+                        <Radio.Button value='6'>
+                            <img src={require('../../assets/image/photo-6.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-07.png'>
-                            <img src={require('../../assets/image/profile-image-07.png')} />
+                        <Radio.Button value='7'>
+                            <img src={require('../../assets/image/photo-7.png')} />
                         </Radio.Button>
-                        <Radio.Button value='../assets/image/profile-image-08.png'>
-                            <img src={require('../../assets/image/profile-image-08.png')} />
+                        <Radio.Button value='8'>
+                            <img src={require('../../assets/image/photo-8.png')} />
                         </Radio.Button>
                     </Radio.Group>
                 </Form.Item>

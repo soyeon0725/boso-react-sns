@@ -25,7 +25,7 @@ export const createUserWithEmailAndPasswordApi = (values) => {
             // if (user.uid) setConfirmModal({show: true, type: 'join-success'});
             userStore.doc(user.uid).set({
                 ...values,
-                photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'
+                photoNum: '0'
             }).then(() => {});
         })
         .catch((error) => {
@@ -76,20 +76,21 @@ export const getUserApi = () => {
 
     // Cloud Firestore - get : 가져오기
     userStore.doc(uId).get().then((doc) => {
+        console.log(doc.data()?.photoNum)
         store.dispatch(setUserInfo({
             name: doc.data()?.name,
             email: doc.data()?.email,
             password: doc.data()?.password,
             birth: doc.data()?.birth,
             phone: doc.data()?.phone,
-            photoUrl: doc.data()?.photoUrl,
-            post: doc.data()?.post,
+            photoNum: doc.data()?.photoNum,
+            list: doc.data()?.list,
         }))
     });
 }
 
-export const updateUserApi = ({ name, email, birth, phone }) => {
-    console.log(name, email, birth, phone);
+export const updateUserApi = ({ name, email, birth, phone, photo }) => {
+    console.log(name, email, birth, photo);
 
     const auth = getAuth();
     const userStore = firestore.collection("user");
@@ -105,6 +106,7 @@ export const updateUserApi = ({ name, email, birth, phone }) => {
             email,
             birth: birth || '',
             phone: phone || '',
+            photoNum: photo || '0'
         }).then(() => {
             console.log('Cloud store 업데이트 성공');
             getUserApi(); // 업데이트된 유저 정보 가져오기
@@ -129,7 +131,7 @@ export const deleteUserApi = (password) => {
     const userStore = firestore.collection("user");
     const uId = store.getState().joinInfo.userId;
 
-    updateEmail(user)
+    deleteUser(user)
         .then(() => {
             console.log('계정 삭제 성공');
             userStore.doc(uId).delete().then(() => {

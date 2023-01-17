@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import {useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectUserInfo, setDefaultModal} from '../app/slice';
 
@@ -28,7 +28,7 @@ const MyPage = () => {
                     style={{ verticalAlign: 'middle' }}
                     size={100}
                     gap={4}
-                    src={userInfo.photoUrl}
+                    src={require(`../assets/image/photo-${userInfo.photoNum || '0'}.png`)}
                 />
                 <div
                     style={{
