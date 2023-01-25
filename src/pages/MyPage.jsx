@@ -1,10 +1,10 @@
-import {useEffect, useRef} from 'react';
+import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectUserInfo, setDefaultModal} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 import TextList from '../components/list/TextList';
-import ImageList from '../components/list/ImageList';
+import PostList from '../components/list/PostList';
 
 const MyPage = () => {
     const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const MyPage = () => {
 
     // 마이페이지 진입
     useEffect(()=> {
-        console.log("MyPage PAGE");
+        console.log("마이페이지");
     },[]);
 
     return (
@@ -54,7 +54,7 @@ const MyPage = () => {
                     {
                         label: `전체 포스트`,
                         key: '1',
-                        children: <ImageList />,
+                        children: <PostList />,
                     },
                     {
                         label: `찜한 포스트`,

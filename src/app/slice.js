@@ -39,14 +39,15 @@ const joinInfoSlice = createSlice({
             list: {
                 post: [
                     {
-                        cat: '',
                         id: '',
+                        cat: '',
                         url: ''
                     }
                 ]
             }
         },
-        userId: ''
+        userId: '',
+        postList: []
     },
     reducers: {
         setUserInfo: (state, action) => {
@@ -54,12 +55,16 @@ const joinInfoSlice = createSlice({
         },
         setUserId: (state, action) => {
             state.userId = action.payload;
+        },
+        setPostList: (state, action) => {
+            state.postList = action.payload;
         }
     }
 });
-export const {setUserInfo, setUserId} = joinInfoSlice.actions;
+export const {setUserInfo, setUserId, setPostList} = joinInfoSlice.actions;
 export const selectUserInfo = state => state.joinInfo.userInfo;
 export const selectUserId = state => state.joinInfo.userId;
+export const selectPostList = state => state.joinInfo.postList;
 
 export {joinInfoSlice};
 

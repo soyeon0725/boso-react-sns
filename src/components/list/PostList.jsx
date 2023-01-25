@@ -4,10 +4,36 @@ import {selectUserInfo} from "../../app/slice";
 import {Upload, Button, message} from 'antd';
 import {UploadOutlined, PlusOutlined} from "@ant-design/icons";
 
-const ImageList = () => {
+const PostList = () => {
     useEffect(() => {
-        console.log('ImageList 컴포넌트');
+        console.log('PostList 컴포넌트');
     }, []);
+
+    const postUploadBox = {
+        display: 'inline-block',
+        width: '23%',
+        height: '200px',
+        margin: '10px',
+        backgroundColor: '#fafafa',
+        border: '1px dashed #d9d9d9',
+        overflow: 'hidden',
+        textAlign: 'center'
+    };
+
+    const postBox = {
+        display: 'inline-block',
+        width: '23%',
+        height: '200px',
+        margin: '10px',
+        overflow: 'hidden'
+    };
+
+    const postImg = {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover'
+    }
+
     const userInfo = useSelector(selectUserInfo);
     console.log(userInfo.list?.post);
 
@@ -59,50 +85,35 @@ const ImageList = () => {
     };
 
     return (
-        <div style={{border: '1px solid red', height: '550px', padding: '0 60px'}}>
+        <div style={{overflow: 'auto', height: '550px', padding: '0 60px'}}>
             {userInfo.list?.post.length > 0 ? (
                 <>
-                    <div style={{height: '200px'}}>
-                        <div style={{background: 'tomato', display: 'inline-block', width: '23%', height: '100%', margin: '10px', overflow: 'hidden', textAlign: 'center'}}>
-                            <PlusOutlined />
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                Upload
-                            </div>
+                    <div style={postUploadBox}>
+                        <PlusOutlined style={{marginTop: '75px'}} />
+                        <div style={{marginTop: 8}}>
+                            Upload
                         </div>
-                        {userInfo.list?.post.map((item) => (
-                            <div style={{display: 'inline-block', width: '23%', height: '100%', margin: '10px', overflow: 'hidden'}} key={item.id}>
-                               <img style={{width: '100%', height: '100%', overflow: 'hidden', objectFit: 'cover'}} key={item.id} src={item.url} alt='마이 포스트 이미지'/>
-                            </div>
-
-                        ))}
                     </div>
+                    {userInfo.list?.post.map((item) => (
+                        <div style={postBox} key={item.id}>
+                           <img
+                               style={postImg}
+                               key={item.id}
+                               src={item.url}
+                               alt='마이페이지 포스트 이미지'
+                           />
+                        </div>
+                    ))}
                 </>
             ) : (
                 <div>
-                    {/*<Upload*/}
-                    {/*    name="avatar"*/}
-                    {/*    listType="picture-card"*/}
-                    {/*    className="avatar-uploader"*/}
-                    {/*    showUploadList={false}*/}
-                    {/*    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"*/}
-                    {/*    beforeUpload={beforeUpload}*/}
-                    {/*    onChange={handleChange}*/}
-                    {/*>*/}
-                    {/*    <div>업로드</div>*/}
-                    {/*</Upload>*/}
-                    <div>
-                        <p>첫 포스트를 업로드해보세요.</p>
-                        <Upload {...props}>
-                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                        </Upload>
-                    </div>
+                    <p>첫 포스트를 업로드해보세요.</p>
+                    <Upload {...props}>
+                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                    </Upload>
                 </div>
             )}
         </div>
     )
 }
-export default ImageList;
+export default PostList;

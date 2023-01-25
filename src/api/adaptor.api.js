@@ -1,5 +1,5 @@
 import store from "../app/store";
-import {setDefaultModal, setUserInfo} from '../app/slice';
+import {setDefaultModal, setUserInfo, setPostList} from '../app/slice';
 import { firestore } from '../firebase/Firebase';
 import {
     getAuth,
@@ -165,4 +165,30 @@ export const reAuthenticationApi = (password) => {
         console.log('사용자 재인증 실패');
         console.log(errorCode);
     });
+}
+
+export const getPostApi = () => {
+    const postStore = firestore.collection("post");
+    const uId = store.getState().joinInfo.userId;
+
+    // Cloud Firestore - get : 가져오기
+    let imageList = [];
+    postStore.get().then((docs) => {
+       docs.forEach((doc) => {
+           if (doc.exists) {
+               // document의 데이터
+               // console.log(doc.data());
+               // document의 id
+               // console.log(doc.id);
+               console.log(imageList.length)
+               // 포스트 노출 (전체 - 총 10)
+               imageList.length < 10 && imageList.push(doc.data());
+               // return imageList;
+
+           }
+       })
+        console.log(imageList);
+        store.dispatch(setPostList(imageList))
+    });
+
 }
