@@ -1,5 +1,5 @@
 import store from "../app/store";
-import {setDefaultModal, setUserInfo, setPostList} from '../app/slice';
+import {setModalDefault, setUserInfo, setPostList, setUserProfile} from '../app/slice';
 import { firestore } from '../firebase/Firebase';
 import {
     getAuth,
@@ -22,7 +22,7 @@ export const createUserWithEmailAndPasswordApi = (values) => {
             // Signed in
             const user = userCredential.user;
             // isUser = {...isUser, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
-            // if (user.uid) setConfirmModal({show: true, type: 'join-success'});
+            // if (user.uid) setModalConfirm({show: true, type: 'join-success'});
             userStore.doc(user.uid).set({
                 ...values,
                 photoNum: '0'
@@ -33,9 +33,9 @@ export const createUserWithEmailAndPasswordApi = (values) => {
             const errorMessage = error.message;
             console.log(errorCode, errorMessage);
             if (errorCode === 'auth/email-already-in-use') {
-                store.dispatch(setDefaultModal({show: true, type: 'email-already-in-use'}));
+                store.dispatch(setModalDefault({show: true, type: 'email-already-in-use'}));
             } else {
-                store.dispatch(setDefaultModal({show: true, type: 'join-fail'}));
+                store.dispatch(setModalDefault({show: true, type: 'join-fail'}));
             }
         });
 };
@@ -56,7 +56,7 @@ export const updatePasswordApi = (values) => {
         userStore.doc(uId).update({ password }).then(() => {
             console.log('Cloud store 비밀번호 변경 성공');
             getUserApi(); // 업데이트된 유저 정보 가져오기
-            store.dispatch(setDefaultModal({show: true, type: 'change-password'}));
+            store.dispatch(setModalDefault({show: true, type: 'change-password'}));
         })
     }).catch((error) => {
         const errorCode = error.code;
@@ -110,7 +110,7 @@ export const updateUserApi = ({ name, email, birth, phone, photo }) => {
         }).then(() => {
             console.log('Cloud store 업데이트 성공');
             getUserApi(); // 업데이트된 유저 정보 가져오기
-            store.dispatch(setDefaultModal({show: true, type: 'change-profile'}));
+            store.dispatch(setModalDefault({show: true, type: 'change-profile'}));
         });
     }).catch((error) => {
         const errorCode = error.code;
@@ -191,4 +191,14 @@ export const getPostApi = () => {
         store.dispatch(setPostList(imageList))
     });
 
+}
+
+export const reProfileApi = (userId) => {
+    const user = firestore.collection('user');
+    const uid = userId || store.getState().user.userProfile.uid;
+    user.get().then((docs) => {
+        docs.forEach((doc) => {
+            if (doc.id === uid) store.dispatch(setUserProfile({...doc.data(), ...{uid: uid}}))
+        })
+    })
 }

@@ -1,31 +1,61 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice} from '@reduxjs/toolkit';
 
-const exampleSlice = createSlice({
-    name: "exampleInfo",
+// common
+const commonSlice = createSlice({
+    name: 'common',
     initialState: {
-        list : [],
+        modalDefault: {show: false, type: ''},
+        modalConfirm: {show: false, type: ''},
         isLoggedIn: false
     },
     reducers: {
-        setList: (state, action) => {
-            state.list = action.payload;
+        setModalDefault: (state, action) => {
+            state.defaultModal = action.payload;
         },
-        setPersonalInfo: (state, action) => {
-            state.personalInfo = action.payload;
+        setModalConfirm: (state, action) => {
+            state.confirmModal = action.payload;
         },
         setIsLoggedIn: (state, action) => {
             state.isLoggedIn = action.payload;
         }
     }
 });
+export const {setModalDefault, setModalConfirm, setIsLoggedIn} = commonSlice.actions;
+export const selectModalDefault = state => state.common.modalDefault;
+export const selectModalConfirm = state => state.common.modalConfirm;
+export const selectIsLoggedIn = state => state.common.isLoggedIn;
 
-export const {setList, setIsLoggedIn} = exampleSlice.actions;
+// user
+const userSlice = createSlice({
+    name: 'user',
+    initialState: {
+        userProfile: {}
+    },
+    reducers: {
+        setUserProfile: (state, action) => {
+            state.userProfile = action.payload;
+        }
+    }
+})
+export const {setUserProfile} = userSlice.actions;
+export const selectUserProfile = state => state.user.userProfile;
 
-export const selectList = state => state.exampleInfo.list;
-export const selectIsLoggedIn = state => state.exampleInfo.isLoggedIn;
+// post
+const postSlice = createSlice({
+    name: 'post',
+    initialState: {
+        imageList: []
+    },
+    reducers: {
+        setImageList: (state, action) => {
+            state.imageList = action.payload;
+        }
+    }
+})
+export const {setImageList} = userSlice.actions;
+export const selectImageList = state => state.post.imageList;
 
-export {exampleSlice};
-
+// joinInfo
 const joinInfoSlice = createSlice({
     name: "joinInfo",
     initialState: {
@@ -66,31 +96,26 @@ export const selectUserInfo = state => state.joinInfo.userInfo;
 export const selectUserId = state => state.joinInfo.userId;
 export const selectPostList = state => state.joinInfo.postList;
 
-export {joinInfoSlice};
-
-const commonSlice = createSlice({
-    name: "common",
+// exampleInfo
+const exampleSlice = createSlice({
+    name: "exampleInfo",
     initialState: {
-        defaultModal: {
-            show: false,
-            type: ''
-        },
-        confirmModal: {
-            show: false,
-            type: ''
-        }
+        list : []
     },
     reducers: {
-        setDefaultModal: (state, action) => {
-            state.defaultModal = action.payload;
+        setList: (state, action) => {
+            state.list = action.payload;
         },
-        setConfirmModal: (state, action) => {
-            state.confirmModal = action.payload;
+        setPersonalInfo: (state, action) => {
+            state.personalInfo = action.payload;
         }
     }
 });
-export const {setDefaultModal, setConfirmModal} = commonSlice.actions;
-export const selectDefaultModal = state => state.common.defaultModal;
-export const selectConfirmModal = state => state.common.confirmModal;
+export const {setList} = exampleSlice.actions;
+export const selectList =state => state.exampleInfo.list;
 
-export {commonSlice};
+// export slice !
+export {commonSlice, userSlice, joinInfoSlice, exampleSlice};
+
+
+

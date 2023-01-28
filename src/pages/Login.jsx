@@ -19,7 +19,7 @@ import {
     signInWithEmailAndPassword
 } from "firebase/auth";
 import {useDispatch} from "react-redux";
-import {setDefaultModal} from "../app/slice";
+import {setModalDefault} from "../app/slice";
 
 
 const Login = () => {
@@ -54,11 +54,11 @@ const Login = () => {
                 console.log(errorCode);
                 console.log(errorMessage);
                 if (errorCode === 'auth/user-not-found') {
-                    dispatch(setDefaultModal({show: true, type: 'user-not-found'}));
+                    dispatch(setModalDefault({show: true, type: 'user-not-found'}));
                 } else if (errorCode === 'auth/wrong-password') {
-                    dispatch(setDefaultModal({show: true, type: 'wrong-password'}));
+                    dispatch(setModalDefault({show: true, type: 'wrong-password'}));
                 } else {
-                    dispatch(setDefaultModal({show: true, type: 'login-fail'}));
+                    dispatch(setModalDefault({show: true, type: 'login-fail'}));
                 }
             });
     };

@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setDefaultModal} from '../app/slice';
+import {selectUserInfo, setModalDefault} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 import TextList from '../components/list/TextList';
@@ -40,7 +40,7 @@ const MyPage = () => {
                 >
                     <span>{`Name : ${userInfo.name}`}</span>
                     <span>{`Email : ${userInfo.email}`}</span>
-                    <Button onClick={() => dispatch(setDefaultModal({show: true, type: 'edit-profile'}))}>
+                    <Button onClick={() => dispatch(setModalDefault({show: true, type: 'edit-profile'}))}>
                         프로필 편집
                     </Button>
                 </div>

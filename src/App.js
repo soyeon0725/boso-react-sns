@@ -1,66 +1,51 @@
 import { useEffect, useState } from 'react';
+import {Route, Routes, useLocation, Navigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-    selectIsLoggedIn,
-    selectDefaultModal,
-    selectConfirmModal,
-    setIsLoggedIn,
-    setUserId, setUserInfo,
-} from './app/slice';
-import {
-    Route,
-    Routes,
-    useLocation,
-    Navigate,
-} from 'react-router-dom';
 import {RouteList, AuthRouteList} from './app/router';
 
-// firebase
-import {auth} from "./firebase/Firebase";
-import { onAuthStateChanged } from 'firebase/auth';
-
-import { Layout } from 'antd';
-
+import 'antd/dist/antd.css';
+import './index.css';
 import FooterC from './components/common/Footer';
 import HeaderC from './components/common/Header';
 import Default from "./components/modal/Default";
 import Confirm from "./components/modal/Confirm";
+import {selectIsLoggedIn, selectModalDefault, selectModalConfirm, setIsLoggedIn} from './app/slice';
 
-import 'antd/dist/antd.css';
-import './index.css';
-import {getUserApi} from "./api/adaptor.api";
+import {auth} from "./firebase/Firebase";
+import {onAuthStateChanged} from 'firebase/auth';
+import {reProfileApi} from "./api/adaptor.api";
+
+import {Layout} from 'antd';
+const {Content} = Layout;
 
 const App = () => {
-    const { Content } = Layout;
     // Todo router V6 hook
-    const { pathname } = useLocation();
     const dispatch = useDispatch();
+    const {pathname} = useLocation();
     const isLoggedIn = useSelector(selectIsLoggedIn);
-    const defaultModal = useSelector(selectDefaultModal);
-    const confirmModal = useSelector(selectConfirmModal);
+    const modalDefault = useSelector(selectModalDefault);
+    const modalConfirm = useSelector(selectModalConfirm);
     const [init, setInit] = useState(false);
-
+    const showCommon = !['/', 'join-detail', 'join-simple'].includes(pathname) && isLoggedIn;
     const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/join/detail' || pathname === '/join/simple';
 
     useEffect(() => {
         // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
-        onAuthStateChanged(auth, (user) => {
+        console.log('onAuthStateChanged');
+        onAuthStateChanged(auth, (userInfo) => {
             // console.log("onAuthStateChanged" + user);
-            if (user) {
-                // console.log(user)
-                const uid = user?.uid;
-                console.log('로그인');
-                dispatch(setUserId(uid));
+            if (userInfo) {
+                console.log('logged in');
+                // const uid = userInfo?.uid;
                 dispatch(setIsLoggedIn(true));
                 //
             } else {
-                console.log('로그아웃');
+                console.log('logged out');
                 dispatch(setIsLoggedIn(false));
             }
-            dispatch(setUserId(user?.uid));
-            console.log(user)
+            console.log(userInfo)
             // Cloud Firestore - user information get!
-            getUserApi();
+            reProfileApi(userInfo?.uid);
             setInit(true);
         });
     }, []);
@@ -71,7 +56,7 @@ const App = () => {
                 <Layout className="site-layout">
                     {init ? (
                         <>
-                            {!commonLayout && <HeaderC/>}
+                            {showCommon && <HeaderC/>}
                                 <Content>
                                     <Routes>
                                         {isLoggedIn ? (
@@ -95,13 +80,13 @@ const App = () => {
                                         )}
                                     </Routes>
                                 </Content>
-                            {!commonLayout && <FooterC/>}
+                            {showCommon && <FooterC/>}
                         </>
                     ) : null}
                 </Layout>
             </Layout>
-            {defaultModal.show && <Default />}
-            {confirmModal.show && <Confirm />}
+            {modalDefault.show && <Default />}
+            {modalConfirm.show && <Confirm />}
         </>
     );
 };
