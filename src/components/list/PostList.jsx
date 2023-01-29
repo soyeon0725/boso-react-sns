@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
-import {selectUserInfo} from "../../app/slice";
+import {selectUserProfile} from "../../app/slice";
 import {Upload, Button, message} from 'antd';
 import {UploadOutlined, PlusOutlined} from "@ant-design/icons";
 
@@ -34,10 +34,10 @@ const PostList = () => {
         objectFit: 'cover'
     }
 
-    const userInfo = useSelector(selectUserInfo);
-    console.log(userInfo.list?.post);
+    const userProfile = useSelector(selectUserProfile);
+    console.log(userProfile.list?.post);
 
-    const [imageUrl, setImageUrl] = useState(userInfo.photoNum);
+    const [imageUrl, setImageUrl] = useState(userProfile.photoNum);
 
 
     const getBase64 = (img, callback) => {
@@ -86,7 +86,7 @@ const PostList = () => {
 
     return (
         <div style={{overflow: 'auto', height: '550px', padding: '0 60px'}}>
-            {userInfo.list?.post.length > 0 ? (
+            {userProfile.list?.post.length > 0 ? (
                 <>
                     <div style={postUploadBox}>
                         <PlusOutlined style={{marginTop: '75px'}} />
@@ -94,7 +94,7 @@ const PostList = () => {
                             Upload
                         </div>
                     </div>
-                    {userInfo.list?.post.map((item) => (
+                    {userProfile.list?.post.map((item) => (
                         <div style={postBox} key={item.id}>
                            <img
                                style={postImg}

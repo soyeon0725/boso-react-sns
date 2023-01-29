@@ -27,7 +27,6 @@ const App = () => {
     const modalConfirm = useSelector(selectModalConfirm);
     const [init, setInit] = useState(false);
     const showCommon = !['/', 'join-detail', 'join-simple'].includes(pathname) && isLoggedIn;
-    const commonLayout = pathname === '/' || pathname === '/join' || pathname === '/join/detail' || pathname === '/join/simple';
 
     useEffect(() => {
         // 3. 인증 상태 관찰자 설정 및 사용자 데이터 가져오기
@@ -43,7 +42,6 @@ const App = () => {
                 console.log('logged out');
                 dispatch(setIsLoggedIn(false));
             }
-            console.log(userInfo)
             // Cloud Firestore - user information get!
             reProfileApi(userInfo?.uid);
             setInit(true);

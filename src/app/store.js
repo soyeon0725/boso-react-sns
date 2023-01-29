@@ -1,12 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import {exampleSlice, joinInfoSlice, commonSlice} from "./slice";
+import {commonSlice, userSlice, postSlice} from "./slice";
 
 const store = configureStore({
     reducer:{
-        exampleInfo : exampleSlice.reducer,
-        joinInfo : joinInfoSlice.reducer,
-        common : commonSlice.reducer
+        // exampleInfo : exampleSlice.reducer,
+        common : commonSlice.reducer,
+        user: userSlice.reducer,
+        post: postSlice.reducer,
     }
 });
 

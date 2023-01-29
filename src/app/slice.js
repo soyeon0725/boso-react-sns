@@ -10,10 +10,10 @@ const commonSlice = createSlice({
     },
     reducers: {
         setModalDefault: (state, action) => {
-            state.defaultModal = action.payload;
+            state.modalDefault = action.payload;
         },
         setModalConfirm: (state, action) => {
-            state.confirmModal = action.payload;
+            state.modalConfirm = action.payload;
         },
         setIsLoggedIn: (state, action) => {
             state.isLoggedIn = action.payload;
@@ -52,70 +52,30 @@ const postSlice = createSlice({
         }
     }
 })
-export const {setImageList} = userSlice.actions;
+export const {setImageList} = postSlice.actions;
 export const selectImageList = state => state.post.imageList;
 
-// joinInfo
-const joinInfoSlice = createSlice({
-    name: "joinInfo",
-    initialState: {
-        userInfo : {
-            name: '',
-            email: '',
-            password: '',
-            photoNum: '',
-            birth: '',
-            phone: '',
-            list: {
-                post: [
-                    {
-                        id: '',
-                        cat: '',
-                        url: ''
-                    }
-                ]
-            }
-        },
-        userId: '',
-        postList: []
-    },
-    reducers: {
-        setUserInfo: (state, action) => {
-            state.userInfo = action.payload;
-        },
-        setUserId: (state, action) => {
-            state.userId = action.payload;
-        },
-        setPostList: (state, action) => {
-            state.postList = action.payload;
-        }
-    }
-});
-export const {setUserInfo, setUserId, setPostList} = joinInfoSlice.actions;
-export const selectUserInfo = state => state.joinInfo.userInfo;
-export const selectUserId = state => state.joinInfo.userId;
-export const selectPostList = state => state.joinInfo.postList;
+// export slice !
+export {commonSlice, userSlice, postSlice};
 
 // exampleInfo
-const exampleSlice = createSlice({
-    name: "exampleInfo",
-    initialState: {
-        list : []
-    },
-    reducers: {
-        setList: (state, action) => {
-            state.list = action.payload;
-        },
-        setPersonalInfo: (state, action) => {
-            state.personalInfo = action.payload;
-        }
-    }
-});
-export const {setList} = exampleSlice.actions;
-export const selectList =state => state.exampleInfo.list;
-
-// export slice !
-export {commonSlice, userSlice, joinInfoSlice, exampleSlice};
+// const exampleSlice = createSlice({
+//     name: "exampleInfo",
+//     initialState: {
+//         list : []
+//     },
+//     reducers: {
+//         setList: (state, action) => {
+//             state.list = action.payload;
+//         },
+//         setPersonalInfo: (state, action) => {
+//             state.personalInfo = action.payload;
+//         }
+//     }
+// });
+// export const {setList} = exampleSlice.actions;
+// export const selectList = state => state.exampleInfo.list;
+// export {exampleSlice};
 
 
 

@@ -43,7 +43,7 @@ const Simple = () => {
             >
                 <Form.Item
                     label="Name"
-                    name="name"
+                    name={['user', 'name']}
                     rules={[
                         {
                             required: true,
@@ -55,7 +55,7 @@ const Simple = () => {
                 </Form.Item>
                 <Form.Item
                     label="Email"
-                    name="email"
+                    name={['user', 'email']}
                     rules={[
                         {
                             required: true,
@@ -70,7 +70,7 @@ const Simple = () => {
                 </Form.Item>
                 <Form.Item
                     label="Password"
-                    name="password"
+                    name={['user', 'password']}
                     rules={[
                         {
                             required: true,

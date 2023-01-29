@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectUserInfo, setModalDefault} from '../app/slice';
+import {selectUserProfile, setModalDefault} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
 import TextList from '../components/list/TextList';
@@ -8,7 +8,7 @@ import PostList from '../components/list/PostList';
 
 const MyPage = () => {
     const dispatch = useDispatch();
-    const userInfo = useSelector(selectUserInfo);
+    const userProfile = useSelector(selectUserProfile);
 
     // 마이페이지 진입
     useEffect(()=> {
@@ -28,7 +28,7 @@ const MyPage = () => {
                     style={{ verticalAlign: 'middle' }}
                     size={100}
                     gap={4}
-                    src={require(`../assets/image/photo-${userInfo.photoNum || '0'}.png`)}
+                    src={require(`../assets/image/photo-${userProfile.photoNum || '0'}.png`)}
                 />
                 <div
                     style={{
@@ -38,8 +38,8 @@ const MyPage = () => {
                         marginLeft: 20
                     }}
                 >
-                    <span>{`Name : ${userInfo.name}`}</span>
-                    <span>{`Email : ${userInfo.email}`}</span>
+                    <span>{`Name : ${userProfile.name}`}</span>
+                    <span>{`Email : ${userProfile.email}`}</span>
                     <Button onClick={() => dispatch(setModalDefault({show: true, type: 'edit-profile'}))}>
                         프로필 편집
                     </Button>

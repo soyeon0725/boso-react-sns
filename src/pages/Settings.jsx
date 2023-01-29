@@ -1,6 +1,6 @@
 import {useEffect} from "react";
 import {useSelector} from "react-redux";
-import {selectUserInfo} from "../app/slice";
+import {selectUserProfile} from "../app/slice";
 import { Tabs, Button, Form, Input } from 'antd';
 import {LockOutlined} from "@ant-design/icons";
 import {checkPassword} from "../utils/utilCommon";
@@ -11,7 +11,7 @@ const Settings = () => {
         console.log('Settings PAGE');
     }, []);
 
-    const userInfo = useSelector(selectUserInfo);
+    const userProfile = useSelector(selectUserProfile);
 
     const formItemLayout = {
         labelCol: { span: 8 },
@@ -20,7 +20,7 @@ const Settings = () => {
 
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        updatePasswordApi(values);
+        updatePasswordApi(values.password);
     };
 
     return (
@@ -54,7 +54,7 @@ const Settings = () => {
                                     },
                                     {
                                         validator: (_, value) => {
-                                            if (!value || value === userInfo.password) {
+                                            if (!value || value === userProfile.password) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
@@ -76,7 +76,7 @@ const Settings = () => {
                                     },
                                     {
                                         validator: (_, value) => {
-                                            if (!value || (value !== userInfo.password && checkPassword(value))) {
+                                            if (!value || (value !== userProfile.password && checkPassword(value))) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('최소 10자리 영문(대소문자), 숫자, 특수문자 중 3가지 이상 조합으로 만들어주세요.'));
@@ -131,8 +131,8 @@ const Settings = () => {
                                 회원님의 프로필, 사진, 동영상, 댓글, 좋아요 및 팔로워가<br />
                                 영구적으로 삭제됩니다.
                             </p>
-                            <Button type="primary" htmlType="submit" onClick={() => deleteUserApi(userInfo.password)}>
-                                계정 삭제
+                            <Button type="primary" htmlType="submit" onClick={() => deleteUserApi()}>
+                                회원 탈퇴
                             </Button>
                         </div>
                     ),

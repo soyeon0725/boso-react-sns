@@ -3,7 +3,7 @@ import {getPostApi} from "../api/adaptor.api";
 import {PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import {Button, message, Upload} from "antd";
 import {useSelector} from "react-redux";
-import {selectPostList} from "../app/slice";
+import {selectImageList} from "../app/slice";
 
 const Main = () => {
     // 홈 화면 진입
@@ -37,10 +37,10 @@ const Main = () => {
         objectFit: 'cover'
     }
 
-    const postList = useSelector(selectPostList);
-    console.log(postList);
+    const imageList = useSelector(selectImageList);
+    console.log(imageList);
 
-    const [imageUrl, setImageUrl] = useState(postList?.url);
+    const [imageUrl, setImageUrl] = useState(imageList?.url);
 
 
     const getBase64 = (img, callback) => {
@@ -89,7 +89,7 @@ const Main = () => {
 
     return (
         <div style={{overflow: 'auto', height: '550px', padding: '60px 60px 0 60px'}}>
-            {postList?.length > 0 ? (
+            {imageList?.length > 0 ? (
                 <>
                     <div style={postUploadBox}>
                         <PlusOutlined style={{marginTop: '75px'}} />
@@ -101,7 +101,7 @@ const Main = () => {
                             Upload
                         </div>
                     </div>
-                    {postList?.map((item) => (
+                    {imageList?.map((item) => (
                         <div style={postBox} key={item.id}>
                             <img
                                 style={postImg}

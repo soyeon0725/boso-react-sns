@@ -1,34 +1,27 @@
 import {useDispatch, useSelector} from 'react-redux';
 
-import {selectUserInfo, setUserInfo} from '../../app/slice';
+import {selectUserProfile} from '../../app/slice';
 import {Form, Input, Button, Radio} from 'antd';
 import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
 import {checkBirth, checkPhoneNumber} from "../../utils/utilCommon";
-import {updateUserApi} from "../../api/adaptor.api";
+import {updateProfileApi} from "../../api/adaptor.api";
 
 const EditProfile = () => {
     console.log('EditProfile 팝업');
     const dispatch = useDispatch();
-    const userInfo = useSelector(selectUserInfo);
+    const userProfile = useSelector(selectUserProfile);
+    const {name, email, birth, phone, photoNum} = userProfile;
 
     const onFinish = (values) => {
         console.log(values.editUser);
-        updateUserApi(values.editUser);
+        updateProfileApi(values);
     };
 
     return (
         <>
             <Form
                 name="basic"
-                initialValues={{
-                    editUser: {
-                        name: userInfo.name,
-                        email: userInfo.email,
-                        birth: userInfo.birth,
-                        phone: userInfo.phone,
-                        photo: userInfo.photoNum
-                    }
-                }}
+                initialValues={{editUser: {name, email, birth, phone, photoNum}}}
                 onFinish={onFinish}
             >
                 <Form.Item

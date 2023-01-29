@@ -1,204 +1,176 @@
-import store from "../app/store";
-import {setModalDefault, setUserInfo, setPostList, setUserProfile} from '../app/slice';
-import { firestore } from '../firebase/Firebase';
-import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    updateEmail,
-    updatePassword,
-    deleteUser,
-    reauthenticateWithCredential,
-    EmailAuthProvider
-} from "firebase/auth";
+import store from '../app/store';
+import {auth, firestore} from '../firebase/Firebase';
+import {setModalDefault, setImageList, setUserProfile} from '../app/slice';
+import {getAuth, updateEmail, createUserWithEmailAndPassword, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential} from 'firebase/auth';
 
-// Firebase API
 export const createUserWithEmailAndPasswordApi = (values) => {
-    const {email, password} = values;
-    const userStore = firestore.collection("user");
-    const auth = getAuth();
+    const {email, password} = values.user;
+    const user = firestore.collection('user');
+
     // Authentication - createUserWithEmailAndPassword : 신규 사용자 등록
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            // isUser = {...isUser, photoUrl: 'https://cdn.pixabay.com/photo/2021/02/12/07/03/icon-6007530_1280.png'};
-            // if (user.uid) setModalConfirm({show: true, type: 'join-success'});
-            userStore.doc(user.uid).set({
-                ...values,
-                photoNum: '0'
-            }).then(() => {});
+            console.log('Signed in');
+            const userInfo = userCredential.user;
+
+            // 회원가입 완료 팝업 노출
+            // if (userProfile.uid) setModalConfirm({show: true, type: 'join-success'});
+            // Cloud Firestore : 신규 사용자 등록
+            user.doc(userInfo.uid).set({...values.user, photoNum: '0',
+                list: {
+                    cart: [],
+                    post: [],
+                    purchase: []
+                }
+            }).then(() => console.log('Firestore 신규 사용자 등록'))
+                .catch((error) => console.error(error, 'Firestore 신규 사용자 등록 실패'));
         })
         .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-            if (errorCode === 'auth/email-already-in-use') {
-                store.dispatch(setModalDefault({show: true, type: 'email-already-in-use'}));
-            } else {
-                store.dispatch(setModalDefault({show: true, type: 'join-fail'}));
+            console.error('이메일 가입시 에러 : ', error);
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    console.log(error.code);
+                    store.dispatch(setModalDefault({show: true, type: 'email-already-in-use'}));
+                    break;
+                default:
+                    console.log(error.code);
+                    store.dispatch(setModalDefault({show: true, type: 'join-fail'}));
+                    break;
             }
         });
 };
 
+export const deleteUserApi = () => {
+    const userProfile = store.getState().user.userProfile;
+    const user = firestore.collection('user');
+    const currentUser = auth.currentUser;
+    const credential = EmailAuthProvider.credential(userProfile.email, userProfile.password);
 
-export const updatePasswordApi = (values) => {
-    const { current, password } = values;
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const newPassword = password;
-    const userStore = firestore.collection("user");
-    const uId = store.getState().joinInfo.userId;
+    deleteUser(currentUser)
+        .then(() => {
+            console.log('이메일 계정 삭제시 성공');
+            user.doc(userProfile.uid).delete()
+                .then(() => console.log('Firestore 이메일 계정 삭제 성공'))
+                .catch((error) => console.error(error, 'Firestore 이메일 계정 삭제 실패'))
+        })
+        .catch((error) => {
+            console.error(error, '이메일 계정 삭제시 실패');
+            reauthenticateWithCredential(currentUser, credential)
+                .then(() => {
+                    // 사용자 인증 완료 후, 재 호출
+                    console.log('이메일 계정 삭제시 사용자 재인증 성공');
+                    deleteUserApi();
+                })
+                .catch((error) => {
+                    console.error(error, '이메일 계정 삭제시 사용자 재인증 실패');
+                    store.dispatch(setModalDefault({show: true, type: "delete-fail"}));
+                });
+        });
+};
+
+export const updatePasswordApi = (password) => {
+    console.log(password);
+    const userProfile = store.getState().user.userProfile;
+    const user = firestore.collection('user');
+    const currentUser = auth.currentUser;
+    const credential = EmailAuthProvider.credential(userProfile.email, password.current)
 
     // Authentication - updatePassword : 사용자 비밀번호 설정
-    updatePassword(user, newPassword).then(() => {
-        console.log('비밀번호 변경 성공');
-        // Cloud Firestore - update : 업데이트
-        userStore.doc(uId).update({ password }).then(() => {
-            console.log('Cloud store 비밀번호 변경 성공');
-            getUserApi(); // 업데이트된 유저 정보 가져오기
-            store.dispatch(setModalDefault({show: true, type: 'change-password'}));
-        })
-    }).catch((error) => {
-        const errorCode = error.code;
-        if (errorCode === 'auth/requires-recent-login') {
-            reAuthenticationApi(current);
-        } else {
-            // Todo errorCode 확인 후, 모달 팝업 연동 ?
-            console.log('비밀번호 변경 실패');
-            console.log(errorCode);
-        }
-    });
-};
-
-export const getUserApi = () => {
-    const userStore = firestore.collection("user");
-    const uId = store.getState().joinInfo.userId;
-
-    // Cloud Firestore - get : 가져오기
-    userStore.doc(uId).get().then((doc) => {
-        console.log(doc.data()?.photoNum)
-        store.dispatch(setUserInfo({
-            name: doc.data()?.name,
-            email: doc.data()?.email,
-            password: doc.data()?.password,
-            birth: doc.data()?.birth,
-            phone: doc.data()?.phone,
-            photoNum: doc.data()?.photoNum,
-            list: doc.data()?.list,
-        }))
-    });
-}
-
-export const updateUserApi = ({ name, email, birth, phone, photo }) => {
-    console.log(name, email, birth, photo);
-
-    const auth = getAuth();
-    const userStore = firestore.collection("user");
-    const uId = store.getState().joinInfo.userId;
-    const password = store.getState().joinInfo.userInfo.password;
-
-    // Authentication - updateEmail : 사용자의 이메일 주소 설정
-    updateEmail(auth.currentUser, email).then(() => {
-        console.log('Email updated success!');
-        // Cloud Firestore - update : 업데이트
-        userStore.doc(uId).update({
-            name,
-            email,
-            birth: birth || '',
-            phone: phone || '',
-            photoNum: photo || '0'
-        }).then(() => {
-            console.log('Cloud store 업데이트 성공');
-            getUserApi(); // 업데이트된 유저 정보 가져오기
-            store.dispatch(setModalDefault({show: true, type: 'change-profile'}));
-        });
-    }).catch((error) => {
-        const errorCode = error.code;
-        if (errorCode === 'auth/requires-recent-login') {
-            reAuthenticationApi(password);
-        } else {
-            // Todo errorCode 확인 후, 모달 팝업 연동 ?
-            console.log('updateEmail fail');
-            console.log(errorCode);
-        }
-    });
-}
-
-export const deleteUserApi = (password) => {
-    console.log(password)
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const userStore = firestore.collection("user");
-    const uId = store.getState().joinInfo.userId;
-
-    deleteUser(user)
+    updatePassword(currentUser, password.new)
         .then(() => {
-            console.log('계정 삭제 성공');
-            userStore.doc(uId).delete().then(() => {
-                console.log('Cloud store 계정 삭제 성공');
-            })
+            console.log('이메일 비밀번호 변경시 성공');
+            // Cloud Firestore - update : 업데이트
+            user.doc(userProfile.uid).update({password: password.new})
+                .then(() => {
+                    console.log('Firestore 이메일 비밀번호 변경시 성공');
+                    store.dispatch(setModalDefault({show: true, type: 'pw-update-success'}));
+                })
+                .catch((error) => console.error(error, 'Firestore 이메일 비밀번호 변경시 실패'))
         })
         .catch((error) => {
-            const errorCode = error.code;
-            if (errorCode === 'auth/requires-recent-login') {
-                reAuthenticationApi(password);
-            } else {
-                // Todo errorCode 확인 후, 모달 팝업 연동 ?
-                console.log('계정 삭제 실패');
-                console.log(errorCode);
-            }
+            console.error(error, '이메일 비밀번호 변경시 실패');
+            reauthenticateWithCredential(currentUser, credential)
+                .then(() => {
+                    // 사용자 인증 완료 후, 재 호출
+                    console.log('이메일 비밀번호 변경시 사용자 재인증 성공');
+                    console.log(password);
+                    updatePasswordApi(password);
+                })
+                .catch((error) => {
+                    console.error(error, '이메일 비밀번호 변경시 사용자 재인증 실패');
+                    store.dispatch(setModalDefault({show: true, type: 'pw-update-fail'}));
+                });
         });
-}
+};
 
-export const reAuthenticationApi = (password) => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    console.log(password);
-    const credential = EmailAuthProvider.credential(user.email, password);
+export const updateProfileApi = (values) => {
+    console.log(values);
+    const {name, email, photo, birth, phone } = values.editUser;
+    const userProfile = store.getState().user.userProfile;
+    const user = firestore.collection('user');
+    const currentUser = auth.currentUser;
+    const credential = EmailAuthProvider.credential(userProfile.email, userProfile.password)
 
-    reauthenticateWithCredential(user, credential).then(() => {
-        console.log('사용자 재인증 완료');
-        deleteUserApi();
-    }).catch((error) => {
-        // Todo errorCode 확인 후, 모달 팝업 연동 ?
-        const errorCode = error.code;
-        console.log('사용자 재인증 실패');
-        console.log(errorCode);
-    });
-}
+    // Authentication - updateEmail : 사용자의 이메일 주소 설정
+    updateEmail(currentUser, email)
+        .then(() => {
+            console.log('이메일 업데이트시 성공');
+            // Cloud Firestore - update : 업데이트
+            user.doc(userProfile.uid).update({
+                name,
+                // email,
+                photoNum: photo || '0',
+                birth : birth || '',
+                phone: phone || ''
+            }).then(() => {
+                console.log('Firestore 이메일 업데이트시 성공');
+                store.dispatch(setModalDefault({show: true, type: 'profile-update-success'}));
+                // 프로필 편집된 사용자 정보 불러오기
+                reProfileApi();
+            }).catch((error) => console.error(error, 'Firestore 이메일 업데이트시 실패'));
+        })
+        .catch((error) => {
+            console.error(error, '이메일 업데이트시 실패');
+            reauthenticateWithCredential(currentUser, credential)
+                .then(() => {
+                    // 사용자 인증 완료 후, 재 호출
+                    console.log('이메일 업데이트시 사용자 재인증 성공');
+                    console.log(values);
+                    updateProfileApi(values);
+                })
+                .catch((error) => {
+                    console.error(error, '이메일 업데이트시 사용자 재인증 실패');
+                    store.dispatch(setModalDefault({show: true, type: 'profile-update-fail'}));
+                });
+        });
+};
 
-export const getPostApi = () => {
-    const postStore = firestore.collection("post");
-    const uId = store.getState().joinInfo.userId;
-
-    // Cloud Firestore - get : 가져오기
-    let imageList = [];
-    postStore.get().then((docs) => {
-       docs.forEach((doc) => {
-           if (doc.exists) {
-               // document의 데이터
-               // console.log(doc.data());
-               // document의 id
-               // console.log(doc.id);
-               console.log(imageList.length)
-               // 포스트 노출 (전체 - 총 10)
-               imageList.length < 10 && imageList.push(doc.data());
-               // return imageList;
-
-           }
-       })
-        console.log(imageList);
-        store.dispatch(setPostList(imageList))
-    });
-
-}
-
+// 로그인 사용자 정보 가져오기
 export const reProfileApi = (userId) => {
     const user = firestore.collection('user');
-    const uid = userId || store.getState().user.userProfile.uid;
+    const uid = userId || store.getState().user?.userProfile.uid;
     user.get().then((docs) => {
         docs.forEach((doc) => {
-            if (doc.id === uid) store.dispatch(setUserProfile({...doc.data(), ...{uid: uid}}))
+            if (doc.id === uid) store.dispatch(setUserProfile({...doc.data(), ...{uid}}))
         })
-    })
+    }).catch((error) => console.error(error));
+}
+
+// 전체 포스트 가져오기 (수정 필요)
+export const getPostApi = () => {
+    let imageList = [];
+    const post = firestore.collection('post');
+
+    post.get().then((docs) => {
+       docs.forEach((doc) => {
+           if (doc.exists) {
+               console.log(imageList.length);
+               // 포스트 노출 (전체 - 총 10)
+               imageList.length < 10 && imageList.push(doc.data());
+           }
+       })
+
+        store.dispatch(setImageList(imageList));
+    }).catch((error) => console.error(error));
+    console.log(imageList);
 }

@@ -43,7 +43,7 @@ const Join = () => {
     const onFinish = async (values) => {
         console.log('Received values of form: ', values);
         // Authentication Join
-        await createUserWithEmailAndPasswordApi(values.user);
+        await createUserWithEmailAndPasswordApi(values);
     };
     const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
 
