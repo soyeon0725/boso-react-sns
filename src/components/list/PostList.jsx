@@ -46,7 +46,7 @@ const PostList = () => {
         reader.readAsDataURL(img);
     };
     const beforeUpload = (file) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isJpgOrPng = file.type === 'images/jpeg' || file.type === 'images/png';
         if (!isJpgOrPng) {
             message.error('You can only upload JPG/PNG file!');
         }

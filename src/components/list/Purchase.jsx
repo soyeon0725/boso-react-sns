@@ -1,9 +1,9 @@
 import {useEffect} from "react";
 import {Image, Space, Table, Tag} from 'antd';
 
-const TextList = ({isImg}) => {
+const Purchase = ({showImg}) => {
     useEffect(() => {
-        console.log('TextList 컴포넌트');
+        console.log('Purchase 컴포넌트');
     }, []);
     const columns = [
         {
@@ -93,10 +93,10 @@ const TextList = ({isImg}) => {
 
     return (
         <Table
-            columns={isImg ? columns : columns.filter((image) => image.title !== 'Image')}
+            columns={showImg ? columns : columns.filter((obj) => obj.title !== 'Image')}
             dataSource={data}
             pagination={false}
         />
     );
 }
-export default TextList;
+export default Purchase;

@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { Button, Form, Input } from 'antd';
+import {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {setModalDefault} from '../app/slice';
+import {Button, Form, Input} from 'antd';
 import {
     LockOutlined,
     UserAddOutlined,
@@ -11,16 +12,29 @@ import {
     MessageOutlined,
     ReadOutlined
 } from '@ant-design/icons';
-import Default from '../components/modal/Default';
 
 // firebase 이메일 & 비밀번호 로그인 연동
-import {
-    getAuth, // 사용자 인증 정보
-    signInWithEmailAndPassword
-} from "firebase/auth";
-import {useDispatch} from "react-redux";
-import {setModalDefault} from "../app/slice";
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 
+const loginFormStyle = {
+    maxWidth: '600px',
+    margin: '0 auto',
+    paddingTop: '40px'
+};
+
+const iconStyle = {
+    color: 'rgba(0, 0, 0, 0.25)'
+};
+
+const loginIconsWrap = {
+    display: 'flex',
+    justifyContent: 'center'
+};
+
+const loginIconStyle = {
+    color: '#1890ff',
+    fontSize: '24px'
+};
 
 const Login = () => {
     const navigate = useNavigate();
@@ -28,136 +42,144 @@ const Login = () => {
 
     // 로그인 화면 진입
     useEffect(()=> {
-        console.log("Login PAGE");
+        console.log('Login 화면');
     },[]);
 
-    // Login failed
-    const onFinishFailed = (errorInfo) => console.log('Failed:', errorInfo);
+    // antd layout object
+    const layout = {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 16 },
+    };
 
-    // Authentication Login With Email And Password (12/6)
-    const auth = getAuth();
-    // Authentication Login
-    const signIn = async (value) => {
+
+
+    // Authentication - signInWithEmailAndPassword : 기존 사용자 로그인
+    const signInApi = async (value) => {
         const {email, password} = value;
+        const auth = getAuth();
         // 2. 기존 사용자 로그인
-        await signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in
-                const user = userCredential.user;
-                console.log("signInWithEmailAndPassword success ⭕");
-                console.log(user);
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log("signInWithEmailAndPassword error ❌");
-                console.log(errorCode);
-                console.log(errorMessage);
-                if (errorCode === 'auth/user-not-found') {
+        try {
+            await signInWithEmailAndPassword(auth, email, password)
+            console.log('기존 사용자 로그인 API 성공');
+                // .then((userCredential) => {
+                //     // Signed in
+                //     const user = userCredential.user;
+                //     console.log(user, '기존 사용자 로그인 API 성공');
+                // })
+        } catch (error) {
+            console.error(error, '기존 사용자 로그인 API 실패');
+            switch (error.code) {
+                case 'auth/user-not-found':
                     dispatch(setModalDefault({show: true, type: 'user-not-found'}));
-                } else if (errorCode === 'auth/wrong-password') {
+                    break;
+                case 'auth/wrong-password':
                     dispatch(setModalDefault({show: true, type: 'wrong-password'}));
-                } else {
+                    break;
+                default:
                     dispatch(setModalDefault({show: true, type: 'login-fail'}));
-                }
-            });
+                    break;
+            };
+        };
+    };
+
+    // Login failed
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
     };
 
     return (
         <>
-            <div style={{ paddingTop: '40px' }}>
-                <Form
-                    name="basic"
-                    labelCol={{
-                        span: 8,
-                    }}
-                    wrapperCol={{
-                        span: 10,
-                    }}
-                    initialValues={{
-                        remember: true,
-                    }}
-                    onFinish={signIn}
-                    onFinishFailed={onFinishFailed}
-                    autoComplete="on"
+            <Form
+                {...layout}
+                name='normal_login'
+                style={loginFormStyle}
+                initialValues={{
+                    remember: true,
+                }}
+                onFinish={signInApi}
+                onFinishFailed={onFinishFailed}
+            >
+                <Form.Item
+                    label='Email'
+                    name='email'
+                    rules={[
+                        {
+                            required: true,
+                            message: '이메일을 입력해주세요.'
+                        },
+                        {
+                            type: 'email',
+                            message: '이메일 형식에 맞게 작성해주세요.',
+                        },
+                    ]}
                 >
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your email!',
-                            },
-                            {
-                                type: 'email',
-                                message: 'Email is not a valid email!',
-                            }
-                        ]}
-                    >
-                        <Input placeholder="이메일을 입력해주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your password!',
-                            },
-                        ]}
-                    >
-                        <Input.Password placeholder="비밀번호를 입력해주세요." prefix={<LockOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-            <div className='login-icons' style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Input placeholder='이메일을 입력해주세요.' prefix={<MailOutlined style={iconStyle} />} />
+                </Form.Item>
+                <Form.Item
+                    label='Password'
+                    name='password'
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input your password!',
+                        },
+                    ]}
+                >
+                    <Input.Password
+                        placeholder='비밀번호를 입력해주세요.'
+                        type='password'
+                        autoComplete='on'
+                        prefix={<LockOutlined style={iconStyle} />} />
+                </Form.Item>
+                <Form.Item
+                    wrapperCol={{
+                        ...layout.wrapperCol,
+                        offset: 6
+                    }}
+                >
+                    <Button type="primary" htmlType="submit">
+                        Login
+                    </Button>
+                </Form.Item>
+            </Form>
+
+            <div className='login-icons' style={loginIconsWrap}>
                 <Button
-                    size="large"
-                    shape="circle"
-                    icon={<UserAddOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    size='large'
+                    shape='circle'
+                    icon={<UserAddOutlined  style={loginIconStyle} />}
                     onClick={() => navigate('/join/detail')}
                 />
                 <Button
-                    style={{ marginLeft: '10px' }}
-                    size="large"
-                    shape="circle"
-                    icon={<MailOutlined style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    style={{marginLeft: '10px'}}
+                    size='large'
+                    shape='circle'
+                    icon={<MailOutlined style={loginIconStyle} />}
                     onClick={() => navigate('/join/simple')}
                 />
                 <Button
-                    style={{ marginLeft: '10px' }}
-                    size="large"
-                    shape="circle"
-                    icon={<GithubOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    style={{marginLeft: '10px'}}
+                    size='large'
+                    shape='circle'
+                    icon={<GithubOutlined  style={loginIconStyle} />}
                 />
                 <Button
-                    style={{ marginLeft: '10px' }}
-                    size="large"
-                    shape="circle"
-                    icon={<GoogleOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    style={{marginLeft: '10px'}}
+                    size='large'
+                    shape='circle'
+                    icon={<GoogleOutlined  style={loginIconStyle} />}
                 />
                 <Button
-                    style={{ marginLeft: '10px' }}
-                    size="large"
-                    shape="circle"
-                    icon={<MessageOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    style={{marginLeft: '10px'}}
+                    size='large'
+                    shape='circle'
+                    icon={<MessageOutlined  style={loginIconStyle} />}
                 />
                 <Button
-                    style={{ marginLeft: '10px' }}
-                    size="large"
-                    shape="circle"
-                    icon={<ReadOutlined  style={{ color: '#1890ff', fontSize: '24px' }} />}
+                    style={{marginLeft: '10px'}}
+                    size='large'
+                    shape='circle'
+                    icon={<ReadOutlined  style={loginIconStyle} />}
                 />
             </div>
         </>

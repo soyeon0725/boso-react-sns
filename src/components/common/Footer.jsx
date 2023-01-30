@@ -1,18 +1,27 @@
 import {useEffect, useState} from 'react';
-import { Layout, Carousel, Image } from 'antd';
-import {firestore} from "../../firebase/Firebase";
+import {Layout, Carousel, Image} from 'antd';
+import {firestore} from '../../firebase/Firebase';
 
 const { Footer } = Layout;
 
+const contentStyle = {
+    height: '140px',
+    // color: '#fff',
+    // lineHeight: '160px',
+    // textAlign: 'center',
+    // background: '#364d79',
+    // overflow: 'hidden',
+};
+
+const imageStyle = {
+    width:'100%',
+    height:'100%',
+    objectFit:'cover',
+
+};
+
 function FooterC(props) {
-    const contentStyle = {
-        height: '160px',
-        color: '#fff',
-        lineHeight: '160px',
-        textAlign: 'center',
-        background: '#364d79',
-        overflow: 'hidden',
-    };
+
     const [banner, setBanner] = useState([]);
     useEffect(() => {
         getBannerList().then(() => {});
@@ -28,21 +37,16 @@ function FooterC(props) {
         });
     }
     return (
-        <Footer
-            style={{
-                textAlign: 'center',
-            }}
-        >
+        <Footer style={{textAlign: 'center'}}>
             {/*Ant Design ©2018 Created by Ant UED*/}
-            <Carousel autoplay autoplaySpeed={10000}>
+            <Carousel autoplay effect='fade' autoplaySpeed={10000}>
                 {banner.map((image, index) => (
                     <div key={index}>
                         <h3 style={contentStyle}>
-                            <Image
-                                style={{objectFit: 'cover'}}
-                                width={'100%'}
-                                height={'100%'}
+                            <img
+                                style={imageStyle}
                                 src={image}
+                                alt={'배너 이미지'}
                             />
                         </h3>
                     </div>

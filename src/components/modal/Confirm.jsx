@@ -1,36 +1,48 @@
 import { useNavigate } from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {selectModalConfirm, setModalConfirm} from "../../app/slice";
-import { Modal } from 'antd';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectModalConfirm, setModalConfirm} from '../../app/slice';
+import {Button, Modal} from 'antd';
 
 const Confirm = () => {
     console.log('Confirm 팝업');
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const modalConfirm = useSelector(selectModalConfirm);
-    const navigate = useNavigate();
+    const {show, type} = modalConfirm;
+
+    const handleCancel = () => dispatch(setModalConfirm({show: false, type: ''}));
+    const handleOk = () => modal[type].onEvent();
+
     const modal = {
         'join-success' : {
             message: '회원가입이 완료되었습니다.',
             closable: true,
             onEvent: () => {
-                reset();
+                handleCancel();
                 navigate('/');
             }
         }
     }
-    const reset = () => dispatch(setModalConfirm({show: false, type: ''}));
-    const handleOk = () => modal[modalConfirm.type].onEvent();
+
+
 
     return (
         <Modal
-            title="알림"
-            open={modalConfirm.show}
+            title={modal[type]?.title || '알림'}
+            open={show}
+            onCancel={handleCancel}
             onOk={handleOk}
-            onCancel={() => reset()}
-            closable={modal[modalConfirm.type].closable}
-            cancelButtonProps={{ style: { display: 'none' } }}
+            closable={modal[type]?.closable}
+            // cancelButtonProps={{ style: { display: 'none' } }}
+            footer={[
+                <Button
+                    key="submit"
+                    type="primary"
+                    onClick={modal[type]?.okEvent}
+                >OK</Button>
+            ]}
         >
-            {modal[modalConfirm.type]?.body}
+            {modal[type]?.body}
         </Modal>
     );
 }

@@ -3,16 +3,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {selectUserProfile, setModalDefault} from '../app/slice';
 
 import { Button, Tabs, Avatar } from 'antd';
-import TextList from '../components/list/TextList';
+import Purchase from '../components/list/Purchase';
 import PostList from '../components/list/PostList';
 
-const MyPage = () => {
+const My = () => {
     const dispatch = useDispatch();
     const userProfile = useSelector(selectUserProfile);
 
     // 마이페이지 진입
     useEffect(()=> {
         console.log("마이페이지");
+        console.log(`../assets/images/photo_${userProfile.photoNum || '0'}.png`)
     },[]);
 
     return (
@@ -28,7 +29,7 @@ const MyPage = () => {
                     style={{ verticalAlign: 'middle' }}
                     size={100}
                     gap={4}
-                    src={require(`../assets/image/photo-${userProfile.photoNum || '0'}.png`)}
+                    src={require(`../assets/images/photo_${userProfile.photoNum || '0'}.png`)}
                 />
                 <div
                     style={{
@@ -59,12 +60,12 @@ const MyPage = () => {
                     {
                         label: `찜한 포스트`,
                         key: '2',
-                        children: <TextList />,
+                        children: <Purchase />,
                     },
                     {
                         label: `구매내역`,
                         key: '3',
-                        children: <TextList isImg />,
+                        children: <Purchase showImg />,
                     },
                     {
                         label: `대시보드`,
@@ -76,4 +77,4 @@ const MyPage = () => {
         </>
     );
 }
-export default MyPage;
+export default My;

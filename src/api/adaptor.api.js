@@ -69,18 +69,18 @@ export const deleteUserApi = () => {
 };
 
 export const updatePasswordApi = (password) => {
-    console.log(password);
+    const {current, newPw} = password;
     const userProfile = store.getState().user.userProfile;
     const user = firestore.collection('user');
     const currentUser = auth.currentUser;
-    const credential = EmailAuthProvider.credential(userProfile.email, password.current)
+    const credential = EmailAuthProvider.credential(userProfile.email, current)
 
     // Authentication - updatePassword : 사용자 비밀번호 설정
-    updatePassword(currentUser, password.new)
+    updatePassword(currentUser, newPw)
         .then(() => {
             console.log('이메일 비밀번호 변경시 성공');
             // Cloud Firestore - update : 업데이트
-            user.doc(userProfile.uid).update({password: password.new})
+            user.doc(userProfile.uid).update({password: newPw})
                 .then(() => {
                     console.log('Firestore 이메일 비밀번호 변경시 성공');
                     store.dispatch(setModalDefault({show: true, type: 'pw-update-success'}));
@@ -105,7 +105,7 @@ export const updatePasswordApi = (password) => {
 
 export const updateProfileApi = (values) => {
     console.log(values);
-    const {name, email, photo, birth, phone } = values.editUser;
+    const {name, email, photo, birth, phone } = values.user;
     const userProfile = store.getState().user.userProfile;
     const user = firestore.collection('user');
     const currentUser = auth.currentUser;
@@ -134,7 +134,7 @@ export const updateProfileApi = (values) => {
             reauthenticateWithCredential(currentUser, credential)
                 .then(() => {
                     // 사용자 인증 완료 후, 재 호출
-                    console.log('이메일 업데이트시 사용자 재인증 성공');
+                    console.log('🔥👀 이메일 업데이트시 사용자 재인증 성공 👀🔥');
                     console.log(values);
                     updateProfileApi(values);
                 })

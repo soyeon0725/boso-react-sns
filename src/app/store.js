@@ -1,6 +1,6 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit';
 
-import {commonSlice, userSlice, postSlice} from "./slice";
+import {commonSlice, userSlice, postSlice} from './slice';
 
 const store = configureStore({
     reducer:{

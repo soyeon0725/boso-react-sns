@@ -1,134 +1,173 @@
-import {useDispatch, useSelector} from 'react-redux';
-
+import {useSelector} from 'react-redux';
 import {selectUserProfile} from '../../app/slice';
 import {Form, Input, Button, Radio} from 'antd';
-import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
-import {checkBirth, checkPhoneNumber} from "../../utils/utilCommon";
-import {updateProfileApi} from "../../api/adaptor.api";
+import {GiftOutlined, MailOutlined, PhoneOutlined, UserOutlined} from '@ant-design/icons';
+import '../../assets/css/styles.css';
+import {checkName, checkBirth, checkPhoneNumber} from '../../utils/utilCommon';
+import {updateProfileApi} from '../../api/adaptor.api';
+
+const iconStyle = {
+    color: 'rgba(0, 0, 0, 0.25)'
+}
 
 const EditProfile = () => {
     console.log('EditProfile 팝업');
-    const dispatch = useDispatch();
     const userProfile = useSelector(selectUserProfile);
     const {name, email, birth, phone, photoNum} = userProfile;
+    const imageArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8'];
+
+    // antd layout object
+    const layout = {
+        labelCol: {
+            span: 4,
+        },
+        wrapperCol: {
+            span: 16,
+        },
+    };
+    // antd validateMessages object
+    const validateMessages = {
+        required: '${label} is required!',
+        types: {
+            email: '${label} is not a valid email!',
+            number: '${label} is not a valid number!',
+        }
+    };
+
+    const validateName = (_, value) => {
+        if (!value || checkName(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(_.message));
+        }
+    }
+
+    const validateBirth = (_, value) => {
+        if (!value || checkBirth(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(_.message));
+        }
+    }
+
+    const validatePhone = (_, value) => {
+        if (!value || checkPhoneNumber(value)) {
+            return Promise.resolve();
+        } else {
+            return Promise.reject(new Error(_.message));
+        }
+    }
 
     const onFinish = (values) => {
-        console.log(values.editUser);
+        console.log(values.user);
         updateProfileApi(values);
     };
+
+    console.log(photoNum)
 
     return (
         <>
             <Form
-                name="basic"
-                initialValues={{editUser: {name, email, birth, phone, photoNum}}}
+                {...layout}
+                initialValues={{
+                    user: {
+                        name,
+                        email,
+                        birth,
+                        phone,
+                        photo: photoNum
+                    }
+                }}
+                validateMessages={validateMessages}
                 onFinish={onFinish}
             >
                 <Form.Item
-                    name={["editUser", "name"]}
-                    label="Name"
+                    name={['user', 'name']}
+                    label='Name'
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your name!',
+                            // message: 'Please input your name!',
+                        },
+                        {
+                            validator: validateName,
+                            message: '이름에 숫자, 특수문자는 사용할 수 없습니다.'
                         }
                     ]}
                 >
-                    <Input placeholder="이름을 입력해 주세요." prefix={<UserOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder='이름을 입력해 주세요.' prefix={<UserOutlined style={iconStyle} />} />
                 </Form.Item>
                 <Form.Item
-                    name={["editUser", "email"]}
-                    label="Email"
+                    name={['user', 'email']}
+                    label='Email'
                     rules={[
                         {
                             required: true,
                         },
                         {
                             type: 'email',
-                            message: '이메일 형식에 맞게 작성해 주세요.'
+                            message: '이메일 형식에 맞게 작성해주세요.'
                         }
                     ]}
                 >
-                    <Input placeholder="이메일을 입력해 주세요." prefix={<MailOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder='이메일을 입력해주세요.' prefix={<MailOutlined style={iconStyle} />} />
                 </Form.Item>
                 <Form.Item
-                    name={["editUser", "photo"]}
-                    label="Photo"
+                    name={['user', 'photo']}
+                    label='Photo'
                     rules={[
                         {
                             required: true,
                         },
-                        {
-                            type: 'photo',
-                            message: '프로필 이미지를 선택해 주세요.'
-                        }
+                        // {
+                        //     type: 'photo',
+                        //     message: '프로필 이미지를 선택해주세요.'
+                        // }
                     ]}
                 >
-                    <Radio.Group>
-                        <Radio.Button value='0'>
-                            <img src={require('../../assets/image/photo-0.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='1'>
-                            <img src={require('../../assets/image/photo-1.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='2'>
-                            <img src={require('../../assets/image/photo-2.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='3'>
-                            <img src={require('../../assets/image/photo-3.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='4'>
-                            <img src={require('../../assets/image/photo-4.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='5'>
-                            <img src={require('../../assets/image/photo-5.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='6'>
-                            <img src={require('../../assets/image/photo-6.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='7'>
-                            <img src={require('../../assets/image/photo-7.png')} />
-                        </Radio.Button>
-                        <Radio.Button value='8'>
-                            <img src={require('../../assets/image/photo-8.png')} />
-                        </Radio.Button>
+                    <Radio.Group className='radio-custom'>
+                        {
+                            imageArray.map((item, index) => (
+                                <Radio key={index} value={item}>
+                                    <img src={require(`../../assets/images/photo_${item}.png`)} alt={`프로필 이미지_${item}`} />
+                                </Radio>
+                            ))
+                        }
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item
-                    name={["editUser", "birth"]}
-                    label="Birth"
+                    name={['user', "birth"]}
+                    label='Birth'
                     rules={[
                         {
-                            validator: (_, value) => {
-                                if (!value || checkBirth(value)) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error('생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해 주세요.'));
-                            }
+                            validator: validateBirth,
+                            message: '생년월일은 \'YYYYMMDD\' 형식으로 숫자만 입력해주세요.'
                         }
                     ]}
                 >
-                    <Input placeholder="생년월일을 입력해 주세요." prefix={<GiftOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder='생년월일을 입력해주세요.' prefix={<GiftOutlined style={iconStyle} />} />
                 </Form.Item>
                 <Form.Item
-                    name={["editUser", "phone"]}
-                    label="Phone"
+                    name={['user', 'phone']}
+                    label='Phone'
                     rules={[
                         {
-                            validator: (_, value) => {
-                                if (!value || checkPhoneNumber(value)) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error('\'-\'빼고 숫자만 입력해 주세요.'));
-                            }
+                            validator: validatePhone,
+                            message: '숫자만 입력해주세요.'
                         }
                     ]}
                 >
-                    <Input placeholder="휴대폰을 입력해 주세요." prefix={<PhoneOutlined style={{ color: 'rgba(0, 0, 0, 0.25)' }} />} />
+                    <Input placeholder='휴대폰 번호를 입력해주세요.' prefix={<PhoneOutlined style={iconStyle} />} />
                 </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" style={{marginRight: '10px'}}>
-                        Submit
+                <Form.Item
+                    name='submit'
+                    wrapperCol={{
+                        ...layout.wrapperCol,
+                        offset: 4
+                    }}
+                >
+                    <Button type='primary' htmlType='submit'>
+                        Edit
                     </Button>
                 </Form.Item>
             </Form>
