@@ -13,7 +13,6 @@ const My = () => {
     // 마이페이지 진입
     useEffect(()=> {
         console.log("마이페이지");
-        console.log(`../assets/images/photo_${userProfile.photoNum || '0'}.png`)
     },[]);
 
     const editProfile = () => dispatch(setModalDefault({show: true, type: 'edit-profile'}));

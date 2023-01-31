@@ -2,6 +2,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {selectModalDefault, setModalDefault} from '../../app/slice';
 import {Modal} from 'antd';
 import EditProfile from './EditProfile';
+import UploadPost from "./UploadPost";
 
 const Default = () => {
     console.log('Default 팝업');
@@ -51,6 +52,9 @@ const Default = () => {
         'profile-update-fail': {
             body: '프로필 업데이트에 실패했습니다.'
         },
+        'upload-post-success:': {
+            body: '프로필 업데이트에 실패했습니다.'
+        },
         'edit-profile' : {
             title: '프로필 편집',
             body: (<EditProfile />),
@@ -59,12 +63,11 @@ const Default = () => {
         },
         'upload-post' : {
             title: '포스트 업로드',
-            body: ('UploadPost'),
+            body: (<UploadPost />),
             closable : false,
             okEvent: () => handleCancel()
         },
     };
-
 
     return (
         <Modal

@@ -58,7 +58,7 @@ const EditProfile = () => {
         }
     }
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         console.log(values.user);
         updateProfileApi(values);
     };

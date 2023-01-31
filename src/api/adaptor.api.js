@@ -154,7 +154,7 @@ export const reProfileApi = (userId) => {
             if (doc.id === uid) store.dispatch(setUserProfile({...doc.data(), ...{uid}}))
         })
     }).catch((error) => console.error(error));
-}
+};
 
 // 전체 포스트 가져오기 (수정 필요)
 export const getPostApi = () => {
@@ -172,4 +172,18 @@ export const getPostApi = () => {
 
         store.dispatch(setImageList(imageList));
     }).catch((error) => console.error(error));
-}
+};
+
+export const uploadPostApi = (values) => {
+    console.log('uploadPostApi');
+    console.log(values);
+    const userProfile = store.getState().user.userProfile;
+    const user = firestore.collection('user');
+    console.log({...userProfile, list: {...userProfile.list, post: [...userProfile.list.post, {url: values.photo[0].thumbUrl, id: '3', cat: values.cat}] }})
+
+    user.doc(userProfile.uid).update({...userProfile, list: {...userProfile.list, post: [...userProfile.list.post, {url: values.photo[0].thumbUrl, id: '2', cat: values.cat}] }}).then(() => {
+        console.log('Firestore 포스트 업데이트시 성공');
+        reProfileApi();
+    })
+    // store.dispatch((setModalDefault({show: true, type: 'upload-post-success'})));
+};

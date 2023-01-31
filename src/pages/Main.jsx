@@ -3,8 +3,9 @@ import {useNavigate} from 'react-router-dom';
 import {getPostApi} from '../api/adaptor.api';
 import {Button, message, Upload} from 'antd';
 import {PlusOutlined, UploadOutlined} from '@ant-design/icons';
-import {useSelector} from 'react-redux';
-import {selectImageList} from '../app/slice';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectImageList, setModalDefault} from '../app/slice';
+import UploadPost from "../components/modal/UploadPost";
 
 const postUploadBox = {
     display: 'inline-block',
@@ -33,19 +34,26 @@ const postImg = {
 
 const Main = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const imageList = useSelector(selectImageList);
 
     // 홈 화면 진입
     useEffect(()=> {
         console.log('메인 화면');
         getPostApi();
+        console.log('imageList----')
+        console.log(imageList);
     },[]);
+
+    const UploadPost = () => {
+        dispatch(setModalDefault({show: true, type: 'upload-post'}));
+    }
 
     return (
         <div style={{overflow: 'auto', height: '550px', padding: '60px 60px 0 60px'}}>
-            {imageList?.length > 0 ? (
+            {imageList?.length < 0 ? '포스트를 공유해주세요.' : (
                 <>
-                    <div style={postUploadBox}>
+                    <div style={postUploadBox} onClick={UploadPost}>
                         <PlusOutlined style={{marginTop: '75px'}} />
                         <div
                             style={{
@@ -67,17 +75,9 @@ const Main = () => {
                                     item.cat === 'advertisement' && navigate(`/product-detail/${item.id}`)
                                 }}
                             />
-                            <div>{item.cat}</div>
                         </div>
                     ))}
                 </>
-            ) : (
-                <div>
-                    <p>포스트를 공유해주세요.</p>
-                    <Upload>
-                        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                    </Upload>
-                </div>
             )}
         </div>
     )
