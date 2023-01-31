@@ -172,5 +172,4 @@ export const getPostApi = () => {
 
         store.dispatch(setImageList(imageList));
     }).catch((error) => console.error(error));
-    console.log(imageList);
 }

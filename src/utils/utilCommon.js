@@ -18,7 +18,6 @@ export const checkPassword = password => {
     // return !(char_type < 3 || ((char_type === 3 || char_type === 4) && password.length < 10));
     // 3개 이상 조합 참 (참 조건들로 구현)
     return char_type > 2 && password.length > 9;
-
 }
 
 export const checkName = name => {

@@ -1,9 +1,9 @@
 import {useEffect} from "react";
 import {Image, Space, Table, Tag} from 'antd';
 
-const Purchase = ({showImg}) => {
+const PurchaseList = ({showImg}) => {
     useEffect(() => {
-        console.log('Purchase 컴포넌트');
+        console.log('PurchaseList 컴포넌트');
     }, []);
     const columns = [
         {
@@ -99,4 +99,4 @@ const Purchase = ({showImg}) => {
         />
     );
 }
-export default Purchase;
+export default PurchaseList;
