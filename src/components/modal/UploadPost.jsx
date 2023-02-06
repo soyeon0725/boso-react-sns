@@ -1,22 +1,15 @@
 import {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {selectUserProfile} from '../../app/slice';
-import {Form, Input, InputNumber, Button, Radio, Upload} from 'antd';
-import {CloudUploadOutlined, PlusOutlined} from '@ant-design/icons';
-import '../../assets/css/styles.css';
+import {Form, Input, InputNumber, Button, Radio, Upload, message} from 'antd';
+import {PlusOutlined} from '@ant-design/icons';
 import {uploadPostApi} from "../../api/adaptor.api";
+import {comma} from "../../utils/utilCommon";
 
 const {TextArea} = Input;
 
-const iconStyle = {
-    color: 'rgba(0, 0, 0, 0.25)'
-}
-
 const UploadPost = () => {
     console.log('UploadPost 팝업');
-    const userProfile = useSelector(selectUserProfile);
     const [cat, setCat] = useState('animal');
-    const [value, setValue] = useState(0);
+    const [imageUrl, setImageUrl] = useState('');
     let catArray = [
         {ko: '동물', en: 'animal'},
         {ko: '인물', en: 'person'},
@@ -31,7 +24,7 @@ const UploadPost = () => {
             span: 6,
         },
         wrapperCol: {
-            span: 16,
+            span: 20,
         },
     };
     // antd validateMessages object
@@ -43,59 +36,63 @@ const UploadPost = () => {
         }
     };
 
-    const catChange = e => setCat(e.target.value);
-
-    const changeVal = (value) => setValue(value);
+    const onChangeURL = e => setImageUrl(e.target.value);
+    const onChangeCat = e => setCat(e.target.value);
 
     const onFinish = async (values) => {
-        uploadPostApi(values.post);
+        console.log('Received values of form: ', values);
+        const ad = values.ad;
+        let postData = {
+            id: Math.random().toString(36).substring(2, 17),
+            cat: values.post.cat,
+            url: values.post.url
+        };
+        console.log(Math.random().toString(36).substring(2, 17));
+        if (values.post.cat === 'advertisement') postData = {...postData, ad};
+        uploadPostApi(postData);
     };
 
-    // Todo Firebase 용량 초과로 Upload 기능 구현만 목적
-    const [fileList, setFileList] = useState([]);
-
+    // Todo Firebase 용량 초과로 Upload 기능 구현만 (현재 미사용)
     const getBase64 = (img, callback) => {
         const reader = new FileReader();
         reader.addEventListener('load', () => callback(reader.result));
         reader.readAsDataURL(img);
     };
 
+    const beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        console.log('What is the file type ?', isJpgOrPng);
+        console.log('Less than 2MB ? ', isLessThan2MB);
+        const isLessThan2MB = file.size < (1024 * 1024 * 2); // 2MB
+        // const isLt2M = file.size / 1024 / 1024 < 2; // 위와 같은 식
+        if (!isJpgOrPng) message.error('You can only upload JPG/PNG file !');
+        if (!isLessThan2MB) message.error('Image must smaller than 2MB !');
+        return isJpgOrPng && isLessThan2MB;
+    }
+
+    const handleChange = (info) => {
+        console.log(info);
+        getBase64(info.file.originFileObj, (url) => {
+            // setLoading(false);
+            setImageUrl(url);
+        });
+    };
+
     const normFile = (e) => {
         console.log('Upload event:', e);
-        console.log(Array.isArray(e));
         if (Array.isArray(e)) {
-            console.log(e);
             return e;
         }
         return e?.fileList;
     };
-
-    const handleChange = (info) => {
-        //{ fileList: newFileList }
-        console.log(info);
-        setFileList(info.fileList);
-        getBase64(info.file.originFileObj, (url) => {
-            // setLoading(false);
-            console.log(url);
-            setFileList(url);
-        });
-    };
-
-    // .Todo Firebase 용량 초과로 Upload 기능 구현만 목적
+    // .Todo Firebase 용량 초과로 Upload 기능 구현만 (현재 미사용 처리하기)
 
     const uploadButton = (
         <div>
             <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
+            <div style={{marginTop: 8}}>UPLOAD</div>
         </div>
     );
-
 
     return (
         <>
@@ -103,8 +100,7 @@ const UploadPost = () => {
                 {...layout}
                 initialValues={{
                     post: {
-                        cat: 'animal',
-                        price: 0
+                        cat: 'animal'
                     }
                 }}
                 validateMessages={validateMessages}
@@ -113,32 +109,54 @@ const UploadPost = () => {
                 <Form.Item
                     name={['post', 'photo']}
                     label='Photo Preview'
-                    // rules={[{required: true}]} // Todo Firebase 용량 초과로 Upload 기능 구현만 목적
-                    valuePropName="fileList"
+                    // rules={[{required: true}]}
+                    valuePropName='fileList'
                     getValueFromEvent={normFile}
                 >
                     <Upload
-                        action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                        name='avatar'
                         listType='picture-card'
+                        className='avatar-uploader'
+                        // action='https://www.mocky.io/v2/5cc8019d300000980a055e76'
+                        beforeUpload={beforeUpload} // ?
                         onChange={handleChange}
+                        showUploadList={false} // Firebase 데이터 용량 초과로 Upload 기능 구현만
+                        disabled={true} // Firebase 데이터 용량 초과로 Upload 기능 구현만 (disabled)
                     >
-                        {fileList.length > 0 ? null : uploadButton}
+                        {/*{fileList.length > 0 ? null : uploadButton}*/}
+                        {imageUrl === '' ? (
+                            <img
+                                width='100%'
+                                height='100%'
+                                src={'https://www.dummyimage.com/305x305/f7f7f7/aba8ab.png&text=+Preview'}
+                                alt='미리보기 이미지'
+                            />
+                        ) : (
+                            <img
+                                width='100%'
+                                height='100%'
+                                src={imageUrl}
+                                alt='포스트 이미지 미리보기'
+                                onError={e => e.target.src = 'https://www.dummyimage.com/305x305/f7f7f7/aba8ab.png&text=+Preview'}
+                            />
+                        )}
                     </Upload>
                 </Form.Item>
                 <Form.Item
                     name={['post', 'url']}
                     label='PhotoURL'
                     rules={[{required: true}]}
+                    onChange={onChangeURL}
                 >
-                    <Input placeholder='이미지 URL을 입력해주세요.' prefix={<CloudUploadOutlined style={iconStyle} />} />
+                    <Input style={{width : '300px'}} placeholder='이미지 URL을 입력해주세요.' />
                 </Form.Item>
                 <Form.Item
                     name={['post', 'cat']}
                     label='Category'
                     rules={[{required: true}]}
-                    onChange={catChange}
+
                 >
-                    <Radio.Group>
+                    <Radio.Group onChange={onChangeCat} value={cat}>
                         {
                             catArray.map((item, index) => (
                                 <Radio key={index} value={item.en}>{item.ko}</Radio>
@@ -149,32 +167,48 @@ const UploadPost = () => {
                 {cat === 'advertisement' && (
                     <>
                         <Form.Item
-                            name={['post', "title"]}
+                            name={['ad', 'title']}
                             label='Title'
                             rules={[{required: true}]}
                         >
-                            <Input placeholder='제목을 입력해주세요.' />
+                            <Input style={{width : '300px'}} placeholder='상품명을 입력해주세요.' />
                         </Form.Item>
                         <Form.Item
-                            name={['post', 'price']}
+                            name={['ad', 'price']}
                             label='Price'
                             rules={[{required: true}]}
                         >
                             <InputNumber
-                                style={{width: '200px'}}
+                                style={{width : '300px'}}
                                 prefix='₩'
+                                placeholder='상품 금액을 입력해주세요.'
                                 min={0}
                                 max={100000000}
-                                onChange={changeVal}
-                                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                formatter={value => comma(value)}
                             />
                         </Form.Item>
                         <Form.Item
-                            name={['post', 'description']}
+                            name={['ad', 'stock']}
+                            label='Stock'
+                            rules={[{required: true}]}
+                        >
+                            <InputNumber
+                                style={{width : '300px'}}
+                                min={1}
+                                placeholder='상품 재고를 입력해주세요.'
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name={['ad', 'description']}
                             label='Description'
                             rules={[{required: true}]}
                         >
-                            <TextArea rows={4} placeholder="maxLength is 100" maxLength={100} />
+                            <TextArea
+                                style={{width : '300px'}}
+                                rows={4}
+                                placeholder='상품 설명을 입력해주세요.'
+                                // maxLength={100}
+                            />
                         </Form.Item>
                     </>
                 )}

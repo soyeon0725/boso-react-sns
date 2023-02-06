@@ -6,6 +6,19 @@ import {LockOutlined} from '@ant-design/icons';
 import {checkPassword} from '../utils/utilCommon';
 import {deleteUserApi, updatePasswordApi} from '../api/adaptor.api';
 
+const changeFormStyle = {
+    maxWidth: '600px',
+    margin: '0 auto',
+    // marginTop : '3%'
+};
+
+const deleteFormStyle = {
+    display: 'grid',
+    justifyContent: 'center',
+    // marginTop : '3%'
+}
+
+
 const iconStyle = {
     color: 'rgba(0, 0, 0, 0.25)'
 };
@@ -20,10 +33,10 @@ const Setting = () => {
     // antd layout object
     const layout = {
         labelCol: {
-            span: 8,
+            span: 7,
         },
         wrapperCol: {
-            span: 10,
+            span: 13,
         },
     };
 
@@ -45,7 +58,7 @@ const Setting = () => {
             {...layout}
             name='normal_login'
             className='login-form'
-            style={{maxWidth: '800px', margin: '0 auto'}}
+            style={changeFormStyle}
             initialValues={{remember: true}}
             validateMessages={validateMessages}
             onFinish={change}
@@ -128,7 +141,7 @@ const Setting = () => {
                     prefix={<LockOutlined style={iconStyle} />}
                 />
             </Form.Item>
-            <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
+            <Form.Item wrapperCol={{...layout.wrapperCol, offset: 7}}>
                 <Button type="primary" htmlType="submit">
                     Change PW
                 </Button>
@@ -137,11 +150,11 @@ const Setting = () => {
     );
 
     const deleteForm = (
-        <div style={{display: 'grid', justifyContent: 'center'}}>
+        <div style={deleteFormStyle}>
             <p><b >⚠️ 계정 삭제는 영구적입니다.</b></p>
             <p style={{marginBottom: '5px'}}>그 동안 BOSO를 이용해주신 회원님께 진심으로 감사드립니다.</p>
             <p style={{marginBottom: '20px'}}>아래 회원 탈퇴 버튼을 누르시면, 탈퇴가 정상적으로 완료됩니다.</p>
-            <Button type="primary" onClick={() => deleteUserApi()}>
+            <Button onClick={() => deleteUserApi()}>
                 회원 탈퇴
             </Button>
         </div>

@@ -2,47 +2,60 @@ import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {getPostApi} from '../api/adaptor.api';
 import {Button, message, Upload} from 'antd';
-import {PlusOutlined, UploadOutlined} from '@ant-design/icons';
+import {HeartOutlined, LikeOutlined, DislikeOutlined, ReadOutlined, UploadOutlined} from '@ant-design/icons';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectImageList, setModalDefault} from '../app/slice';
 import UploadPost from "../components/modal/UploadPost";
 
-const postUploadBox = {
-    display: 'inline-block',
-    width: '23%',
-    height: '200px',
-    margin: '10px',
-    backgroundColor: '#fafafa',
-    border: '1px dashed #d9d9d9',
-    overflow: 'hidden',
+const contentWrapStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '20px',
+    marginTop: '20px',
     textAlign: 'center'
 };
 
-const postBox = {
-    display: 'inline-block',
-    width: '23%',
-    height: '200px',
-    margin: '10px',
-    overflow: 'hidden'
+const contentStyle = {
+    position : 'relative',
+    height: '500px',
+    // backgroundColor : '#fefefe',
+    // borderRadius: '1em',
+    // overflow: 'hidden',
+    // textAlign: 'center',
 };
 
-const postImg = {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover'
+const imageStyle = {
+    width : '80%',
+    height : '90%',
+    objectFit:'cover',
+    borderRadius: '20px',
+};
+
+const buttonStyle = {
+    marginLeft : '3%',
+    fontSize : '20px'
+};
+
+const adIconStyle = {
+    width : '25px',
+    height : '25px',
+    position: 'absolute',
+    margin: '30px'
 };
 
 const Main = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const imageList = useSelector(selectImageList);
+    const [loading, setLoading] = useState(false);
 
     // 홈 화면 진입
     useEffect(()=> {
         console.log('메인 화면');
-        getPostApi();
-        console.log('imageList----')
-        console.log(imageList);
+        getPostApi({}, (error, data) => data
+            ? setLoading(true)
+            : console.log(error))
+            .then(() => {});
     },[]);
 
     const UploadPost = () => {
@@ -50,36 +63,52 @@ const Main = () => {
     }
 
     return (
-        <div style={{overflow: 'auto', height: '550px', padding: '60px 60px 0 60px'}}>
-            {imageList?.length < 0 ? '포스트를 공유해주세요.' : (
-                <>
-                    <div style={postUploadBox} onClick={UploadPost}>
-                        <PlusOutlined style={{marginTop: '75px'}} />
-                        <div
-                            style={{
-                                marginTop: 8,
-                            }}
-                        >
-                            Upload
+        loading ? (
+            <div style={{height: '100%', overflow: 'auto'}}>
+                {
+                    imageList?.length === 0 ? '포스트를 공유해주세요.' : (
+                        <div style={{...contentWrapStyle}}>
+                            {imageList?.map((item, index) => (
+                                <div key={index} style={contentStyle}>
+                                    <img
+                                        className={item.cat === 'advertisement' ? 'image_list' : ''}
+                                        key={index}
+                                        style={imageStyle}
+                                        src={item.url}
+                                        alt='메인페이지 포스트 이미지'
+                                        onClick={() =>
+                                            item.cat === 'advertisement' && navigate(`/product-detail/${item.id}`)
+                                        }
+                                    />
+                                    <div style={{display: 'flex', marginTop: '10px', paddingLeft: '10%'}}>
+                                        <Button
+                                            size='large'
+                                            shape='circle'
+                                            icon={<HeartOutlined />}
+                                        />
+                                        <Button
+                                            style={{marginLeft: '2%'}}
+                                            size='large'
+                                            shape='circle'
+                                            icon={<LikeOutlined />}
+                                        />
+                                        <Button
+                                            style={{marginLeft: '2%'}}
+                                            size='large'
+                                            shape='circle'
+                                            icon={<DislikeOutlined />}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                    {imageList?.map((item) => (
-                        <div style={postBox} key={item.id}>
-                            <img
+                    )
+                }
+            </div>
+        ) : (
+            <h2 style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>로딩 중입니다.</h2>
+        )
 
-                                style={postImg}
-                                key={item.id}
-                                src={item.url}
-                                alt='메인페이지 포스트 이미지'
-                                onClick={() => {
-                                    item.cat === 'advertisement' && navigate(`/product-detail/${item.id}`)
-                                }}
-                            />
-                        </div>
-                    ))}
-                </>
-            )}
-        </div>
     )
 }
 

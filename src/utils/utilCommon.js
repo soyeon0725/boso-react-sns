@@ -7,9 +7,9 @@ export const checkPassword = password => {
     // const regPassword = /^(?=.*[A-Z|a-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{10,}$/;
     let char_type = 0;
 
-    if(/[a-z]/.test(password)) char_type = char_type+1;
-    if(/[A-Z]/.test(password)) char_type = char_type+1;
-    if(/\d/.test(password)) char_type = char_type+1;
+    if(/[a-z]/.test(password)) char_type = char_type + 1;
+    if(/[A-Z]/.test(password)) char_type = char_type + 1;
+    if(/\d/.test(password)) char_type = char_type + 1;
     if (/[~!@#$%\^&*()_+`\-={}|[\]\\:";'<>?,./]/gi.test(password)) char_type = char_type + 1;
 
     // 3개 조합인 경우에만 참
@@ -25,12 +25,16 @@ export const checkName = name => {
     return regId.test(name);
 }
 
+export const checkBirth = birth => {
+    const regBirth = /^(19\d\d|20\d{2})(0\d|1[0-2])(0[1-9]|[1-2]\d|3[0-1])$/;
+    return regBirth.test(birth);
+};
+
 export const checkPhoneNumber = number => {
     const regPhone = /^01([0|1|6|7|9])(\d{4})(\d{4})$/;
     return regPhone.test(number);
 };
 
-export const checkBirth = birth => {
-    const regBirth = /^(19\d\d|20\d{2})(0\d|1[0-2])(0[1-9]|[1-2]\d|3[0-1])$/;
-    return regBirth.test(birth);
+export const comma = number => {
+    return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };

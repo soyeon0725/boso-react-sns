@@ -55,7 +55,7 @@ const App = () => {
                     {init ? (
                         <>
                             {showCommon && <HeaderC/>}
-                                <Content>
+                                <Content style={{height: '628px'}}>
                                     <Routes>
                                         {isLoggedIn ? (
                                             <>

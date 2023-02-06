@@ -3,9 +3,12 @@ import {auth, firestore} from '../firebase/Firebase';
 import {setModalDefault, setImageList, setUserProfile} from '../app/slice';
 import {getAuth, updateEmail, createUserWithEmailAndPassword, updatePassword, deleteUser, EmailAuthProvider, reauthenticateWithCredential} from 'firebase/auth';
 
+const user = firestore.collection('user');
+const post = firestore.collection('post');
+
 export const createUserWithEmailAndPasswordApi = (values) => {
     const {email, password} = values.user;
-    const user = firestore.collection('user');
+
 
     // Authentication - createUserWithEmailAndPassword : 신규 사용자 등록
     createUserWithEmailAndPassword(auth, email, password)
@@ -42,7 +45,6 @@ export const createUserWithEmailAndPasswordApi = (values) => {
 
 export const deleteUserApi = () => {
     const userProfile = store.getState().user.userProfile;
-    const user = firestore.collection('user');
     const currentUser = auth.currentUser;
     const credential = EmailAuthProvider.credential(userProfile.email, userProfile.password);
 
@@ -71,7 +73,6 @@ export const deleteUserApi = () => {
 export const updatePasswordApi = (password) => {
     const {current, newPw} = password;
     const userProfile = store.getState().user.userProfile;
-    const user = firestore.collection('user');
     const currentUser = auth.currentUser;
     const credential = EmailAuthProvider.credential(userProfile.email, current)
 
@@ -107,7 +108,6 @@ export const updateProfileApi = (values) => {
     console.log(values);
     const {name, email, photo, birth, phone } = values.user;
     const userProfile = store.getState().user.userProfile;
-    const user = firestore.collection('user');
     const currentUser = auth.currentUser;
     const credential = EmailAuthProvider.credential(userProfile.email, userProfile.password)
 
@@ -145,45 +145,55 @@ export const updateProfileApi = (values) => {
         });
 };
 
-// 로그인 사용자 정보 가져오기
+// 로그인 및 업데이트된 정보 가져오기
 export const reProfileApi = (userId) => {
-    const user = firestore.collection('user');
     const uid = userId || store.getState().user?.userProfile.uid;
-    user.get().then((docs) => {
-        docs.forEach((doc) => {
-            if (doc.id === uid) store.dispatch(setUserProfile({...doc.data(), ...{uid}}))
-        })
+
+    user.doc(uid).get(uid).then((doc) => {
+        store.dispatch(setUserProfile({...doc.data(), ...{uid}}));
     }).catch((error) => console.error(error));
 };
 
 // 전체 포스트 가져오기 (수정 필요)
-export const getPostApi = () => {
+export const getPostApi = (params, callback) => {
+    console.log(params)
     let imageList = [];
-    const post = firestore.collection('post');
 
-    post.get().then((docs) => {
+    return post.get().then((docs) => {
        docs.forEach((doc) => {
            if (doc.exists) {
-               console.log(imageList.length);
-               // 포스트 노출 (전체 - 총 10)
-               imageList.length < 10 && imageList.push(doc.data());
+               // Todo 포스트 총 10개 노출 작업 여부 확인 필요
+               // console.log(imageList.length);
+               imageList.push(doc.data());
            }
        })
-
         store.dispatch(setImageList(imageList));
-    }).catch((error) => console.error(error));
+        callback('', true);
+    }).catch((error) => callback(`errorCode 작업 필요? ${error}`, false));
 };
 
+// 포스트 업로드하기
 export const uploadPostApi = (values) => {
     console.log('uploadPostApi');
-    console.log(values);
     const userProfile = store.getState().user.userProfile;
-    const user = firestore.collection('user');
-    console.log({...userProfile, list: {...userProfile.list, post: [...userProfile.list.post, {url: values.photo[0].thumbUrl, id: '3', cat: values.cat}] }})
+    const postData = [...userProfile.list.post, values];
+    // console.log({list: {...userProfile.list, post: [postData] }});
+    // console.log({list: {...userProfile.list, post: [...postData] }});
 
-    user.doc(userProfile.uid).update({...userProfile, list: {...userProfile.list, post: [...userProfile.list.post, {url: values.photo[0].thumbUrl, id: '2', cat: values.cat}] }}).then(() => {
-        console.log('Firestore 포스트 업데이트시 성공');
-        reProfileApi();
-    })
-    // store.dispatch((setModalDefault({show: true, type: 'upload-post-success'})));
+    user.doc(userProfile.uid).update({list: {...userProfile.list, post: [...postData] }})
+        .then(() => {
+            console.log('Firestore 포스트 업데이트시 성공');
+            store.dispatch(setModalDefault({show: true, type: 'post-upload-success'}));
+            reProfileApi();
+            // 전체 포스터 추가
+            post.doc(values.id).set(values);
+        })
+        .catch((error) => console.error(error));
+};
+
+// 포스트가 광고인 데이터 가져오기
+export const getAdDetailApi = (id, callback) => {
+    return post.doc(id).get()
+        .then(doc => callback('', doc.data()))
+        .catch((error) => callback(`errorCode 작업 필요? ${error}`, false));
 };

@@ -9,6 +9,7 @@ const Default = () => {
     const dispatch = useDispatch();
     const modalDefault = useSelector(selectModalDefault);
     const {show, type} = modalDefault;
+    console.log(type);
 
     const handleCancel = () => dispatch(setModalDefault({show: false, type: ''}));
 
@@ -52,8 +53,8 @@ const Default = () => {
         'profile-update-fail': {
             body: '프로필 업데이트에 실패했습니다.'
         },
-        'upload-post-success:': {
-            body: '프로필 업데이트에 실패했습니다.'
+        'post-upload-success': {
+            body: '게시글 업로드에 성공했습니다.'
         },
         'edit-profile' : {
             title: '프로필 편집',
@@ -71,12 +72,12 @@ const Default = () => {
 
     return (
         <Modal
-            title={modal[type].title || '알림'}
+            title={modal[type]?.title || '알림'}
             open={show}
             onCancel={handleCancel}
             footer={null}
         >
-            {modal[type].body}
+            {modal[type]?.body}
         </Modal>
     );
 }

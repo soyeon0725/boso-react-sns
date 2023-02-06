@@ -21,15 +21,15 @@ const My = () => {
         <>
             <div style={{display: 'flex'}}>
                 <Avatar
-                    style={{ verticalAlign: 'middle' }}
+                    style={{margin : '20px'}}
                     size={100}
-                    gap={4}
+                    // gap={4}
                     src={require(`../assets/images/photo_${userProfile.photoNum || '0'}.png`)}
                 />
                 <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                     <span>{`Name : ${userProfile.name}`}</span>
                     <span>{`Email : ${userProfile.email}`}</span>
-                    <Button style={{marginTop : '8px'}} onClick={editProfile}>프로필 편집</Button>
+                    <Button style={{marginTop : '8px', borderRadius: '20px'}} type='primary' onClick={editProfile}>프로필 편집</Button>
                 </div>
             </div>
             <Tabs

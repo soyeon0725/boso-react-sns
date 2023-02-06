@@ -1,3 +1,21 @@
+/* Post (advertisement) : image_list */
+.image_list:hover{
+    border: 1px dashed #001529;
+    cursor: pointer;
+    border-radius: 1em;
+    box-sizing: border-box;
+}
+
+/* Post : upload_btn */
+.upload_btn{
+    border: 1px dashed #d9d9d9;
+}
+
+.upload_btn:hover{
+    border: 1px dashed #1890ff;
+    cursor: pointer;
+}
+
 /* EditProfile : radio-custom */
 .radio-custom .ant-radio-wrapper {
     border: 1px solid #ccc;
