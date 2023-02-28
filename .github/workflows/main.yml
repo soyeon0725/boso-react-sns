@@ -38,4 +38,4 @@ jobs:
           aws s3 cp \
             --recursive \
             --region ap-northeast-2 \
-            /home/runner/work/boso-react-sns/boso-react-sns/dist s3://boso-react-sns
+            /home/runner/work/boso-react-sns/boso-react-sns/build s3://boso-react-sns
