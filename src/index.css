@@ -1,6 +1,11 @@
 body {
     font-family: 'Gaegu', cursive;
 }
+* {padding: 0; margin: 0;}
+
+.header-custom .ant-space-item {
+    height: 100%;
+}
 
 .trigger {
     padding: 0 24px;
