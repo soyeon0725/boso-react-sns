@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {setModalDefault} from '../app/slice';
@@ -14,7 +14,13 @@ import {
 } from '@ant-design/icons';
 
 // firebase 이메일 & 비밀번호 로그인 연동
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from 'firebase/auth';
+import {firestore} from "../firebase/Firebase";
 
 const loginFormStyle = {
     maxWidth: '600px',
@@ -40,6 +46,8 @@ const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    const auth = getAuth();
+
     // 로그인 화면 진입
     useEffect(()=> {
         console.log('Login 화면');
@@ -51,12 +59,10 @@ const Login = () => {
         wrapperCol: { span: 16 },
     };
 
-
-
     // Authentication - signInWithEmailAndPassword : 기존 사용자 로그인
     const signInApi = async (value) => {
         const {email, password} = value;
-        const auth = getAuth();
+
         // 2. 기존 사용자 로그인
         try {
             await signInWithEmailAndPassword(auth, email, password)
@@ -81,6 +87,38 @@ const Login = () => {
             };
         };
     };
+
+    const handleGoogleLogin = () => {
+        console.log('handleGoogleLogin');
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider) // popup을 이용한 signup
+            .then((data) => {
+                console.log(data) // console로 들어온 데이터 표시
+                console.log(data.user);
+                const user = firestore.collection('user');
+                const uid = data.user.uid;
+                const userInfo = {
+                    name: data.user.displayName,
+                    email: data.user.email,
+                    photoNum: '0',
+                    list: {
+                        cart: [],
+                        post: [],
+                        purchase: []
+                    }
+                }
+                console.log(uid, userInfo)
+                user.doc(uid).set(userInfo)
+                    .then(() => console.log('Firestore 신규 사용자 등록'))
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+    }
 
     // Login failed
     const onFinishFailed = (errorInfo) => {
@@ -162,6 +200,7 @@ const Login = () => {
                     size='large'
                     shape='circle'
                     icon={<GithubOutlined  style={loginIconStyle} />}
+                    onClick={handleGoogleLogin}
                 />
                 <Button
                     style={{marginLeft: '10px'}}

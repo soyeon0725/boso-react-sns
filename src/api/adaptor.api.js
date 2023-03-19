@@ -9,7 +9,6 @@ const post = firestore.collection('post');
 export const createUserWithEmailAndPasswordApi = (values) => {
     const {email, password} = values.user;
 
-
     // Authentication - createUserWithEmailAndPassword : 신규 사용자 등록
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
